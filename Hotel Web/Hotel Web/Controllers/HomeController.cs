@@ -11,6 +11,7 @@ namespace Hotel_Web.Controllers
         // GET: Home
         public ActionResult Index()
         {
+            var hahahah;
             return View();
         }
     }
