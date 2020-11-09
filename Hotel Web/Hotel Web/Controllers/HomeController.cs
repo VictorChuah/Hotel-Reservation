@@ -12,6 +12,7 @@ namespace Hotel_Web.Controllers
         public ActionResult Index()
         {
             var hahahah;
+            var abaaba;
             return View();
         }
     }
