@@ -22,8 +22,11 @@ namespace Hotel_Web.Models
         public Nullable<int> AddBed { get; set; }
         public Nullable<int> AddBlanket { get; set; }
         public string AddOn { get; set; }
+        public int Status { get; set; }
+        public string PaymentId { get; set; }
     
         public virtual Customer Customer { get; set; }
+        public virtual Payment Payment { get; set; }
         public virtual Room Room { get; set; }
     }
 }

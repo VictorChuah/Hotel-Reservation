@@ -112,8 +112,8 @@
     <None Include="Scripts\jquery-3.5.1.intellisense.js" />
     <Content Include="Models\db.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>db.Context.cs</LastGenOutput>
       <DependentUpon>db.edmx</DependentUpon>
+      <LastGenOutput>db.Context.cs</LastGenOutput>
     </Content>
     <Content Include="Models\db.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -140,6 +140,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Admin.cs">
+      <DependentUpon>db.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Customer.cs">
       <DependentUpon>db.tt</DependentUpon>
     </Compile>
@@ -157,6 +160,9 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>db.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Payment.cs">
+      <DependentUpon>db.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Reservation.cs">
       <DependentUpon>db.tt</DependentUpon>

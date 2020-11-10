@@ -4,12 +4,15 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="e7e7b0ddadf04c9aa2c81495017deb0d" Name="Diagram1">
-        <EntityTypeShape EntityType="dbModel.Customer" Width="1.5" PointX="3" PointY="5.375" IsExpanded="true" />
+      <Diagram DiagramId="7f498ece3f4f46959734d43b2bfbad84" Name="Diagram1">
+        <EntityTypeShape EntityType="dbModel.Admin" Width="1.5" PointX="11.375" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbModel.Customer" Width="1.5" PointX="8.625" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbModel.Payment" Width="1.5" PointX="8.625" PointY="4.625" IsExpanded="true" />
         <EntityTypeShape EntityType="dbModel.Reservation" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="dbModel.Room" Width="1.5" PointX="3" PointY="1.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="dbModel.RoomType" Width="1.5" PointX="0.75" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbModel.Room" Width="1.5" PointX="3" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbModel.RoomType" Width="1.5" PointX="0.75" PointY="1.875" IsExpanded="true" />
         <AssociationConnector Association="dbModel.FK_Reservation_Customer" ManuallyRouted="false" />
+        <AssociationConnector Association="dbModel.FK_Reservation_Payment" ManuallyRouted="false" />
         <AssociationConnector Association="dbModel.FK_Reservation_Room" ManuallyRouted="false" />
         <AssociationConnector Association="dbModel.FK_Room_RoomType" ManuallyRouted="false" />
       </Diagram>

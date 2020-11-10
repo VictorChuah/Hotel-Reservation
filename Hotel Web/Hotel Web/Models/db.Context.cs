@@ -13,10 +13,10 @@ namespace Hotel_Web.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class dbEntities : DbContext
+    public partial class dbEntities1 : DbContext
     {
-        public dbEntities()
-            : base("name=dbEntities")
+        public dbEntities1()
+            : base("name=dbEntities1")
         {
         }
     
@@ -25,7 +25,9 @@ namespace Hotel_Web.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Admin> Admins { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<Reservation> Reservations { get; set; }
         public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<RoomType> RoomTypes { get; set; }
