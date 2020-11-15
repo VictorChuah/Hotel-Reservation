@@ -1,0 +1,47 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="shortcut icon" href="~/Image/Logo.png">
+    <link rel="stylesheet" href="~/Content/app.css">
+    <!-- Embedded CSS -->
+    @RenderSection("head", false)
+</head>
+<body>
+    <div class="info">@TempData["Info"]</div>
+    <header>
+        <table>
+            <tr>
+                <td><img src="~/Image/Logo.png" height="150" width="120"></td>
+                <td><h1><a href="">Funny Hotel</a></h1></td>
+            </tr>
+        </table>
+        
+        
+    </header>
+    <nav>
+        <a data-get="/Admin/ListCustomer">Customer</a>
+        <a data-get="">Admin Home</a>
+    </nav>
+    <main>
+        <h1>@ViewBag.Title</h1>
+        <div>
+            @RenderBody()
+        </div>
+    </main>
+    <footer>
+        Developed by <b>Funny Hotel</b> &middot;
+        Copyrighted &copy; @DateTime.Today.Year
+    </footer>
+    <script src="~/Scripts/jquery-3.5.1.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/app.js"></script>
+    <!-- Embedded JS -->
+    @RenderSection("foot", false)
+</body>
+</html>

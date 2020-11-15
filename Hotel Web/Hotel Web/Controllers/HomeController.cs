@@ -1,4 +1,5 @@
 ﻿using System;
+using Hotel_Web.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,6 +9,7 @@ namespace Hotel_Web.Controllers
 {
     public class HomeController : Controller
     {
+        dbEntities1 db = new dbEntities1();
         // GET: Home
         public ActionResult Index()
         {

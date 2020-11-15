@@ -1,0 +1,37 @@
+﻿@model IEnumerable<Customer>
+
+@{
+    ViewBag.Title = "ListCustomer";
+}
+
+<p>@Model.Count() record(s)</p> <!--help to count the record in the database-->
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Username</th>
+        <th>Phone</th>
+        <th>Gender</th>
+        <th>Email</th>
+        <th></th>
+    </tr>
+
+    @foreach (var c in Model)
+    {
+        <tr>
+            <td>@c.Name</td>
+            <td>@c.Username</td>
+            <td>@c.PhoneNo</td>
+            <td>@(c.Gender == "F" ? "👧🏻  Female" : "👦🏻 Male")</td>
+            <td>@c.Email</td>
+            <td>
+                @*<a href="~/Home/Detail?id=@s.Id">Detail</a>*@
+                <button data-get="/Admin/Customrdetail/@c.Id">Detail</button>
+                <button data-get="/Admin/CustomerEdit/@c.Id">Edit</button>
+                <button data-get="/Admin/CustomerDelete/@c.Id">Delete</button>
+            </td>
+
+        </tr>
+    }
+</table>
+
+
