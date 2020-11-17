@@ -1,0 +1,82 @@
+﻿@model RegisterModel
+
+@{
+    ViewBag.Title = "Account : Register";
+}
+
+<form class="form" method="post" enctype="multipart/form-data">
+    @Html.ValidationSummary(true)
+
+    @Html.LabelFor(m => m.Username)
+    @Html.TextBoxFor(m => m.Username, new { maxlength = 20, autofocus = "" })
+    @Html.ValidationMessageFor(m => m.Username)
+
+    @Html.LabelFor(m => m.Password)
+    @Html.PasswordFor(m => m.Password, new { maxlength = 20 })
+    @Html.ValidationMessageFor(m => m.Password)
+
+    @Html.LabelFor(m => m.Confirm)
+    @Html.PasswordFor(m => m.Confirm, new { maxlength = 20 })
+    @Html.ValidationMessageFor(m => m.Confirm)
+
+    @Html.LabelFor(m => m.Name)
+    @Html.TextBoxFor(m => m.Name, new { maxlength = 100 })
+    @Html.ValidationMessageFor(m => m.Name)
+
+    @Html.LabelFor(m => m.Email)
+    @Html.TextBoxFor(m => m.Email, new { maxlength = 100 })
+    @Html.ValidationMessageFor(m => m.Email)
+
+    @Html.LabelFor(m => m.Photo)
+    <div>
+        <label class="upload">
+            <small>Select photo...</small>
+            @Html.TextBoxFor(m => m.Photo, new { type = "file", accept = "image/jpeg,image/png", hidden = "" })
+            <img src="~/Images/photo.jpg">
+        </label>
+    </div>
+    @Html.ValidationMessageFor(m => m.Photo)
+
+    <section>
+        <button>Register</button>
+        <button type="reset">Reset</button>
+    </section>
+</form>
+
+@section foot {
+    <script>
+        // Copy from demo W6B and W7A
+
+        $.validator.setDefaults({ ignore: '' });
+
+        function validatePhoto(f) {
+            let reType = /^image\/(jpeg|png)$/i;
+            let reName = /^.+\.(jpg|jpeg|png)$/i;
+
+            return f &&
+                f.size <= 1 * 1024 * 1024 &&
+                reType.test(f.type) &&
+                reName.test(f.name);
+        }
+
+        let src = null;
+
+        $('.upload input').change(e => {
+            let f = e.target.files[0];
+            let img = $(e.target).siblings('img')[0];
+
+            if (!src) src = img.src;
+
+            if (validatePhoto(f)) {
+                img.src = URL.createObjectURL(f);
+            }
+            else {
+                img.src = src;
+                e.target.value = '';
+            }
+
+            $(e.target).valid();
+        });
+    </script>
+}
+

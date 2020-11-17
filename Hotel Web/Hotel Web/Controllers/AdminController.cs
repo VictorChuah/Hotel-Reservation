@@ -43,7 +43,7 @@ namespace Hotel_Web.Controllers
         [HttpPost]
         public ActionResult CustomerEdit(Customer model)
         {
-            var c = db.Customers.Find(model.Id);
+            var c = db.Customers.Find(model.Name);
 
             if (model == null)
             {

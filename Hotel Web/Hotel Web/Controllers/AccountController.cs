@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-// Additional using statements
 using Hotel_Web.Models;
 using System.Text.RegularExpressions;
 using System.Web.Helpers;
@@ -11,12 +10,11 @@ using Microsoft.AspNet.Identity;
 using System.Security.Claims;
 using Microsoft.Owin.Security;
 
-namespace Demo.Controllers
+namespace Hotel_Web.Controllers
 {
     public class AccountController : Controller
     {
         dbEntities1 db = new dbEntities1();
-        // TODO: Initialize password hasher
         PasswordHasher ph = new PasswordHasher();
 
 
@@ -26,36 +24,30 @@ namespace Demo.Controllers
 
         private string HashPassword(string password)
         {
-            // TODO: Return hashed password
             return ph.HashPassword(password);
         }
 
         private bool VerifyPassword(string hash, string password)
         {
-            // TODO: Verify hashed password (true or false)
             return ph.VerifyHashedPassword(hash, password) == PasswordVerificationResult.Success;
         }
 
         private void SignIn(string username, bool rememberMe)
         {
-            // TODO(1): Identity and claims
             var iden = new ClaimsIdentity("AUTH");
             iden.AddClaim(new Claim(ClaimTypes.Name, username));
 
-            // TODO(2): Remember me
             var prop = new AuthenticationProperties
             {
                 IsPersistent = rememberMe
             };
 
-            // TODO(3): Sign in
             Request.GetOwinContext().Authentication.SignIn(prop, iden);
 
         }
 
         private void SignOut()
         {
-            // TODO: Sign out
             Request.GetOwinContext().Authentication.SignOut();
         }
 
@@ -121,28 +113,58 @@ namespace Demo.Controllers
         // --------------------------------------------------------------------
 
         // GET: Account/Login
-        public ActionResult Login()
+        public ActionResult CustLogin()
         {
             return View();
         }
 
-        // POST: Account/Login
+        // POST: Account/Login (customer)
         [HttpPost]
-        public ActionResult Login(LoginModel model, string returnURL = "")
+        public ActionResult CustLogin(LoginModel model, string returnURL = "")
         {
             if (ModelState.IsValid)
             {
-                // TODO: Get user record based on username
                 var user = db.Customers.Find(model.Username);
 
-                // TODO: AND if password matches
-                if (user != null && VerifyPassword(user.HashPassword, model.Password))
+                if (user != null && VerifyPassword(user.HashPass, model.Password))
                 {
-                    // TODO: Sign in user + session
                     SignIn(user.Username, model.RememberMe);
                     Session["PhotoURL"] = user.PhotoURL;
 
-                    // TODO: Handle return URL
+                    if (returnURL == "")
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+
+                }
+                else
+                {
+                    ModelState.AddModelError("Password", "Username and Password not matched.");
+                }
+            }
+
+            return View(model);
+        }
+
+        // GET: Account/Login (admin)
+        public ActionResult AdminLogin()
+        {
+            return View();
+        }
+
+        // POST: Account/Login (customer)
+        [HttpPost]
+        public ActionResult AdminLogin(LoginModel model, string returnURL = "")
+        {
+            if (ModelState.IsValid)
+            {
+                var user = db.Admins.Find(model.Username);
+
+                if (user != null && VerifyPassword(user.HashPass, model.Password))
+                {
+                    SignIn(user.Username, model.RememberMe);
+                    Session["PhotoURL"] = user.PhotoURL;
+
                     if (returnURL == "")
                     {
                         return RedirectToAction("Index", "Home");
@@ -161,18 +183,16 @@ namespace Demo.Controllers
         // GET: Account/Logout
         public ActionResult Logout()
         {
-            // TODO: Sign out user + session
             SignOut();
             Session.Remove("PhotoURL");
 
             return RedirectToAction("Index", "Home");
         }
 
-        // GET: Account/CheckUsername
+        // GET: Account/CheckUsername                                           
         public ActionResult CheckUsername(string username)
         {
-            // TODO: Check if username not duplicated.
-            bool valid = db.Customers.Find(username) == null;
+            bool valid = ((db.Customers.Find(username) == null) && (db.Admins.Find(username) == null));
             return Json(valid, JsonRequestBehavior.AllowGet);
         }
 
@@ -184,10 +204,9 @@ namespace Demo.Controllers
 
         // POST: Account/Register
         [HttpPost]
-        public ActionResult Register(RegisterVM model)
+        public ActionResult Register(RegisterModel model)
         {
-            // TODO: AND if username duplicated
-            if (ModelState.IsValidField("Username") && db.Users.Find(model.Username) != null)
+            if (ModelState.IsValidField("Username") && db.Customers.Find(model.Username) != null && db.Admins.Find(model.Username) != null)
             {
                 ModelState.AddModelError("Username", "Duplicated Username.");
             }
@@ -200,16 +219,16 @@ namespace Demo.Controllers
 
             if (ModelState.IsValid)
             {
-                var m = new Member
+                var m = new Customer
                 {
                     Username = model.Username,
-                    Hash = HashPassword(model.Password), // TODO: Generate password hash
+                    HashPass = HashPassword(model.Password), 
                     Name = model.Name,
                     Email = model.Email,
                     PhotoURL = SavePhoto(model.Photo)
                 };
 
-                db.Members.Add(m);
+                db.Customers.Add(m);
                 db.SaveChanges();
 
                 TempData["Info"] = "Account registered. Please login.";
@@ -219,20 +238,18 @@ namespace Demo.Controllers
             return View(model);
         }
 
-        // TODO: Authorize (Member)
         // GET: Account/Detail
-        [Authorize(Roles = "Member")]
+        [Authorize]
         public ActionResult Detail()
         {
-            // TODO: Get member record of the current member
-            var m = db.Members.Find(User.Identity.Name);
+             var m = db.Customers.Find(User.Identity.Name);
 
             if (m == null)
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            var model = new DetailVM
+            var model = new AccDetailModel
             {
                 Name = m.Name,
                 Email = m.Email,
@@ -242,14 +259,13 @@ namespace Demo.Controllers
             return View(model);
         }
 
-        // TODO: Authorize (Member)
         // POST: Account/Detail
         [HttpPost]
-        [Authorize(Roles = "Member")]
-        public ActionResult Detail(DetailVM model)
+        [Authorize]
+        public ActionResult Detail(AccDetailModel model)
         {
             // TODO: Get member record of the current member
-            var m = db.Members.Find(User.Identity.Name);
+            var m = db.Customers.Find(User.Identity.Name);
 
             if (m == null)
             {
@@ -272,8 +288,7 @@ namespace Demo.Controllers
                     DeletePhoto(m.PhotoURL);
                     m.PhotoURL = SavePhoto(model.Photo);
 
-                    // TODO: Update session
-                    Session["PhotoUrl"] = m.PhotoURL = SavePhoto(model.Photo);
+                     Session["PhotoUrl"] = m.PhotoURL = SavePhoto(model.Photo);
 
                 }
 
@@ -289,7 +304,6 @@ namespace Demo.Controllers
             return View(model);
         }
 
-        // TODO: Authorize
         // GET: Account/Password
         [Authorize]
         public ActionResult Password()
@@ -297,36 +311,23 @@ namespace Demo.Controllers
             return View();
         }
 
-        // TODO: Authorize
         // POST: Account/Password
         [HttpPost]
         [Authorize]
-        public ActionResult Password(PasswordVM model)
+        public ActionResult Password(ChangePassModel model)
         {
-            // TODO: Get user record of the current user
-            var user = db.Users.Find(User.Identity.Name);
+            var user = db.Customers.Find(User.Identity.Name);
 
-            // TODO: OR if password not matches
-            if (user == null || VerifyPassword(user.Hash, model.Current) == false)
+            if (user == null || VerifyPassword(user.HashPass, model.Current) == false)
             {
                 ModelState.AddModelError("Current", "Current Password not matched.");
             }
 
             if (ModelState.IsValid)
             {
-                // TOOD: Generate password hash
                 string hash = HashPassword(model.New);
 
-                // TODO: Update member or admin record
-                if (user.Role == "Member")
-                {
-                    db.Members.Find(user.Username).Hash = hash;
-                }
-                else if (user.Role == "Admin")
-                {
-                    db.Admins.Find(user.Username).Hash = hash;
-                }
-
+                db.Customers.Find(user.Username).HashPass = hash;
                 db.SaveChanges();
 
                 TempData["Info"] = "Password updated.";
@@ -335,10 +336,6 @@ namespace Demo.Controllers
 
             return View(model);
         }
-
-        // --------------------------------------------------------------------
-        // More to come...
-        // --------------------------------------------------------------------
 
         // GET: Account/Reset
         public ActionResult Reset()
