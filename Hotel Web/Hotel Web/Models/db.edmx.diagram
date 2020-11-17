@@ -4,17 +4,19 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="7f498ece3f4f46959734d43b2bfbad84" Name="Diagram1">
-        <EntityTypeShape EntityType="dbModel.Admin" Width="1.5" PointX="11.375" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="dbModel.Customer" Width="1.5" PointX="8.625" PointY="0.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="dbModel.Payment" Width="1.5" PointX="8.625" PointY="4.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="dbModel.Reservation" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="dbModel.Room" Width="1.5" PointX="3" PointY="1.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="dbModel.RoomType" Width="1.5" PointX="0.75" PointY="1.875" IsExpanded="true" />
-        <AssociationConnector Association="dbModel.FK_Reservation_Customer" ManuallyRouted="false" />
-        <AssociationConnector Association="dbModel.FK_Reservation_Payment" ManuallyRouted="false" />
-        <AssociationConnector Association="dbModel.FK_Reservation_Room" ManuallyRouted="false" />
-        <AssociationConnector Association="dbModel.FK_Room_RoomType" ManuallyRouted="false" />
+      <Diagram DiagramId="7f498ece3f4f46959734d43b2bfbad84" Name="Diagram1" ZoomLevel="101">
+        <EntityTypeShape EntityType="dbModel.Admin" Width="1.5" PointX="3.875" PointY="5.75" />
+        <EntityTypeShape EntityType="dbModel.Customer" Width="1.5" PointX="6" PointY="5.5" />
+        <EntityTypeShape EntityType="dbModel.Reservation" Width="1.5" PointX="6" PointY="1" />
+        <EntityTypeShape EntityType="dbModel.Room" Width="1.5" PointX="3.75" PointY="1.875" />
+        <EntityTypeShape EntityType="dbModel.RoomType" Width="1.5" PointX="1.5" PointY="1.75" />
+        <EntityTypeShape EntityType="dbModel.ServiceType" Width="1.5" PointX="10.75" PointY="2.125" />
+        <EntityTypeShape EntityType="dbModel.Service" Width="1.5" PointX="8.25" PointY="1.75" />
+        <AssociationConnector Association="dbModel.FK_Reservation_Customer" />
+        <AssociationConnector Association="dbModel.FK_Reservation_Room" />
+        <AssociationConnector Association="dbModel.FK_Service_ToReservation" />
+        <AssociationConnector Association="dbModel.FK_Room_RoomType" />
+        <AssociationConnector Association="dbModel.FK_Service_ToServiceType" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

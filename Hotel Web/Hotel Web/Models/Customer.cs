@@ -20,16 +20,19 @@ namespace Hotel_Web.Models
             this.Reservations = new HashSet<Reservation>();
         }
     
-        public string Id { get; set; }
-        public string Name { get; set; }
         public string Username { get; set; }
-        public string HashPassword { get; set; }
-        public int PhoneNo { get; set; }
+        public string Name { get; set; }
+        public string HashPass { get; set; }
+        public string PhoneNo { get; set; }
         public string Gender { get; set; }
         public string Email { get; set; }
-        public string ProfilePic { get; set; }
-        public int Status_ { get; set; }
-        public string PasswordPlainText { get; set; }
+        public string PhotoURL { get; set; }
+        public bool Blocked { get; set; }
+        public int LoginCount { get; set; }
+        public string ResetToken { get; set; }
+        public Nullable<System.DateTime> ResetExpire { get; set; }
+        public byte[] ActiveToken { get; set; }
+        public bool Active { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Reservation> Reservations { get; set; }

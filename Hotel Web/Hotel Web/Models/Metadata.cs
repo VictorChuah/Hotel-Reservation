@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Hotel_Web.Models
 {
-    public class CustomerMedata
+    public class CustomerMetadata
     {
         
         [Required]
@@ -28,6 +28,16 @@ namespace Hotel_Web.Models
         public string Email { get; set; }
 
     }
-    [MetadataType(typeof(CustomerMedata))]
+    [MetadataType(typeof(CustomerMetadata))]
     public partial class Customer { }
+
+
+    public class LoginModel
+    {
+        public string Username { get; set; }
+
+        public string Password { get; set; }
+
+        public bool RememberMe { get; set; }
+    }
 }

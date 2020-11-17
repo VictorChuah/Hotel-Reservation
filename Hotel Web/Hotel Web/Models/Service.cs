@@ -12,16 +12,14 @@ namespace Hotel_Web.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Admin
+    public partial class Service
     {
-        public string Username { get; set; }
-        public string Name { get; set; }
-        public string HashPass { get; set; }
-        public string PhoneNo { get; set; }
-        public string Gender { get; set; }
-        public string Email { get; set; }
-        public string PhotoURL { get; set; }
-        public string ResetToken { get; set; }
-        public Nullable<System.DateTime> ResetExpire { get; set; }
+        public string ReservationId { get; set; }
+        public string ServiceId { get; set; }
+        public Nullable<decimal> Price { get; set; }
+        public Nullable<int> Quantity { get; set; }
+    
+        public virtual Reservation Reservation { get; set; }
+        public virtual ServiceType ServiceType { get; set; }
     }
 }

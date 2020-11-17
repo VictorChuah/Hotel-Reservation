@@ -21,13 +21,11 @@ namespace Hotel_Web.Models
         }
     
         public string Id { get; set; }
-        public int Status { get; set; }
-        public string RoomType { get; set; }
-        public decimal Price { get; set; }
-        public string Image { get; set; }
+        public string Status { get; set; }
+        public string RoomTypeId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Reservation> Reservations { get; set; }
-        public virtual RoomType RoomType1 { get; set; }
+        public virtual RoomType RoomType { get; set; }
     }
 }

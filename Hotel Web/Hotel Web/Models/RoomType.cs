@@ -20,9 +20,11 @@ namespace Hotel_Web.Models
             this.Rooms = new HashSet<Room>();
         }
     
-        public string Type { get; set; }
-        public int Bed { get; set; }
-        public string Utilities { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public string PhotoURL { get; set; }
+        public int Person { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Room> Rooms { get; set; }

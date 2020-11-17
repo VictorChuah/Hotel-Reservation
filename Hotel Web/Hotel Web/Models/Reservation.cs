@@ -14,19 +14,27 @@ namespace Hotel_Web.Models
     
     public partial class Reservation
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Reservation()
+        {
+            this.Services = new HashSet<Service>();
+        }
+    
         public string Id { get; set; }
-        public string CustomerId { get; set; }
+        public string Username { get; set; }
         public string RoomId { get; set; }
         public System.DateTime CheckIn { get; set; }
         public System.DateTime CheckOut { get; set; }
-        public Nullable<int> AddBed { get; set; }
-        public Nullable<int> AddBlanket { get; set; }
-        public string AddOn { get; set; }
-        public int Status { get; set; }
-        public string PaymentId { get; set; }
+        public decimal Price { get; set; }
+        public int Person { get; set; }
+        public int Day { get; set; }
+        public decimal Total { get; set; }
+        public bool Paid { get; set; }
+        public string Status { get; set; }
     
         public virtual Customer Customer { get; set; }
-        public virtual Payment Payment { get; set; }
         public virtual Room Room { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Service> Services { get; set; }
     }
 }

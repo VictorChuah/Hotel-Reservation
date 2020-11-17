@@ -12,20 +12,19 @@ namespace Hotel_Web.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Payment
+    public partial class ServiceType
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Payment()
+        public ServiceType()
         {
-            this.Reservations = new HashSet<Reservation>();
+            this.Services = new HashSet<Service>();
         }
     
         public string Id { get; set; }
-        public decimal Amount { get; set; }
-        public string Method { get; set; }
-        public System.DateTime Date { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Reservation> Reservations { get; set; }
+        public virtual ICollection<Service> Services { get; set; }
     }
 }
