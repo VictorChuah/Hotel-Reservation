@@ -117,4 +117,30 @@ namespace Hotel_Web.Models
         [Compare("New")]
         public string Confirm { get; set; }
     }
+
+    public class AdminCSEditVM
+    {
+        [Required]
+        [StringLength(50)]
+        public string Name { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string Username { get; set; }
+
+        [Required]
+        [RegularExpression(@"^(01)([0-9]{1})[\-]([0-9]{7,9})$", ErrorMessage = "Invalid Phone Number")]
+        public string PhoneNo { get; set; }
+        [Required]
+        [RegularExpression(@"[FM]", ErrorMessage = "Invalid {0}.")]
+        public string Gender { get; set; }
+        [Required]
+        [StringLength(100)]
+        [EmailAddress]
+        public string Email { get; set; }
+
+
+        public HttpPostedFileBase Photo { get; set; }
+        public string PhotoURL { get; set; }
+    }
 }

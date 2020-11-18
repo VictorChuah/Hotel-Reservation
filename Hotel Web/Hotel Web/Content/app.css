@@ -139,9 +139,10 @@ label > * {
     max-width: 500px;
     left: 50%;
     transform: translate(-50%);
+
     top: -100px; /*the content will above 100%*/
     opacity: 0;
-    animation: fade 3s linear 0s steps(1, start) normal;
+    animation: fade 3s linear 0s 1 normal;
 }
 
 @keyframes fade {
@@ -166,3 +167,16 @@ label > * {
         opacity: 0;
     }
 }
+
+/* Photo upload --------------------------------------------------------------- */
+.upload {
+    display: block;
+}
+
+    .upload img {
+        display: block;
+        border: 1px solid #333;
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+    }

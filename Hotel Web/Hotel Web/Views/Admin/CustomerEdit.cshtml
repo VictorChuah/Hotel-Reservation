@@ -1,45 +1,81 @@
-﻿@model Customer
+﻿@model AdminCSEditVM
 
 @{
     ViewBag.Title = "CustomerEdit";
 }
 
-    <form method="post" class="form">
-        @Html.ValidationSummary(true)
+<form method="post" class="form" enctype="multipart/form-data">
+    @Html.ValidationSummary(true)
 
-        @Html.LabelFor(m => m.Id)
-        <b>@Html.DisplayFor(m => m.Id)</b>
+    @Html.LabelFor(m => m.Photo)
+    <div>
+        <label class="upload">
+            @Html.TextBoxFor(m => m.Photo, new { type = "file", accept = "image/jpeg,image/png", hidden = "" })
+            <img src="~/Photo/@Model.PhotoURL">
+        </label>
+    </div>
+    @Html.ValidationMessageFor(m => m.Photo)
 
-        <br>
-        @Html.LabelFor(m => m.Name)
-        @Html.TextBoxFor(m => m.Name, new { maxlength = "50", autofocus = "" })
-        @Html.ValidationMessageFor(m => m.Name)
+    @Html.LabelFor(m => m.Username)
+    <b>@Html.DisplayFor(m => m.Username)</b>
 
+    <br>
+    @Html.LabelFor(m => m.Name)
+    @Html.TextBoxFor(m => m.Name, new { maxlength = "50", autofocus = "" })
+    @Html.ValidationMessageFor(m => m.Name)
+
+
+    @Html.LabelFor(m => m.PhoneNo)
+    @Html.TextBoxFor(m => m.PhoneNo, new { maxlength = "13" })
+    @Html.ValidationMessageFor(m => m.PhoneNo)
+
+
+    @Html.LabelFor(m => m.Gender)
+    <div>
+        <label>@Html.RadioButtonFor(m => m.Gender, "F")Female</label>
+        <label>@Html.RadioButtonFor(m => m.Gender, "M")Male</label>
+    </div>
+    @Html.ValidationMessageFor(m => m.Gender)
+
+    @Html.LabelFor(m => m.Email)
+    @Html.TextBoxFor(m => m.Email, new { maxlength = "30" })
+    @Html.ValidationMessageFor(m => m.Email)
+
+    <section>
+        <button>Edit</button>
+        <button type="reset">Reset</button>
+    </section>
+</form>
+
+@section foot {
+    <script>
         
-        @Html.LabelFor(m => m.Username)
-        @Html.TextBoxFor(m => m.Username, new { maxlength = "10" })
-        @Html.ValidationMessageFor(m => m.Username)
 
-        
-        @Html.LabelFor(m => m.PhoneNo)
-        @Html.TextBoxFor(m => m.PhoneNo, new { maxlength = "11" })
-        @Html.ValidationMessageFor(m => m.PhoneNo)
+        function validatePhoto(f) {
+            let reType = /^image\/(jpeg|png)$/i;
+            let reName = /^.+\.(jpg|jpeg|png)$/i;
 
+            return f &&
+                f.size <= 1 * 1024 * 1024 &&
+                reType.test(f.type) &&
+                reName.test(f.name);
+        }
 
-        @Html.LabelFor(m => m.Gender)
-        <div>
-            <label>@Html.RadioButtonFor(m => m.Gender, "F")Female</label>
-            <label>@Html.RadioButtonFor(m => m.Gender, "M")Male</label>
-        </div>
-        @Html.ValidationMessageFor(m => m.Gender)
+        let src = null;
 
-        @Html.LabelFor(m => m.Email)
-        @Html.TextBoxFor(m => m.Email, new { maxlength = "30" })
-        @Html.ValidationMessageFor(m => m.Email)
+        $('.upload input').change(e => {
+            let f = e.target.files[0];
+            let img = $(e.target).siblings('img')[0];
 
-        <section>
-            <button>Edit</button>
-            <button type="reset">Reset</button>
-        </section>
-    </form>
+            if (!src) src = img.src;
 
+            if (validatePhoto(f)) {
+                img.src = URL.createObjectURL(f);
+            }
+            else {
+                img.src = src;
+                e.target.value = '';
+            }
+        });
+    </script>
+}
