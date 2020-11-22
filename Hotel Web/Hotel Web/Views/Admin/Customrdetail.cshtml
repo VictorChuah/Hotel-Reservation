@@ -3,37 +3,39 @@
     ViewBag.Title = "Customrdetail";
 }
 
-    <p>
-        <img src="~/Image/suzy-1.jpg">
-    </p>
 
-<table class="table detail">
-    <tr>
-        <th>Name</th>
-        <td>@Model.Name</td>
-    </tr>
-    <tr>
-        <th>UserName</th>
-        <td>@Model.Username</td>
-    </tr>
-    <tr>
-        <th>Phone Number</th>
-        <td>@Model.PhoneNo</td>
-    </tr>
-    <tr>
-        <th>Gender</th>
-        <td>@Model.Gender</td>
-    </tr>
-    <tr>
-        <th>Email</th>
-        <td>@Model.Email</td>
-    </tr>
-</table>
+            <p>
+                <img src="~/Photo/@Model.PhotoURL">
+            </p>
 
-<p>
-    <button data-get="/">Index</button>
-    @* TODO: Edit and Delete buttons *@
-    <button data-get="/Home/Edit/@Model.Id">Edit</button>
-    <button data-post="/Home/Delete/@Model.Id">Delete</button>
-</p>
+            <table class="table detail">
+                <tr>
+                    <th>Name</th>
+                    <td>@Model.Name</td>
+                </tr>
+                <tr>
+                    <th>UserName</th>
+                    <td>@Model.Username</td>
+                </tr>
+                <tr>
+                    <th>Phone Number</th>
+                    <td>@Model.PhoneNo</td>
+                </tr>
+                <tr>
+                    <th>Gender</th>
+                    <td>@Model.Gender</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>@Model.Email</td>
+                </tr>
+            </table>
+
+            <!--<p>
+            <button data-get="/">Index</button>
+            @* TODO: Edit and Delete buttons *@
+            <button data-get="/Home/Edit/>Edit</button>
+            <button data-post="/Home/Delete/">Delete</button>
+        </p>-->
+            >
 

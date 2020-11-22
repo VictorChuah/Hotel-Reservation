@@ -18,11 +18,10 @@ header, footer {
 
     header h1 {
         font-size: 50px;
-        margin:auto;
+        margin: auto;
         padding-left: 30px;
         padding-top: 100px;
         padding-left: 10px;
-        
     }
 
     header a {
@@ -139,7 +138,6 @@ label > * {
     max-width: 500px;
     left: 50%;
     transform: translate(-50%);
-
     top: -100px; /*the content will above 100%*/
     opacity: 0;
     animation: fade 3s linear 0s 1 normal;
