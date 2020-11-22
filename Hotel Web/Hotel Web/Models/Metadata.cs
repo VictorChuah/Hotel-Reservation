@@ -143,4 +143,43 @@ namespace Hotel_Web.Models
         public HttpPostedFileBase Photo { get; set; }
         public string PhotoURL { get; set; }
     }
+
+    public class EditAdminDetail
+    {
+        [Required]
+        [StringLength(50)]
+        public string Name { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string Username { get; set; }
+
+        [Required]
+        [RegularExpression(@"^(01)([0-9]{1})[\-]([0-9]{7,9})$", ErrorMessage = "Invalid Phone Number")]
+        public string PhoneNo { get; set; }
+        [Required]
+        [RegularExpression(@"[FM]", ErrorMessage = "Invalid {0}.")]
+        public string Gender { get; set; }
+        [Required]
+        [StringLength(100)]
+        [EmailAddress]
+        public string Email { get; set; }
+
+
+        public HttpPostedFileBase Photo { get; set; }
+        public string PhotoURL { get; set; }
+    }
+
+    public class MultipleClass
+    {
+
+
+        public Customer Cus { get; set; }
+        public Reservation Re { get; set; }
+        public Room room { get; set; }
+        public RoomType roomtype { get; set; }
+        public Service se { get; set; }
+        public ServiceType Setype { get; set; }
+
+    }
 }

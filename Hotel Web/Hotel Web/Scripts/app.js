@@ -13,12 +13,6 @@ function escapeRegExp(string) {
     return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&');
 }
 
-// Initiate GET request to url provided
-$('[data-get]').click(e => {
-    e.preventDefault();
-    let url = $(e.target).data('get');
-    location = url || location;
-});
 
 // Auto-upper
 $('[data-upper]').on('input', e => {
@@ -28,18 +22,17 @@ $('[data-upper]').on('input', e => {
     e.target.setSelectionRange(a, b);
 });
 
-// TODO: Initiate POST request to url provided
-$('[data-post]'), click(e => {
-
+// Initiate POST request to url provided
+$('[data-post]').click(e => {
     e.preventDefault();
     let url = $(e.target).data('post');
-    let f = $('<form>')[0]; // Dom = document object Model
+
+    let f = $('<form>')[0];
     f.method = 'post';
     f.action = url || location;
     $(document.body).append(f);
     f.submit();
-
-})
+});
 
 // Reset form
 $('[type=reset]').click(e => {
