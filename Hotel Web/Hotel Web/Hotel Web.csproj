@@ -141,8 +141,19 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>db.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Image\Logo.PNG" />
-    <Content Include="Image\suzy-1.jpg" />
+    <Content Include="Image\Misc\favicon.png" />
+    <Content Include="Image\Misc\loader.gif" />
+    <Content Include="Image\Misc\Logo.PNG" />
+    <Content Include="Image\Profile\lisa-1.jpg" />
+    <Content Include="Image\Profile\photo.jpg" />
+    <Content Include="Image\Profile\profilepic1.jpg" />
+    <Content Include="Image\Profile\profilepic2.jpg" />
+    <Content Include="Image\Profile\suzy-1.jpg" />
+    <Content Include="Image\Room\Double bed %282%29.png" />
+    <Content Include="Image\Room\Double bed%281%29.png" />
+    <Content Include="Image\Room\Family Bed.png" />
+    <Content Include="Image\Room\Single bed%281%29.png" />
+    <Content Include="Image\Room\Single bed%282%29.png" />
     <Content Include="Models\db.edmx.diagram">
       <DependentUpon>db.edmx</DependentUpon>
     </Content>
@@ -180,7 +191,6 @@
       <DependentUpon>db.edmx</DependentUpon>
       <LastGenOutput>db.cs</LastGenOutput>
     </Content>
-    <Content Include="Photo\iu-1.jpg" />
     <Content Include="Scripts\app.js" />
     <Content Include="Scripts\jquery-3.5.1.js" />
     <Content Include="Scripts\jquery-3.5.1.min.js" />
@@ -351,9 +361,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Images\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

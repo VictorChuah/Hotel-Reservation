@@ -18,12 +18,14 @@ namespace Hotel_Web.Controllers
 
         //Customer===========================================================================
 
+        [Authorize(Roles = "Admin")]
         public ActionResult ListCustomer()
         {
             var model = db.Customers.Where(c => c.Active == true);
             return View(model);
         }
 
+        //auth?
         public ActionResult Customrdetail(string username)
         {
             var model = db.Customers.Find(username);
@@ -35,6 +37,7 @@ namespace Hotel_Web.Controllers
             return PartialView("_CustomerDetail", model);
         }
 
+        [Authorize]
         public ActionResult CustomerEdit(string username)
         {
             var model = db.Customers.Find(username);
@@ -60,6 +63,7 @@ namespace Hotel_Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult CustomerEdit(AdminCSEditVM model)
         {
             var c = db.Customers.Find(model.Username);
@@ -188,6 +192,7 @@ namespace Hotel_Web.Controllers
 
         }
         // Admin==============================================================================
+        [Authorize(Roles = "Admin")]
         public ActionResult AdminList()
         {
             var admin = db.Admins;
@@ -195,6 +200,7 @@ namespace Hotel_Web.Controllers
             return View(admin);
         }
 
+        [Authorize(Roles = "Admin")]
         public ActionResult AdminEdit(string username)
         {
 
@@ -222,6 +228,7 @@ namespace Hotel_Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public ActionResult AdminEdit(EditAdminDetail model)
         {
             var admin = db.Admins.Find(model.Username);
@@ -270,6 +277,7 @@ namespace Hotel_Web.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public ActionResult ReservationList()
         {
 
