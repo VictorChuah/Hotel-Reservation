@@ -32,10 +32,12 @@
         <label class="upload">
             <small>Select photo...</small>
             @Html.TextBoxFor(m => m.Photo, new { type = "file", accept = "image/jpeg,image/png", hidden = "" })
-            <img src="~/Images/photo.jpg">
+            <img src="~/Image/Profile/photo.jpg">
         </label>
     </div>
     @Html.ValidationMessageFor(m => m.Photo)
+
+    <!--recaptacha-->
 
     <section>
         <button>Register</button>
@@ -45,8 +47,6 @@
 
 @section foot {
     <script>
-        // Copy from demo W6B and W7A
-
         $.validator.setDefaults({ ignore: '' });
 
         function validatePhoto(f) {

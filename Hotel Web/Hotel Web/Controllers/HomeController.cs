@@ -10,7 +10,7 @@ namespace Hotel_Web.Controllers
     public class HomeController : Controller
     {
         dbEntities1 db = new dbEntities1();
-        // GET: Home
+        
         public ActionResult Index()
         {
             return View();

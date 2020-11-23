@@ -32,10 +32,11 @@ namespace Hotel_Web.Controllers
             return ph.VerifyHashedPassword(hash, password) == PasswordVerificationResult.Success;
         }
 
-        private void SignIn(string username, bool rememberMe)
+        private void SignIn(string username, string role, bool rememberMe)
         {
             var iden = new ClaimsIdentity("AUTH");
             iden.AddClaim(new Claim(ClaimTypes.Name, username));
+            iden.AddClaim(new Claim(ClaimTypes.Role, role));
 
             var prop = new AuthenticationProperties
             {
@@ -128,7 +129,7 @@ namespace Hotel_Web.Controllers
 
                 if (user != null && VerifyPassword(user.HashPass, model.Password))
                 {
-                    SignIn(user.Username, model.RememberMe);
+                    SignIn(user.Username, "Member",model.RememberMe);
                     Session["PhotoURL"] = user.PhotoURL;
 
                     if (returnURL == "")
@@ -162,7 +163,7 @@ namespace Hotel_Web.Controllers
 
                 if (user != null && VerifyPassword(user.HashPass, model.Password))
                 {
-                    SignIn(user.Username, model.RememberMe);
+                    SignIn(user.Username, "Admin", model.RememberMe);
                     Session["PhotoURL"] = user.PhotoURL;
 
                     if (returnURL == "")

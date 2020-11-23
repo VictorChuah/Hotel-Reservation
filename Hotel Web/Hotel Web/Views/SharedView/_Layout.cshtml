@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
-    <link rel="shortcut icon" href="~/Image/Logo.png">
+    <link rel="shortcut icon" href="~/Image/Misc/Logo.png">
     <link rel="stylesheet" href="~/Content/app.css">
     <!-- Embedded CSS -->
     @RenderSection("head", false)
@@ -15,7 +15,7 @@
     <header>
         <table>
             <tr>
-                <td><img src="~/Image/Logo.png" height="150" width="120"></td>
+                <td><img src="~/Image/Misc/Logo.PNG" height="150" width="120"></td>
                 <td><h1><a href="">Funny Hotel</a></h1></td>
             </tr>
         </table>
@@ -23,10 +23,41 @@
 
     </header>
     <nav>
-        <a data-get="/Admin/ListCustomer">Customer List</a>
-        <a data-get="/Admin/AdminList">Admin List</a>
-        <a data-get="/Admin/ReservationList">Reservation</a>
-        <a data-get="">Admin Register</a>
+        <a href="~/Home/Index">Index</a>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a href="~/Account/Logout">Logout</a>
+        }
+        else
+        {
+            <a href="~/Account/AdminLogin">Admin login</a>
+            <a href="~/Account/CustLogin">Customer login</a>
+            <a href="~/Account/Register">Register</a>
+        }
+
+        @if (User.IsInRole("Member"))
+        {
+            <a href="~/Account/Password">Reset Password</a>
+            <a href="~/Account/Detail">Detail (acc controller)</a>
+            <!--<a href="~/Admin/_CustomerDetail">cust detail</a>-->
+        }
+
+        @if (User.IsInRole("Member") || User.IsInRole("Admin"))
+        {
+            //<a href="~/Admin/CustomerEdit">Customer Edit</a>
+        }
+
+        @if (User.IsInRole("Admin"))
+        {
+            <a href="/Admin/ListCustomer">Customer List</a>
+            <a href="/Admin/AdminList">Admin List</a>
+            <a href="/Admin/AdminEdit">Admin Edit</a>
+            <a href="/Admin/ReservationList">Reservation</a>
+            <a href="">Admin Register</a>
+        }
+
+
     </nav>
     <main>
         <h1>@ViewBag.Title</h1>

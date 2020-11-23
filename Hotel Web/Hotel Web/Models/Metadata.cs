@@ -28,6 +28,7 @@ namespace Hotel_Web.Models
         public string Email { get; set; }
 
     }
+
     [MetadataType(typeof(CustomerMetadata))]
     public partial class Customer { }
 
