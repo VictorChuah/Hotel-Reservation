@@ -10,45 +10,58 @@
 
 </script>
 
-<div>
 
-    <div class="modal-header">
-        <button type="button" id="closbtn" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h4 class="modal-title" id="myModalLabel">Customer Info</h4>
+   
+<div class="modal-content">
+
+    <div class="modal-header" style="display:inline">
+
+        <table border="0" align="center" width="420px" >
+            <tr>
+                <th align="left"><h2></h2></th>
+                <td align="right"><button type="button" id="closbtn" class="close">×</button></td>
+            </tr>
+        </table>
     </div>
 
-    <p>
-        <img src="~/Image/Profile/@Model.PhotoURL">
-    </p>
-    <hr />
-    <div class="modal-content">
-        <dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.Name)
-            </dt>
+    <div class="modal-body">
+        <p align="center" style="font-size:30px">
 
-            <dd>
-                @Html.DisplayFor(model => model.Name)
-            </dd>
+          <u> <b> Customer Info</b></u>
+            </p> 
 
-            <dt>
-                @Html.DisplayNameFor(model => model.PhoneNo)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.PhoneNo)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.Email)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.Email)
-            </dd>
-
-        </dl>
+        <p align="center">
+            
+            <img src="~/Photo/@Model.PhotoURL">
+        </p>
+        <table class="table detail" align="center">
+            <tr>
+                <th>Name</th>
+                <td>@Model.Name</td>
+            </tr>
+            <tr>
+                <th>UserName</th>
+                <td>@Model.Username</td>
+            </tr>
+            <tr>
+                <th>Phone Number</th>
+                <td>@Model.PhoneNo</td>
+            </tr>
+            <tr>
+                <th>Gender</th>
+                <td>@Model.Gender</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>@Model.Email</td>
+            </tr>
+        </table>
     </div>
-</div>
+            <div class="modal-footer">
+            </div>
+    </div>
+
+        
+
 
 

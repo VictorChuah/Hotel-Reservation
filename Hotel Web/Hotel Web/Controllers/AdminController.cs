@@ -371,5 +371,10 @@ namespace Hotel_Web.Controllers
             return Redirect(url);
         }
 
+        public ActionResult AddAdmin () {
+
+            return View();
+        }
+
     }
 }
