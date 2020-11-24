@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Hotel_Web.Models
 {
@@ -62,7 +63,7 @@ namespace Hotel_Web.Models
         [Display(Name = "Confirm Password")]
         [StringLength(20, MinimumLength = 5)]
         [RegularExpression(@"^([A-Za-z]{1,}[0-9]{1,}[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{1,}){5,20}$")]
-        [Compare("Password")]
+        [System.ComponentModel.DataAnnotations.Compare("Password")]
         public string Confirm { get; set; }
         [Required]
         [StringLength(100)]
@@ -115,7 +116,7 @@ namespace Hotel_Web.Models
         [Required]
         [StringLength(20, MinimumLength = 5)]
         [RegularExpression(@"^([A-Za-z]{1,}[0-9]{1,}[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{1,}){5,20}$")]
-        [Compare("New")]
+        [System.ComponentModel.DataAnnotations.Compare("New")]
         public string Confirm { get; set; }
     }
 
@@ -174,13 +175,44 @@ namespace Hotel_Web.Models
     public class MultipleClass
     {
 
-
         public Customer Cus { get; set; }
         public Reservation Re { get; set; }
         public Room room { get; set; }
         public RoomType roomtype { get; set; }
         public Service se { get; set; }
         public ServiceType Setype { get; set; }
+
+    }
+
+    public class InsertAdmin {
+
+        [Required]
+        [StringLength(50)]
+        public string Name { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        [Remote("CheckUsername", "Admin", ErrorMessage = "Duplicated {0}.")]
+        public string Username { get; set; }
+
+        [Required]
+        [RegularExpression(@"^(01)([0-9]{1})[\-]([0-9]{7,9})$", ErrorMessage = "Invalid Phone Number")]
+        public string PhoneNo { get; set; }
+        [Required]
+        [RegularExpression(@"[FM]", ErrorMessage = "Invalid {0}.")]
+        public string Gender { get; set; }
+        [Required]
+        [StringLength(100)]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        [StringLength(20, MinimumLength = 5)]
+       // [RegularExpression(@"^([A-Za-z]{1,}[0-9]{1,}[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{1,}){5,20}$")]
+        public string Password { get; set; }
+
+        [Required]
+        public HttpPostedFileBase Photo { get; set; }
 
     }
 }

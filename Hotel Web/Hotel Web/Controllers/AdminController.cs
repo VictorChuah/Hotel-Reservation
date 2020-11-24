@@ -6,6 +6,8 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+
 
 
 namespace Hotel_Web.Controllers
@@ -15,8 +17,69 @@ namespace Hotel_Web.Controllers
     public class AdminController : Controller
     {
         dbEntities1 db = new dbEntities1();
+        PasswordHasher ph = new PasswordHasher();
 
-        //Customer===========================================================================
+
+        //verify photo
+        //==========================================================
+        private string ValidatePhoto(HttpPostedFileBase f)
+        {
+            var reType = new Regex(@"^image\/(jpeg|png)$", RegexOptions.IgnoreCase);
+            var reName = new Regex(@"^.+\.(jpg|jpeg|png)$", RegexOptions.IgnoreCase);
+
+            if (f == null)
+            {
+                return "No photo.";
+            }
+            else if (!reType.IsMatch(f.ContentType) || !reName.IsMatch(f.FileName))
+            {
+                return "Only JPG or PNG photo is allowed.";
+            }
+            else if (f.ContentLength > 1 * 1024 * 1024)
+            {
+                return "Photo size cannot more than 1MB.";
+            }
+
+            return null;
+        }
+
+        private string SavePhoto(HttpPostedFileBase f)
+        {
+            string name = Guid.NewGuid().ToString("n") + ".jpg";
+            string path = Server.MapPath($"~/Image/Profile/{name}");
+
+            var img = new WebImage(f.InputStream);
+
+            if (img.Width > img.Height)
+            {
+                int px = (img.Width - img.Height) / 2;
+                img.Crop(0, px, 0, px);
+            }
+            else
+            {
+                int px = (img.Height - img.Width) / 2;
+                img.Crop(px, 0, px, 0);
+            }
+
+            img.Resize(201, 201)
+               .Crop(1, 1)
+               .Save(path, "jpeg");
+
+            return name;
+        }
+
+        private void DeletePhoto(string name)
+        {
+            name = System.IO.Path.GetFileName(name);
+            string path = Server.MapPath($"~/Image/Profile/{name}");
+            System.IO.File.Delete(path);
+        }
+        //=======================================================
+
+
+
+        //Customer
+        //===========================================================================
 
         [Authorize(Roles = "Admin")]
         public ActionResult ListCustomer()
@@ -114,60 +177,7 @@ namespace Hotel_Web.Controllers
 
         }
 
-        //==========================================================
-        private string ValidatePhoto(HttpPostedFileBase f)
-        {
-            var reType = new Regex(@"^image\/(jpeg|png)$", RegexOptions.IgnoreCase);
-            var reName = new Regex(@"^.+\.(jpg|jpeg|png)$", RegexOptions.IgnoreCase);
-
-            if (f == null)
-            {
-                return "No photo.";
-            }
-            else if (!reType.IsMatch(f.ContentType) || !reName.IsMatch(f.FileName))
-            {
-                return "Only JPG or PNG photo is allowed.";
-            }
-            else if (f.ContentLength > 1 * 1024 * 1024)
-            {
-                return "Photo size cannot more than 1MB.";
-            }
-
-            return null;
-        }
-
-        private string SavePhoto(HttpPostedFileBase f)
-        {
-            string name = Guid.NewGuid().ToString("n") + ".jpg";
-            string path = Server.MapPath($"~/Photo/{name}");
-
-            var img = new WebImage(f.InputStream);
-
-            if (img.Width > img.Height)
-            {
-                int px = (img.Width - img.Height) / 2;
-                img.Crop(0, px, 0, px);
-            }
-            else
-            {
-                int px = (img.Height - img.Width) / 2;
-                img.Crop(px, 0, px, 0);
-            }
-
-            img.Resize(201, 201)
-               .Crop(1, 1)
-               .Save(path, "jpeg");
-
-            return name;
-        }
-
-        private void DeletePhoto(string name)
-        {
-            name = System.IO.Path.GetFileName(name);
-            string path = Server.MapPath($"~/Photo/{name}");
-            System.IO.File.Delete(path);
-        }
-        //=======================================================
+   
 
         [HttpPost]
         public ActionResult CustomerDelete(string username)
@@ -191,91 +201,10 @@ namespace Hotel_Web.Controllers
             return Redirect(url);
 
         }
-        // Admin==============================================================================
-        [Authorize(Roles = "Admin")]
-        public ActionResult AdminList()
-        {
-            var admin = db.Admins;
+ //==================================================================================================
 
-            return View(admin);
-        }
-
-        [Authorize(Roles = "Admin")]
-        public ActionResult AdminEdit(string username)
-        {
-
-            var model = db.Admins.Find(username);
-
-            if (model == null)
-            {
-                TempData["Info"] = "Admin Not Found !!";
-                return RedirectToAction("AdminList");
-            }
-
-            var m = new EditAdminDetail
-            {
-                Username = model.Username,
-                Name = model.Name,
-                PhoneNo = model.PhoneNo,
-                Gender = model.Gender,
-                Email = model.Email,
-                PhotoURL = model.PhotoURL
-
-            };
-
-            return View(m);
-
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public ActionResult AdminEdit(EditAdminDetail model)
-        {
-            var admin = db.Admins.Find(model.Username);
-
-            if (admin == null)
-            {
-                return RedirectToAction("AdminList");
-            }
-
-            if (model.Photo != null)
-            {
-
-                string err = ValidatePhoto(model.Photo); // validate the photo
-                if (err != null)
-                {
-
-                    ModelState.AddModelError("Photo", err);
-                }
-            }
-
-
-
-            if (ModelState.IsValid)
-            {
-
-                admin.Name = model.Name;
-                admin.Gender = model.Gender;
-                admin.PhoneNo = model.PhoneNo;
-                admin.Username = model.Username;
-                admin.Email = model.Email;
-
-                if (model.Photo != null)
-                {
-
-                    DeletePhoto(admin.PhotoURL);
-                    admin.PhotoURL = SavePhoto(model.Photo);
-                }
-
-                db.SaveChanges();
-                TempData["Info"] = "Admin record edited";
-                return RedirectToAction("AdminList");
-            }
-
-
-            model.PhotoURL = admin.PhotoURL;
-            return View(model);
-        }
+// reservation
+//========================================================================================
 
         [Authorize(Roles = "Admin")]
         public ActionResult ReservationList()
@@ -370,11 +299,159 @@ namespace Hotel_Web.Controllers
             string url = Request.UrlReferrer?.AbsolutePath ?? "/";
             return Redirect(url);
         }
+        //=================================================================================================================================================================
 
-        public ActionResult AddAdmin () {
 
+        //Admin side (display admin, edit admin, add admin)
+        //================================================================================================================
+
+        
+        [Authorize(Roles = "Admin")]
+        public ActionResult AdminList()
+        {
+            var admin = db.Admins;
+
+            return View(admin);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult AdminEdit(string username)
+        {
+
+            var model = db.Admins.Find(username);
+
+            if (model == null)
+            {
+                TempData["Info"] = "Admin Not Found !!";
+                return RedirectToAction("AdminList");
+            }
+
+            var m = new EditAdminDetail
+            {
+                Username = model.Username,
+                Name = model.Name,
+                PhoneNo = model.PhoneNo,
+                Gender = model.Gender,
+                Email = model.Email,
+                PhotoURL = model.PhotoURL
+
+            };
+
+            return View(m);
+
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public ActionResult AdminEdit(EditAdminDetail model)
+        {
+            var admin = db.Admins.Find(model.Username);
+
+            if (admin == null)
+            {
+                return RedirectToAction("AdminList");
+            }
+
+            if (model.Photo != null)
+            {
+
+                string err = ValidatePhoto(model.Photo); // validate the photo
+                if (err != null)
+                {
+
+                    ModelState.AddModelError("Photo", err);
+                }
+            }
+
+
+
+            if (ModelState.IsValid)
+            {
+
+                admin.Name = model.Name;
+                admin.Gender = model.Gender;
+                admin.PhoneNo = model.PhoneNo;
+                admin.Username = model.Username;
+                admin.Email = model.Email;
+
+                if (model.Photo != null)
+                {
+
+                    DeletePhoto(admin.PhotoURL);
+                    admin.PhotoURL = SavePhoto(model.Photo);
+                }
+
+                db.SaveChanges();
+                TempData["Info"] = "Admin record edited";
+                return RedirectToAction("AdminList");
+            }
+
+
+            model.PhotoURL = admin.PhotoURL;
+            return View(model);
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult AddAdmin() {
             return View();
         }
 
+
+        private string HashPassword(string password)
+        {
+            return ph.HashPassword(password);
+        }
+
+
+        public ActionResult CheckUsername(string username)
+        {
+            bool result = db.Admins.Find(username) == null;
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpPost]
+        public ActionResult AddAdmin (InsertAdmin newAdmin) {
+
+            if (db.Admins.Find(newAdmin.Username) != null) {
+
+                ModelState.AddModelError("Username", "Duplicated Username.");
+            
+            }
+
+            string err = ValidatePhoto(newAdmin.Photo);
+
+            if (err != null)
+            {
+
+                ModelState.AddModelError("Phote", err);
+            }
+
+            if (ModelState.IsValid)
+            {
+
+                var a = new Admin
+                {
+                    Name = newAdmin.Name,
+                    Username = newAdmin.Username,
+                    Email = newAdmin.Email,
+                    PhoneNo = newAdmin.PhoneNo,
+                    HashPass = HashPassword(newAdmin.Password),
+                    Gender = newAdmin.Gender,
+                    PhotoURL = SavePhoto(newAdmin.Photo)
+                };
+
+                db.Admins.Add(a);
+                db.SaveChanges();
+
+                TempData["Info"] = "Admin Inserted.";
+                return RedirectToAction("AdminList");
+            }
+
+            return View(newAdmin);
+
+        }
+        //==================================================================================================
     }
 }
