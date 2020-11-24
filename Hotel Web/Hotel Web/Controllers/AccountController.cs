@@ -80,7 +80,7 @@ namespace Hotel_Web.Controllers
         private string SavePhoto(HttpPostedFileBase f)
         {
             string name = Guid.NewGuid().ToString("n") + ".jpg";
-            string path = Server.MapPath($"~/Photo/{name}");
+            string path = Server.MapPath($"~/Image/Profile/{name}");
 
             var img = new WebImage(f.InputStream);
 
@@ -105,7 +105,7 @@ namespace Hotel_Web.Controllers
         private void DeletePhoto(string name)
         {
             name = System.IO.Path.GetFileName(name);
-            string path = Server.MapPath($"~/Photo/{name}");
+            string path = Server.MapPath($"~/Image/Profile/{name}");
             System.IO.File.Delete(path);
         }
 

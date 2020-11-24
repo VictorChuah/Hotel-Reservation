@@ -1,4 +1,4 @@
-﻿@model Admin
+﻿@model InsertAdmin
 
 @{
     ViewBag.Title = "AddAdmin";
@@ -10,19 +10,22 @@
 <form method="post" class="form" enctype="multipart/form-data">
     @Html.ValidationSummary(true)
 
+
     @Html.LabelFor(m => m.Photo)
     <div>
         <label class="upload">
             @Html.TextBoxFor(m => m.Photo, new { type = "file", accept = "image/jpeg,image/png", hidden = "" })
-            <img src="~/Photo/@Model.PhotoURL">
+            <img src="~/Image/Profile/photo.jpg">
         </label>
     </div>
     @Html.ValidationMessageFor(m => m.Photo)
 
-    @Html.LabelFor(m => m.Username)
-    <b>@Html.DisplayFor(m => m.Username)</b>
 
-    <br>
+    @Html.LabelFor(m => m.Username)
+    @Html.TextBoxFor(m => m.Username, new { maxlength = 20, autofocus = "" })
+    @Html.ValidationMessageFor(m => m.Username)
+
+   
     @Html.LabelFor(m => m.Name)
     @Html.TextBoxFor(m => m.Name, new { maxlength = "50", autofocus = "" })
     @Html.ValidationMessageFor(m => m.Name)
@@ -44,8 +47,12 @@
     @Html.TextBoxFor(m => m.Email, new { maxlength = "30" })
     @Html.ValidationMessageFor(m => m.Email)
 
+
+    @Html.LabelFor(m => m.Password)
+    @Html.TextBoxFor(m => m.Password, new { maxlength = "30" })
+    @Html.ValidationMessageFor(m => m.Password)
     <section>
-        <button>Edit</button>
+        <button>Submit</button>
         <button type="reset">Reset</button>
     </section>
 </form>
@@ -53,6 +60,9 @@
 @section foot {
     <script>
 
+        $.validator.setDefaults({
+            ignore: ''
+        });
 
         function validatePhoto(f) {
             let reType = /^image\/(jpeg|png)$/i;
@@ -79,6 +89,7 @@
                 img.src = src;
                 e.target.value = '';
             }
+            $(e.target).valid();
         });
     </script>
 }
