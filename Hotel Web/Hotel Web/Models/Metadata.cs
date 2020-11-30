@@ -51,28 +51,39 @@ namespace Hotel_Web.Models
         [Required]
         [StringLength(100)]
         public string Name { get; set; }
+
         [Required]
         [StringLength(20)]
         [System.Web.Mvc.Remote("CheckUsername", "Account", ErrorMessage = "Duplicated {0}.")]
         public string Username { get; set; }
+
         [Required]
         [StringLength(20,MinimumLength = 5)]
-        [RegularExpression(@"^([A-Za-z]{1,}[0-9]{1,}[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{1,}){5,20}$")]
+        [RegularExpression(@"^(?=.+[a-z])(?=.+[A-Z])(?=.+\d)(?=.+[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{8,20}$",
+            ErrorMessage = "Password must be between 6 to 20, contain at least 1 lower and uppercase, a digit and a symbol")]
         public string Password { get; set; }
+
         [Required]
         [Display(Name = "Confirm Password")]
-        [StringLength(20, MinimumLength = 5)]
-        [RegularExpression(@"^([A-Za-z]{1,}[0-9]{1,}[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{1,}){5,20}$")]
+        [StringLength(20, MinimumLength = 6)]
+        [RegularExpression(@"^(?=.+[a-z])(?=.+[A-Z])(?=.+\d)(?=.+[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{6,20}$",
+            ErrorMessage = "Password must be between 6 to 20, contain at least 1 lower and uppercase, a digit and a symbol")]
         [System.ComponentModel.DataAnnotations.Compare("Password")]
         public string Confirm { get; set; }
+
+        [Required]
+        public string Gender { get; set; }
+
         [Required]
         [StringLength(100)]
         [EmailAddress]
+        [RegularExpression(@"^.+@.+mail.com$", ErrorMessage = "Invalid Email format")]
         public string Email { get; set; }
+
         [Required]
-        [StringLength(12, MinimumLength = 11)]
+        [StringLength(11)]
         [Phone]
-        [RegularExpression(@"^({01}[0-9]{1})\-([0-9]{7,8})){10,11}$", ErrorMessage = "Invalid Phone Number")]
+        [RegularExpression(@"^(01)([0-9]{1})\-([0-9]{7})$", ErrorMessage = "Invalid Phone Number")]
         public string Phone { get; set; }
 
         public HttpPostedFileBase Photo { get; set; }
@@ -87,14 +98,17 @@ namespace Hotel_Web.Models
         [Required]
         [StringLength(100)]
         [EmailAddress]
+        [RegularExpression(@"^.+@.+mail.com$", ErrorMessage = "Invalid Email format")]
         public string Email { get; set; }
+
         [Required]
-        [StringLength(12, MinimumLength = 11)]
+        [StringLength(11)]
         [Phone]
-        [RegularExpression(@"^({01}[0-9]{1})\-([0-9]{7,8})){10,11}$", ErrorMessage = "Invalid Phone Number")]
+        [RegularExpression(@"^(01)([0-9]{1})\-([0-9]{7})$", ErrorMessage = "Invalid Phone Number")]
         public string Phone { get; set; }
 
         public string PhotoURL { get; set; }
+
         public HttpPostedFileBase Photo { get; set; }
     }
 
@@ -102,20 +116,23 @@ namespace Hotel_Web.Models
     {
         [Display(Name = "Current Password")]
         [Required]
-        [StringLength(20, MinimumLength = 5)]
-        [RegularExpression(@"^([A-Za-z]{1,}[0-9]{1,}[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{1,}){5,20}$")]
+        [StringLength(20, MinimumLength = 6)]
+        [RegularExpression(@"^(?=.+[a-z])(?=.+[A-Z])(?=.+\d)(?=.+[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{6,20}$",
+            ErrorMessage = "Password must be between 6 to 20, contain at least 1 lower and uppercase, a digit and a symbol")]
         public string Current { get; set; }
 
         [Display(Name = "New Password")]
         [Required]
-        [StringLength(20, MinimumLength = 5)]
-        [RegularExpression(@"^([A-Za-z]{1,}[0-9]{1,}[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{1,}){5,20}$")]
+        [StringLength(20, MinimumLength = 6)]
+        [RegularExpression(@"^(?=.+[a-z])(?=.+[A-Z])(?=.+\d)(?=.+[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{6,20}$",
+            ErrorMessage = "Password must be between 6 to 20, contain at least 1 lower and uppercase, a digit and a symbol")]
         public string New { get; set; }
 
         [Display(Name = "Confirm Password")]
         [Required]
-        [StringLength(20, MinimumLength = 5)]
-        [RegularExpression(@"^([A-Za-z]{1,}[0-9]{1,}[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{1,}){5,20}$")]
+        [StringLength(20, MinimumLength = 6)]
+        [RegularExpression(@"^(?=.+[a-z])(?=.+[A-Z])(?=.+\d)(?=.+[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{6,20}$",
+            ErrorMessage = "Password must be between 6 to 20, contain at least 1 lower and uppercase, a digit and a symbol")]
         [System.ComponentModel.DataAnnotations.Compare("New")]
         public string Confirm { get; set; }
     }

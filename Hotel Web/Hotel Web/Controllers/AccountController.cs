@@ -63,7 +63,7 @@ namespace Hotel_Web.Controllers
 
             if (f == null)
             {
-                return "No photo.";
+                return null;
             }
             else if (!reType.IsMatch(f.ContentType) || !reName.IsMatch(f.FileName))
             {
@@ -207,11 +207,18 @@ namespace Hotel_Web.Controllers
         [HttpPost]
         public ActionResult Register(RegisterModel model)
         {
+
             if (ModelState.IsValidField("Username") && db.Customers.Find(model.Username) != null && db.Admins.Find(model.Username) != null)
             {
                 ModelState.AddModelError("Username", "Duplicated Username.");
             }
 
+            string photoURL = null;
+            if(model.Photo != null)
+            {
+                photoURL = SavePhoto(model.Photo);
+            }
+            
             string err = ValidatePhoto(model.Photo);
             if (err != null)
             {
@@ -223,17 +230,21 @@ namespace Hotel_Web.Controllers
                 var m = new Customer
                 {
                     Username = model.Username,
-                    HashPass = HashPassword(model.Password), 
+                    HashPass = HashPassword(model.Password),
                     Name = model.Name,
                     Email = model.Email,
-                    PhotoURL = SavePhoto(model.Photo)
+                    PhoneNo = model.Phone,
+                    PhotoURL = photoURL,
+                    Gender = model.Gender,
+                    LoginCount = 0,
+                    Active = false
                 };
 
                 db.Customers.Add(m);
                 db.SaveChanges();
 
                 TempData["Info"] = "Account registered. Please login.";
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("CustLogin", "Account");
             }
 
             return View(model);
