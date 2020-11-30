@@ -1,12 +1,15 @@
-﻿@model RegisterModel
+﻿@using GoogleRecaptcha.Infrastructure.HtmlHelpers
+@model RegisterModel
 
 @{
     ViewBag.Title = "Account : Register";
 }
 
+@Html.ValidationSummary(true)
 
-<form class="form" method="post" enctype="multipart/form-data">
-    @Html.ValidationSummary(true)
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form" }))
+{
+    @Html.AntiForgeryToken()
 
     @Html.LabelFor(m => m.Username)
     @Html.TextBoxFor(m => m.Username, new { maxlength = 20, autofocus = "" })
@@ -22,8 +25,8 @@
 
     @Html.LabelFor(m => m.Gender)
     <div>
-        <label>@Html.RadioButtonFor(m => m.Gender, "Male")Male</label>
-        <label>@Html.RadioButtonFor(m => m.Gender, "Female")Female</label>
+        <label>@Html.RadioButtonFor(m => m.Gender, "M")Male</label>
+        <label>@Html.RadioButtonFor(m => m.Gender, "F")Female</label>
     </div>
     @Html.ValidationMessageFor(m => m.Gender)
 
@@ -49,14 +52,21 @@
     </div>
     @Html.ValidationMessageFor(m => m.Photo)
 
-    <!--recaptacha-->
+    <section>
+        <!--recaptacha-->
+        @Html.GoogleCaptcha()
+        @Html.InvalidGoogleCaptchaLabel("Captcha is not valid !")
+        <!--End-->
+    </section>
 
     <section>
         <button>Register</button>
         <button type="reset">Reset</button>
     </section>
+}
 
-</form>
+
+
 
 @section foot {
     <script>

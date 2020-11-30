@@ -9,6 +9,7 @@ using System.Web.Helpers;
 using Microsoft.AspNet.Identity;
 using System.Security.Claims;
 using Microsoft.Owin.Security;
+using GoogleRecaptcha.Infrastructure.Attributes;
 
 namespace Hotel_Web.Controllers
 {
@@ -127,9 +128,34 @@ namespace Hotel_Web.Controllers
             {
                 var user = db.Customers.Find(model.Username);
 
-                if (user != null && VerifyPassword(user.HashPass, model.Password))
+
+                if (user == null)                                       //no such user
+                    ModelState.AddModelError("Username", "Username does not exist.");
+
+                else if (user.Blocked != null)                        //blocked
                 {
-                    SignIn(user.Username, "Member",model.RememberMe);
+                    //is current time passed the blocked time?
+                    Boolean checkBlock = (user.Blocked < DateTime.Now);
+                    if (checkBlock == false)
+                        ModelState.AddModelError("Username", "This account has been blocked until " + user.Blocked + ".");
+                }
+
+                else if (!VerifyPassword(user.HashPass, model.Password)) //wrong password
+                {
+                    ModelState.AddModelError("Password", "Username and Password not matched.");
+                    user.LoginCount++;                              //add wrong attempt
+                    db.SaveChanges();
+
+                    if (user.LoginCount >= 3)                       //if wrong attempt >=3
+                    {
+                        user.Blocked = DateTime.Now.AddMinutes(5); //blocked user for 5min
+                        user.LoginCount = 0;                        //reset attempt
+                        db.SaveChanges();
+                    }
+                }
+                else
+                {
+                    SignIn(user.Username, "Member", model.RememberMe);
                     Session["PhotoURL"] = user.PhotoURL;
 
                     if (returnURL == "")
@@ -137,10 +163,6 @@ namespace Hotel_Web.Controllers
                         return RedirectToAction("Index", "Home");
                     }
 
-                }
-                else
-                {
-                    ModelState.AddModelError("Password", "Username and Password not matched.");
                 }
             }
 
@@ -176,6 +198,8 @@ namespace Hotel_Web.Controllers
                 {
                     ModelState.AddModelError("Password", "Username and Password not matched.");
                 }
+
+                //if ()
             }
 
             return View(model);
@@ -205,6 +229,8 @@ namespace Hotel_Web.Controllers
 
         // POST: Account/Register
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateGoogleCaptcha]
         public ActionResult Register(RegisterModel model)
         {
 
@@ -230,13 +256,17 @@ namespace Hotel_Web.Controllers
                 var m = new Customer
                 {
                     Username = model.Username,
-                    HashPass = HashPassword(model.Password),
                     Name = model.Name,
-                    Email = model.Email,
+                    HashPass = HashPassword(model.Password),
                     PhoneNo = model.Phone,
-                    PhotoURL = photoURL,
                     Gender = model.Gender,
+                    Email = model.Email,
+                    PhotoURL = photoURL,
+                    Blocked = null,
                     LoginCount = 0,
+                    ResetToken = null,
+                    ResetExpire = null,
+                    ActiveToken = null,
                     Active = false
                 };
 

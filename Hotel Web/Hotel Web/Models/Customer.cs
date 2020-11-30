@@ -27,7 +27,7 @@ namespace Hotel_Web.Models
         public string Gender { get; set; }
         public string Email { get; set; }
         public string PhotoURL { get; set; }
-        public bool Blocked { get; set; }
+        public Nullable<System.DateTime> Blocked { get; set; }
         public int LoginCount { get; set; }
         public string ResetToken { get; set; }
         public Nullable<System.DateTime> ResetExpire { get; set; }

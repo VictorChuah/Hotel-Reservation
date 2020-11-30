@@ -295,6 +295,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\Attributes\ValidateGoogleCaptchaAttribute.cs" />
+    <Compile Include="Infrastructure\HtmlHelpers\GoogleCaptchaHelper.cs" />
+    <Compile Include="Infrastructure\HtmlHelpers\InvalidGoogleCaptchaLabel.cs" />
+    <Compile Include="Infrastructure\SiteSettings.cs" />
     <Compile Include="Models\Admin.cs">
       <DependentUpon>db.tt</DependentUpon>
     </Compile>
