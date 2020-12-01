@@ -1,11 +1,15 @@
-﻿@model RegisterModel
+﻿@using GoogleRecaptcha.Infrastructure.HtmlHelpers
+@model RegisterModel
 
 @{
     ViewBag.Title = "Account : Register";
 }
 
-<form class="form" method="post" enctype="multipart/form-data">
-    @Html.ValidationSummary(true)
+@Html.ValidationSummary(true)
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form" }))
+{
+    @Html.AntiForgeryToken()
 
     @Html.LabelFor(m => m.Username)
     @Html.TextBoxFor(m => m.Username, new { maxlength = 20, autofocus = "" })
@@ -19,6 +23,13 @@
     @Html.PasswordFor(m => m.Confirm, new { maxlength = 20 })
     @Html.ValidationMessageFor(m => m.Confirm)
 
+    @Html.LabelFor(m => m.Gender)
+    <div>
+        <label>@Html.RadioButtonFor(m => m.Gender, "M")Male</label>
+        <label>@Html.RadioButtonFor(m => m.Gender, "F")Female</label>
+    </div>
+    @Html.ValidationMessageFor(m => m.Gender)
+
     @Html.LabelFor(m => m.Name)
     @Html.TextBoxFor(m => m.Name, new { maxlength = 100 })
     @Html.ValidationMessageFor(m => m.Name)
@@ -26,6 +37,10 @@
     @Html.LabelFor(m => m.Email)
     @Html.TextBoxFor(m => m.Email, new { maxlength = 100 })
     @Html.ValidationMessageFor(m => m.Email)
+
+    @Html.LabelFor(m => m.Phone)
+    @Html.TextBoxFor(m => m.Phone, new { maxlength = 12 })
+    @Html.ValidationMessageFor(m => m.Phone)
 
     @Html.LabelFor(m => m.Photo)
     <div>
@@ -37,16 +52,25 @@
     </div>
     @Html.ValidationMessageFor(m => m.Photo)
 
-    <!--recaptacha-->
+    <section>
+        <!--recaptacha-->
+        @Html.GoogleCaptcha()
+        @Html.InvalidGoogleCaptchaLabel("Captcha is not valid !")
+        <!--End-->
+    </section>
 
     <section>
         <button>Register</button>
         <button type="reset">Reset</button>
     </section>
-</form>
+}
+
+
+
 
 @section foot {
     <script>
+
         $.validator.setDefaults({ ignore: '' });
 
         function validatePhoto(f) {
@@ -76,6 +100,10 @@
             }
 
             $(e.target).valid();
+        });
+
+        jQuery(function ($) {
+            $("#Phone").mask("999-9999999");
         });
     </script>
 }

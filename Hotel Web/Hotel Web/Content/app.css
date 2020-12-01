@@ -108,23 +108,25 @@ label > * {
     place-items: center start;
 }
 
-    .form > label {
-        background: #ccc;
-        font-weight: bold;
-        padding: 5px;
-        place-self: stretch;
-    }
+.form > label {
+    background: #ccc;
+    font-weight: bold;
+    padding: 5px;
+    place-self: stretch;
+}
 
-    .form > section,
-    .validation-summary-valid,
-    .validation-summary-errors {
-        grid-column: 1 / -1;
-    }
+.form > section,
+.validation-summary-valid,
+.validation-summary-errors {
+    grid-column: 1 / -1;
+}
 
 .validation-summary-errors,
 .field-validation-error {
     color: red;
 }
+
+.
 
 /* Flash message-------------------------------------------------------------- */
 /*:not(:empty) if empty the css will not will not show*/

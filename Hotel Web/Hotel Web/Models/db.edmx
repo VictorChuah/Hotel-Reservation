@@ -30,7 +30,7 @@
           <Property Name="Gender" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="PhotoURL" Type="varchar" MaxLength="100" />
-          <Property Name="Blocked" Type="bit" Nullable="false" />
+          <Property Name="Blocked" Type="datetime" />
           <Property Name="LoginCount" Type="int" Nullable="false" />
           <Property Name="ResetToken" Type="varchar" MaxLength="100" />
           <Property Name="ResetExpire" Type="datetime" />
@@ -193,16 +193,11 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
       <Schema Namespace="dbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="dbEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Admins" EntityType="dbModel.Admin" />
-          <EntitySet Name="Customers" EntityType="dbModel.Customer" />
           <EntitySet Name="Reservations" EntityType="dbModel.Reservation" />
           <EntitySet Name="Rooms" EntityType="dbModel.Room" />
           <EntitySet Name="RoomTypes" EntityType="dbModel.RoomType" />
           <EntitySet Name="ServiceTypes" EntityType="dbModel.ServiceType" />
           <EntitySet Name="Services" EntityType="dbModel.Service" />
-          <AssociationSet Name="FK_Reservation_Customer" Association="dbModel.FK_Reservation_Customer">
-            <End Role="Customer" EntitySet="Customers" />
-            <End Role="Reservation" EntitySet="Reservations" />
-          </AssociationSet>
           <AssociationSet Name="FK_Reservation_Room" Association="dbModel.FK_Reservation_Room">
             <End Role="Room" EntitySet="Rooms" />
             <End Role="Reservation" EntitySet="Reservations" />
@@ -219,6 +214,11 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
             <End Role="ServiceType" EntitySet="ServiceTypes" />
             <End Role="Service" EntitySet="Services" />
           </AssociationSet>
+          <EntitySet Name="Customers" EntityType="dbModel.Customer" />
+          <AssociationSet Name="FK_Reservation_Customer" Association="dbModel.FK_Reservation_Customer">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="Reservation" EntitySet="Reservations" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Admin">
           <Key>
@@ -233,25 +233,6 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
           <Property Name="PhotoURL" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="ResetToken" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="ResetExpire" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="Customer">
-          <Key>
-            <PropertyRef Name="Username" />
-          </Key>
-          <Property Name="Username" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="HashPass" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="PhoneNo" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="Gender" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="PhotoURL" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Blocked" Type="Boolean" Nullable="false" />
-          <Property Name="LoginCount" Type="Int32" Nullable="false" />
-          <Property Name="ResetToken" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="ResetExpire" Type="DateTime" Precision="3" />
-          <Property Name="ActiveToken" Type="Binary" MaxLength="100" FixedLength="false" />
-          <Property Name="Active" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Reservations" Relationship="dbModel.FK_Reservation_Customer" FromRole="Customer" ToRole="Reservation" />
         </EntityType>
         <EntityType Name="Reservation">
           <Key>
@@ -268,9 +249,9 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
           <Property Name="Total" Type="Decimal" Nullable="false" Precision="8" Scale="2" />
           <Property Name="Paid" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Customer" Relationship="dbModel.FK_Reservation_Customer" FromRole="Reservation" ToRole="Customer" />
           <NavigationProperty Name="Room" Relationship="dbModel.FK_Reservation_Room" FromRole="Reservation" ToRole="Room" />
           <NavigationProperty Name="Services" Relationship="dbModel.FK_Service_ToReservation" FromRole="Reservation" ToRole="Service" />
+          <NavigationProperty Name="Customer" Relationship="dbModel.FK_Reservation_Customer" FromRole="Reservation" ToRole="Customer" />
         </EntityType>
         <EntityType Name="Room">
           <Key>
@@ -314,18 +295,6 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
           <NavigationProperty Name="Reservation" Relationship="dbModel.FK_Service_ToReservation" FromRole="Service" ToRole="Reservation" />
           <NavigationProperty Name="ServiceType" Relationship="dbModel.FK_Service_ToServiceType" FromRole="Service" ToRole="ServiceType" />
         </EntityType>
-        <Association Name="FK_Reservation_Customer">
-          <End Type="dbModel.Customer" Role="Customer" Multiplicity="1" />
-          <End Type="dbModel.Reservation" Role="Reservation" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Customer">
-              <PropertyRef Name="Username" />
-            </Principal>
-            <Dependent Role="Reservation">
-              <PropertyRef Name="Username" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Reservation_Room">
           <End Type="dbModel.Room" Role="Room" Multiplicity="1" />
           <End Type="dbModel.Reservation" Role="Reservation" Multiplicity="*" />
@@ -374,6 +343,37 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="Username" />
+          </Key>
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="HashPass" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PhoneNo" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Gender" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PhotoURL" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Blocked" Type="DateTime" Precision="3" />
+          <Property Name="LoginCount" Type="Int32" Nullable="false" />
+          <Property Name="ResetToken" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ResetExpire" Type="DateTime" Precision="3" />
+          <Property Name="ActiveToken" Type="Binary" MaxLength="100" FixedLength="false" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Reservations" Relationship="dbModel.FK_Reservation_Customer" FromRole="Customer" ToRole="Reservation" />
+        </EntityType>
+        <Association Name="FK_Reservation_Customer">
+          <End Type="dbModel.Customer" Role="Customer" Multiplicity="1" />
+          <End Type="dbModel.Reservation" Role="Reservation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="Username" />
+            </Principal>
+            <Dependent Role="Reservation">
+              <PropertyRef Name="Username" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -385,25 +385,6 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
               <MappingFragment StoreEntitySet="Admin">
                 <ScalarProperty Name="ResetExpire" ColumnName="ResetExpire" />
                 <ScalarProperty Name="ResetToken" ColumnName="ResetToken" />
-                <ScalarProperty Name="PhotoURL" ColumnName="PhotoURL" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="Gender" ColumnName="Gender" />
-                <ScalarProperty Name="PhoneNo" ColumnName="PhoneNo" />
-                <ScalarProperty Name="HashPass" ColumnName="HashPass" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Customers">
-            <EntityTypeMapping TypeName="dbModel.Customer">
-              <MappingFragment StoreEntitySet="Customer">
-                <ScalarProperty Name="Active" ColumnName="Active" />
-                <ScalarProperty Name="ActiveToken" ColumnName="ActiveToken" />
-                <ScalarProperty Name="ResetExpire" ColumnName="ResetExpire" />
-                <ScalarProperty Name="ResetToken" ColumnName="ResetToken" />
-                <ScalarProperty Name="LoginCount" ColumnName="LoginCount" />
-                <ScalarProperty Name="Blocked" ColumnName="Blocked" />
                 <ScalarProperty Name="PhotoURL" ColumnName="PhotoURL" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="Gender" ColumnName="Gender" />
@@ -467,6 +448,25 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
                 <ScalarProperty Name="Price" ColumnName="Price" />
                 <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
                 <ScalarProperty Name="ReservationId" ColumnName="ReservationId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="dbModel.Customer">
+              <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="ActiveToken" ColumnName="ActiveToken" />
+                <ScalarProperty Name="ResetExpire" ColumnName="ResetExpire" />
+                <ScalarProperty Name="ResetToken" ColumnName="ResetToken" />
+                <ScalarProperty Name="LoginCount" ColumnName="LoginCount" />
+                <ScalarProperty Name="Blocked" ColumnName="Blocked" />
+                <ScalarProperty Name="PhotoURL" ColumnName="PhotoURL" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="PhoneNo" ColumnName="PhoneNo" />
+                <ScalarProperty Name="HashPass" ColumnName="HashPass" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
