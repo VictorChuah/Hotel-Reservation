@@ -1,0 +1,85 @@
+﻿@model addRoomType
+@{
+    ViewBag.Title = "AddRomType";
+}
+
+
+<h2>Add Admin</h2>
+
+
+<form method="post" class="form" enctype="multipart/form-data">
+    @Html.ValidationSummary(true)
+
+
+    @Html.LabelFor(m => m.Photo)
+    <div>
+        <label class="upload">
+            @Html.TextBoxFor(m => m.Photo, new { type = "file", accept = "image/jpeg,image/png", hidden = "", placeholder = "xxx xxx xxx" })
+            <img src="~/Image/Room/">
+        </label>
+    </div>
+    @Html.ValidationMessageFor(m => m.Photo)
+
+
+
+    @Html.LabelFor(m => m.name)
+    @Html.TextBoxFor(m => m.name, new { maxlength = "13" })
+    @Html.ValidationMessageFor(m => m.name)
+
+
+    @Html.LabelFor(m => m.Price)
+    @Html.TextBoxFor(m => m.Price, new { maxlength = "13" })
+    @Html.ValidationMessageFor(m => m.Price)
+
+
+    @Html.LabelFor(m => m.person)
+    @Html.TextBoxFor(m => m.person, new { maxlength = "30" })
+    @Html.ValidationMessageFor(m => m.person)
+
+    <section>
+        <button> Add </button>
+        <button type="reset"> Reset </button>
+    </section>
+</form>
+
+
+@section foot {
+    <script>
+
+        $.validator.setDefaults({
+            ignore: ''
+        });
+
+        function validatePhoto(f) {
+            let reType = /^image\/(jpeg|png)$/i;
+            let reName = /^.+\.(jpg|jpeg|png)$/i;
+
+            return f &&
+                f.size <= 1 * 1024 * 1024 &&
+                reType.test(f.type) &&
+                reName.test(f.name);
+        }
+
+        let src = null;
+
+        $('.upload input').change(e => {
+            let f = e.target.files[0];
+            let img = $(e.target).siblings('img')[0];
+
+            if (!src) src = img.src;
+
+            if (validatePhoto(f)) {
+                img.src = URL.createObjectURL(f);
+            }
+            else {
+                img.src = src;
+                e.target.value = '';
+            }
+            $(e.target).valid();
+        });
+    </script>
+}
+
+
+
+
