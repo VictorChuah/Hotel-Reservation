@@ -7,6 +7,16 @@ using System.Web.Mvc;
 
 namespace Hotel_Web.Models
 {
+
+    public class RoomMetadata
+    {
+        [Required]
+        public string RoomTypeId { get; set; }
+    }
+    [MetadataType(typeof(RoomMetadata))]
+    public partial class Room { }
+
+
     public class CustomerMetadata
     {
         
@@ -232,6 +242,13 @@ namespace Hotel_Web.Models
 
     }
 
+    public class joinRoom {
+    
+        public Room room { get; set; }
+        public RoomType roomtype { get; set; }
+    
+    }
+
     public class InsertAdmin {
 
         [Required]
@@ -262,5 +279,41 @@ namespace Hotel_Web.Models
         [Required]
         public HttpPostedFileBase Photo { get; set; }
 
+    }
+
+    public class addroom {
+
+        public string id { get; set; }
+        public string roomtype { get; set; }
+
+        public string status { get; set; }
+    
+    }
+
+    public class editRoomType {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public HttpPostedFileBase Photo { get; set; }
+        public string PhotoURL { get; set; }
+        public int person { get; set; }
+    }
+
+    public class addRoomType {
+
+        [Required]
+        [StringLength(50)]
+        public string name { get; set; }
+
+        [Required]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+        public decimal Price { get; set; }
+
+        [Required]
+        [ RegularExpression("^[1-4]{1}$", ErrorMessage = "Only In digit between 1 to 4 person ")] 
+        public int person { get; set; }
+
+        [Required]
+        public HttpPostedFileBase Photo { get; set; }
     }
 }
