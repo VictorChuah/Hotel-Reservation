@@ -13,6 +13,16 @@
 <body>
     <div class="info">@TempData["Info"]</div>
     <header>
+        <div>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <span>Username = @User.Identity.Name</span>
+            }
+            @if (Session["PhotoURL"] != null)
+            {
+                <img src="~/Image/Profile/@Session["PhotoURL"]">
+            }
+        </div>
         <table>
             <tr>
                 <td><img src="~/Image/Misc/Logo.PNG" height="150" width="120"></td>
@@ -24,7 +34,6 @@
     </header>
     <nav>
         <a href="~/Home/Index">Index</a>
-
         @if (User.Identity.IsAuthenticated)
         {
             <a href="~/Account/Logout">Logout</a>
