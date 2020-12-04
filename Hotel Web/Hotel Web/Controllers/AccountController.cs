@@ -140,7 +140,7 @@ namespace Hotel_Web.Controllers
             if (ModelState.IsValid)
             {
                 var user = db.Customers.Find(model.Username);
-
+                //add active
                 if (user == null)                                       //no such user
                     ModelState.AddModelError("Username", "Username does not exist.");
 

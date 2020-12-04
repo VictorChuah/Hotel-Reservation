@@ -90,7 +90,7 @@
     </Reference>
     <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
       <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
-    </Reference>	
+    </Reference>
     <Reference Include="System.Data.SQLite, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\lib\net46\System.Data.SQLite.dll</HintPath>
     </Reference>
@@ -360,7 +360,9 @@
     <Content Include="Views\Account\CustLogin.cshtml" />
     <Content Include="Views\Account\AdminLogin.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
-    <Content Include="Views\Account\Password.cshtml" />
+    <Content Include="Views\Account\ChangePassword.cshtml">
+      <BrowseToURL>~/Account/ChangePassword</BrowseToURL>
+    </Content>
     <Content Include="Views\Account\Detail.cshtml" />
     <Content Include="Views\Admin\AdminList.cshtml" />
     <Content Include="Views\Admin\AdminEdit.cshtml" />
@@ -383,6 +385,8 @@
     <Content Include="Views\Admin\RoomType.cshtml" />
     <Content Include="Views\Admin\EditRoomType.cshtml" />
     <Content Include="Views\Admin\AddRoomType.cshtml" />
+    <Content Include="Views\Account\ForgetPass.cshtml" />
+    <Content Include="Views\Account\resetPass.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
