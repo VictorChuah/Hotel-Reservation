@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity;
 using System.Security.Claims;
 using Microsoft.Owin.Security;
 using GoogleRecaptcha.Infrastructure.Attributes;
+using System.Net.Mail;
 
 namespace Hotel_Web.Controllers
 {
@@ -52,6 +53,18 @@ namespace Hotel_Web.Controllers
         {
             Request.GetOwinContext().Authentication.SignOut();
         }
+
+        /*private char checkUserRole(string username)
+        {
+            char role = ' ';
+
+            if (db.Customers.Find(username) != null)
+                role = 'c';
+            else if (db.Admins.Find(username) != null)
+                role = 'a';
+
+            return role;
+        }*/
 
         // --------------------------------------------------------------------
         // Photo helper functions
@@ -128,16 +141,12 @@ namespace Hotel_Web.Controllers
             {
                 var user = db.Customers.Find(model.Username);
 
-
                 if (user == null)                                       //no such user
                     ModelState.AddModelError("Username", "Username does not exist.");
 
-                else if (user.Blocked != null)                        //blocked
+                else if (user.Blocked != null && user.Blocked > DateTime.Now)                        //blocked,is current time passed the blocked time?
                 {
-                    //is current time passed the blocked time?
-                    Boolean checkBlock = (user.Blocked < DateTime.Now);
-                    if (checkBlock == false)
-                        ModelState.AddModelError("Username", "This account has been blocked until " + user.Blocked + ".");
+                    ModelState.AddModelError("Username", "This account has been blocked until " + user.Blocked + ".");
                 }
 
                 else if (!VerifyPassword(user.HashPass, model.Password)) //wrong password
@@ -157,6 +166,8 @@ namespace Hotel_Web.Controllers
                 {
                     SignIn(user.Username, "Member", model.RememberMe);
                     Session["PhotoURL"] = user.PhotoURL;
+                    user.Blocked = null;
+                    db.SaveChanges();
 
                     if (returnURL == "")
                     {
@@ -199,7 +210,6 @@ namespace Hotel_Web.Controllers
                     ModelState.AddModelError("Password", "Username and Password not matched.");
                 }
 
-                //if ()
             }
 
             return View(model);
@@ -348,7 +358,7 @@ namespace Hotel_Web.Controllers
 
         // GET: Account/Password
         [Authorize]
-        public ActionResult Password()
+        public ActionResult ChangePassword()
         {
             return View();
         }
@@ -356,7 +366,7 @@ namespace Hotel_Web.Controllers
         // POST: Account/Password
         [HttpPost]
         [Authorize]
-        public ActionResult Password(ChangePassModel model)
+        public ActionResult ChangePassword(ChangePassModel model)
         {
             var user = db.Customers.Find(User.Identity.Name);
 
@@ -379,10 +389,93 @@ namespace Hotel_Web.Controllers
             return View(model);
         }
 
-        // GET: Account/Reset
-        public ActionResult Reset()
+        // GET: Account/ForgetPass
+        public ActionResult ForgetPass(forgetPassModel model)
         {
+            var user = db.Customers.Find(model.Username);
+
+            if (user == null || user.Email != model.Email)
+            {
+                ModelState.AddModelError("Email", "Username and email not matched.");
+            }
+
+            
+            if (ModelState.IsValid)
+            {
+                string generate = user.Username + Guid.NewGuid().ToString("n");
+                user.ResetToken = generate;
+                user.ResetExpire = DateTime.Now.AddMinutes(5);
+
+                db.SaveChanges();
+
+                SendEmail(user,generate);
+
+                TempData["Info"] = "Please check your email to reset password.";
+                return RedirectToAction(null);
+            }
+
+            return View(model);
+        }
+
+        public ActionResult resetPass(string token, string username)
+        {
+            var user = db.Customers.Find(username);
+            if (token != user.ResetToken || user.ResetExpire < DateTime.Now)
+            {
+                TempData["Info"] = "Token not exist.";
+                return RedirectToAction("Index", "Home");
+            }
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult resetPass(ResetPassModel model, string username)
+        {
+            var user = db.Customers.Find(username);
+            
+            
+        if (ModelState.IsValid)
+        {
+            user.HashPass = HashPassword(model.New);
+            //user.ResetToken = null;
+            //user.ResetExpire = null;
+            db.SaveChanges();
+
+            TempData["Info"] = "Password Updated";
+            return RedirectToAction("CustLogin", "Account");
+        }
+
+            return RedirectToAction("Index","Home");
+        }
+
+        private void SendEmail(Customer user, string generate)
+        {
+            var m = new MailMessage();
+            m.To.Add($"{user.Name} <{user.Email}>");
+            m.Subject = "Reset Password";
+            m.IsBodyHtml = true;
+
+            string url = Url.Action("resetPass", "Account", new {token = generate, username = user.Username }, "http"); //if got error, change to https
+
+            if (user.PhotoURL != null)
+            {
+                string path = Server.MapPath($"~/Image/Profile/{user.PhotoURL}");
+                var att = new Attachment(path);
+                att.ContentId = "photo";
+                m.Attachments.Add(att);
+            }
+
+            m.Body = $@"
+                <img src='cid:photo' style='width: 100px; height: 100px;
+                                            border: 1px solid #333'>
+                <p>Dear {user.Name},<p>
+                <p>Please click the following link to reset your password</p>
+                <h1 style='color: red'><a href='{url}'>Reset Password</a></h1>
+                <p>From, Funny Hotel</p>
+                <img src='https://ibb.co/ChnmYWT'>
+            ";
+
+            new SmtpClient().Send(m);
         }
 
     }
