@@ -71,8 +71,6 @@
           <Property Name="PhotoURL" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="Person" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL WEB\HOTEL WEB\APP_DATA\DB.MDF.dbo.Service' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Service">
           <Key>
             <PropertyRef Name="ReservationId" />
@@ -157,15 +155,8 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
           <EntitySet Name="Reservation" EntityType="Self.Reservation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Room" EntityType="Self.Room" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RoomType" EntityType="Self.RoomType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Service" EntityType="Self.Service" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ServiceType" EntityType="Self.ServiceType" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Service" EntityType="Self.Service" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Service].[ReservationId] AS [ReservationId], 
-    [Service].[ServiceId] AS [ServiceId], 
-    [Service].[Price] AS [Price], 
-    [Service].[Quantity] AS [Quantity]
-    FROM [dbo].[Service] AS [Service]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="FK_Reservation_Customer" Association="Self.FK_Reservation_Customer">
             <End Role="Customer" EntitySet="Customer" />
             <End Role="Reservation" EntitySet="Reservation" />
@@ -197,27 +188,27 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
           <EntitySet Name="Rooms" EntityType="dbModel.Room" />
           <EntitySet Name="RoomTypes" EntityType="dbModel.RoomType" />
           <EntitySet Name="ServiceTypes" EntityType="dbModel.ServiceType" />
-          <EntitySet Name="Services" EntityType="dbModel.Service" />
           <AssociationSet Name="FK_Reservation_Room" Association="dbModel.FK_Reservation_Room">
             <End Role="Room" EntitySet="Rooms" />
             <End Role="Reservation" EntitySet="Reservations" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Service_ToReservation" Association="dbModel.FK_Service_ToReservation">
-            <End Role="Reservation" EntitySet="Reservations" />
-            <End Role="Service" EntitySet="Services" />
           </AssociationSet>
           <AssociationSet Name="FK_Room_RoomType" Association="dbModel.FK_Room_RoomType">
             <End Role="RoomType" EntitySet="RoomTypes" />
             <End Role="Room" EntitySet="Rooms" />
           </AssociationSet>
-          <AssociationSet Name="FK_Service_ToServiceType" Association="dbModel.FK_Service_ToServiceType">
-            <End Role="ServiceType" EntitySet="ServiceTypes" />
-            <End Role="Service" EntitySet="Services" />
-          </AssociationSet>
           <EntitySet Name="Customers" EntityType="dbModel.Customer" />
           <AssociationSet Name="FK_Reservation_Customer" Association="dbModel.FK_Reservation_Customer">
             <End Role="Customer" EntitySet="Customers" />
             <End Role="Reservation" EntitySet="Reservations" />
+          </AssociationSet>
+          <EntitySet Name="Services" EntityType="dbModel.Service" />
+          <AssociationSet Name="FK_Service_ToReservation" Association="dbModel.FK_Service_ToReservation">
+            <End Role="Reservation" EntitySet="Reservations" />
+            <End Role="Service" EntitySet="Services" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Service_ToServiceType" Association="dbModel.FK_Service_ToServiceType">
+            <End Role="ServiceType" EntitySet="ServiceTypes" />
+            <End Role="Service" EntitySet="Services" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Admin">
@@ -250,8 +241,8 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
           <Property Name="Paid" Type="Boolean" Nullable="false" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Room" Relationship="dbModel.FK_Reservation_Room" FromRole="Reservation" ToRole="Room" />
-          <NavigationProperty Name="Services" Relationship="dbModel.FK_Service_ToReservation" FromRole="Reservation" ToRole="Service" />
           <NavigationProperty Name="Customer" Relationship="dbModel.FK_Reservation_Customer" FromRole="Reservation" ToRole="Customer" />
+          <NavigationProperty Name="Services" Relationship="dbModel.FK_Service_ToReservation" FromRole="Reservation" ToRole="Service" />
         </EntityType>
         <EntityType Name="Room">
           <Key>
@@ -283,18 +274,6 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
           <Property Name="Price" Type="Decimal" Nullable="false" Precision="6" Scale="2" />
           <NavigationProperty Name="Services" Relationship="dbModel.FK_Service_ToServiceType" FromRole="ServiceType" ToRole="Service" />
         </EntityType>
-        <EntityType Name="Service">
-          <Key>
-            <PropertyRef Name="ReservationId" />
-            <PropertyRef Name="ServiceId" />
-          </Key>
-          <Property Name="ReservationId" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
-          <Property Name="ServiceId" Type="String" Nullable="false" MaxLength="4" FixedLength="true" Unicode="false" />
-          <Property Name="Price" Type="Decimal" Precision="6" Scale="2" />
-          <Property Name="Quantity" Type="Int32" />
-          <NavigationProperty Name="Reservation" Relationship="dbModel.FK_Service_ToReservation" FromRole="Service" ToRole="Reservation" />
-          <NavigationProperty Name="ServiceType" Relationship="dbModel.FK_Service_ToServiceType" FromRole="Service" ToRole="ServiceType" />
-        </EntityType>
         <Association Name="FK_Reservation_Room">
           <End Type="dbModel.Room" Role="Room" Multiplicity="1" />
           <End Type="dbModel.Reservation" Role="Reservation" Multiplicity="*" />
@@ -307,18 +286,6 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Service_ToReservation">
-          <End Type="dbModel.Reservation" Role="Reservation" Multiplicity="1" />
-          <End Type="dbModel.Service" Role="Service" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Reservation">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Service">
-              <PropertyRef Name="ReservationId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Room_RoomType">
           <End Type="dbModel.RoomType" Role="RoomType" Multiplicity="1" />
           <End Type="dbModel.Room" Role="Room" Multiplicity="*" />
@@ -328,18 +295,6 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
             </Principal>
             <Dependent Role="Room">
               <PropertyRef Name="RoomTypeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Service_ToServiceType">
-          <End Type="dbModel.ServiceType" Role="ServiceType" Multiplicity="1" />
-          <End Type="dbModel.Service" Role="Service" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ServiceType">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Service">
-              <PropertyRef Name="ServiceId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -371,6 +326,42 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
             </Principal>
             <Dependent Role="Reservation">
               <PropertyRef Name="Username" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Service">
+          <Key>
+            <PropertyRef Name="ReservationId" />
+            <PropertyRef Name="ServiceId" />
+          </Key>
+          <Property Name="ReservationId" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="ServiceId" Type="String" Nullable="false" MaxLength="4" FixedLength="true" Unicode="false" />
+          <Property Name="Price" Type="Decimal" Precision="6" Scale="2" />
+          <Property Name="Quantity" Type="Int32" />
+          <NavigationProperty Name="Reservation" Relationship="dbModel.FK_Service_ToReservation" FromRole="Service" ToRole="Reservation" />
+          <NavigationProperty Name="ServiceType" Relationship="dbModel.FK_Service_ToServiceType" FromRole="Service" ToRole="ServiceType" />
+        </EntityType>
+        <Association Name="FK_Service_ToReservation">
+          <End Type="dbModel.Reservation" Role="Reservation" Multiplicity="1" />
+          <End Type="dbModel.Service" Role="Service" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reservation">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Service">
+              <PropertyRef Name="ReservationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Service_ToServiceType">
+          <End Type="dbModel.ServiceType" Role="ServiceType" Multiplicity="1" />
+          <End Type="dbModel.Service" Role="Service" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ServiceType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Service">
+              <PropertyRef Name="ServiceId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -441,16 +432,6 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Services">
-            <EntityTypeMapping TypeName="dbModel.Service">
-              <MappingFragment StoreEntitySet="Service">
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
-                <ScalarProperty Name="ReservationId" ColumnName="ReservationId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Customers">
             <EntityTypeMapping TypeName="dbModel.Customer">
               <MappingFragment StoreEntitySet="Customer">
@@ -467,6 +448,16 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
                 <ScalarProperty Name="HashPass" ColumnName="HashPass" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Services">
+            <EntityTypeMapping TypeName="dbModel.Service">
+              <MappingFragment StoreEntitySet="Service">
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
+                <ScalarProperty Name="ReservationId" ColumnName="ReservationId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

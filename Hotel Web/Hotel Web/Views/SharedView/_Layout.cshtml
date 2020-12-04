@@ -7,6 +7,7 @@
     <title>@ViewBag.Title</title>
     <link rel="shortcut icon" href="~/Image/Misc/Logo.png">
     <link rel="stylesheet" href="~/Content/app.css">
+    <style></style>
     <!-- Embedded CSS -->
     @RenderSection("head", false)
 </head>
@@ -15,15 +16,18 @@
     <header>
         <table>
             <tr>
-                <td><img src="~/Image/Misc/Logo.PNG" height="150" width="120"></td>
-                <td><h1><a href="">Funny Hotel</a></h1></td>
+                <th>
+                    <img src="~/Image/Misc/Logo.PNG" width="150" height="150"/>
+                </th>
+                <th>
+                    <h1><a href="~/Home/Index">Funny Budget Hotel</a></h1>
+                </th>
             </tr>
         </table>
-
-
     </header>
     <nav>
         <a href="~/Home/Index">Index</a>
+        <a href="~/Home/RoomList">RoomList</a>
 
         @if (User.Identity.IsAuthenticated)
         {
@@ -38,6 +42,7 @@
 
         @if (User.IsInRole("Member"))
         {
+
             <a href="~/Account/Password">Reset Password</a>
             <a href="~/Account/Detail">Detail (acc controller)</a>
             <!--<a href="~/Admin/_CustomerDetail">cust detail</a>-->
@@ -74,6 +79,8 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
     <script src="~/Scripts/jquery.maskedinput.js"></script>
     <script src="~/Scripts/app.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
     <!-- Embedded JS -->
     @RenderSection("foot", false)
 </body>

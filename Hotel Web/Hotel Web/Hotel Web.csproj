@@ -153,11 +153,15 @@
     <Content Include="Image\Misc\favicon.png" />
     <Content Include="Image\Misc\loader.gif" />
     <Content Include="Image\Misc\Logo.PNG" />
+    <Content Include="Image\Misc\reserve background.jpg" />
     <Content Include="Image\Profile\lisa-1.jpg" />
     <Content Include="Image\Profile\photo.jpg" />
     <Content Include="Image\Profile\profilepic1.jpg" />
     <Content Include="Image\Profile\profilepic2.jpg" />
     <Content Include="Image\Profile\suzy-1.jpg" />
+    <Content Include="Image\promotion\promotion 1.jpg" />
+    <Content Include="Image\promotion\promotion 2.png" />
+    <Content Include="Image\promotion\sloggan.png" />
     <Content Include="Image\Room\Double bed %282%29.png" />
     <Content Include="Image\Room\Double bed%281%29.png" />
     <Content Include="Image\Room\Family Bed.png" />
@@ -189,6 +193,7 @@
     <Content Include="Content\bootstrap-reboot.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
+    <Content Include="App_Code\Helper.cshtml" />
     <None Include="Scripts\jquery-3.5.1.intellisense.js" />
     <Content Include="Models\db.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -370,6 +375,9 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Admin\AddAdmin.cshtml" />
+    <Content Include="Views\Home\Reserve.cshtml" />
+    <Content Include="Views\Home\RoomList.cshtml" />
+    <Content Include="Views\Home\Detail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

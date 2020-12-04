@@ -1,0 +1,46 @@
+﻿@model IEnumerable<RoomType> 
+@{
+    ViewBag.Title = "";
+}
+<style>
+
+    .table1 {
+        width: 100%;
+    }
+
+    .table1 th, tr, td {
+      
+    }
+
+    .a {
+        width: 400px;
+        height: 300px;
+        border: 5px solid #333;
+        box-shadow: 0 0 5px #000;
+        cursor: pointer;
+
+    }
+</style>
+
+
+<table class="table1">
+    <tr>
+        @foreach(var r in Model )
+        {
+            <th><h1>@r.Name Room</h1></th>
+        }
+    </tr>
+    <tr>
+        @foreach (var r in Model)
+        {
+            <td align="center"><img src="~/Image/Room/@r.PhotoURL" class="a" data-get="/Home/Reserve?RoomTypeId=@r.Id"/></td>
+        }
+    </tr>
+    <tr>
+        @foreach (var r in Model)
+        {
+            <td style="font-size: 20px; padding-left:15px; font-weight: bold;">Price: RM @r.Price per Night</td>
+        }
+    </tr>
+</table>
+
