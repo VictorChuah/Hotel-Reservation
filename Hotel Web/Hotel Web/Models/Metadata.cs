@@ -317,4 +317,32 @@ namespace Hotel_Web.Models
         [Required]
         public HttpPostedFileBase Photo { get; set; }
     }
+
+    public class ReserveVM
+    {
+        [Display(Name = "Room Type")]
+        public string RoomTypeName { get; set; }
+
+        [Display(Name = "Price")]
+        public decimal RoomPrice { get; set; }
+
+        public string RoomPhotoURL { get; set; }
+
+        public string RoomTypeId { get; set; }
+
+        [Display(Name = "Check-In Date")]
+        [Required]
+        public DateTime CheckIn { get; set; } = DateTime.Today;
+
+        [Display(Name = "Check-Out Date")]
+        [Required]
+        public DateTime CheckOut { get; set; } = DateTime.Today.AddDays(1);
+
+        [Display(Name = "Add On Services")]
+        public string[] ServiceIds { get; set; } = new string[0];
+
+        public int Bed { get; set; }
+
+        public int Blanket { get; set; }
+    }
 }

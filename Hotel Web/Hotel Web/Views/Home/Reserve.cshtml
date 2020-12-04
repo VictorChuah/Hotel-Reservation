@@ -1,0 +1,125 @@
+﻿@model ReserveVM
+@{
+    ViewBag.Title = "Reserve";
+    string min = DateTime.Today.ToString("yyyy-MM-dd");
+    string max = DateTime.Today.AddDays(30).ToString("yyyy-MM-dd");
+}
+<style>
+    body {
+        background: url('/Image/Misc/reserve background.jpg');
+    }
+
+    .a {
+        width: 300px;
+        font-size: 20px;
+        font-family: 'Times New Roman';
+    }
+
+    button {
+        font-size: 20px;
+    }
+</style>
+
+<img src="~/Image/Room/@Model.RoomPhotoURL" width="300" height="250" style="border:1px solid #111;" />
+<form class="form" method="post">
+    @Html.ValidationSummary(true)
+    <table>
+        <tr>
+            <td class="a">@Html.LabelFor(m => m.RoomTypeId) </td>
+            <td><b>@Html.DisplayFor(m => m.RoomTypeId)</b></td>
+        </tr>
+        <tr>
+            <td class="a">@Html.LabelFor(m => m.RoomTypeName) </td>
+            <td><b>@Html.DisplayFor(m => m.RoomTypeName)</b></td>
+            <td>@Html.ValidationMessageFor(m => m.RoomTypeName)</td>
+        </tr>
+
+        <tr>
+            <td class="a">@Html.LabelFor(m => m.RoomPrice)</td>
+            <td><b>@Html.DisplayFor(m => m.RoomPrice)</b></td>
+        </tr>
+
+        <tr>
+            <td class="a">@Html.LabelFor(m => m.CheckIn)</td>
+            <td>@Html.TextBoxFor(m => m.CheckIn, "{0:yyyy-MM-dd}", new { type = "date", min, max })</td>
+            <td>@Html.ValidationMessageFor(m => m.CheckIn)</td>
+        </tr>
+
+        <tr>
+            <td class="a">@Html.LabelFor(m => m.CheckOut)</td>
+            <td>@Html.TextBoxFor(m => m.CheckOut, "{0:yyyy-MM-dd}", new { type = "date", min, max })</td>
+            <td>@Html.ValidationMessageFor(m => m.CheckOut)</td>
+        </tr>
+
+        <tr>
+            <td class="a">@Html.LabelFor(m => m.ServiceIds)
+            <td>@Helper.CheckBoxList("ServiceIds", ViewBag.ServiceList)</td>
+        </tr>
+        <tr>
+            <td style="font-size:20px; color:#ff0000;" colspan="2">If Have Add Bed or Blanket, please enter the amount that you want to add. Thank you</td>
+        </tr>
+        <tr>
+            <td class="a">Bed Add :</td>
+            <td>
+                @Html.DropDownListFor(m => m.Bed, new SelectList(new List<object>{new { value = 0, text = "--Select Qty--"},
+                                                                                   new { value = 1, text = "1" },
+                                                                                   new { value = 2, text = "2" },
+                                                                                   new { value = 3, text = "3" },
+                                                                                   new { value = 4, text = "4" },
+                                                                                   new { value = 5, text = "5" },
+                                                                                   }, "value", "text", 2), "--Select Qty--")
+            </td>
+        </tr>
+        <tr>
+            <td class="a">Blanket :</td>
+            <td>
+                @Html.DropDownListFor(m => m.Blanket, new SelectList(new List<object>{new { value = 0, text = "--Select Qty--"},
+                                                                                  new { value = 1, text = "1" },
+                                                                                  new { value = 2, text = "2" },
+                                                                                  new { value = 3, text = "3" },
+                                                                                  new { value = 4, text = "4" },
+                                                                                  new { value = 5, text = "5" },
+                                                                                  }, "value", "text", 2))
+            </td>
+        </tr>
+    </table>
+        <section>
+            <button>Reserve</button>
+            <button type="reset">Reset</button>
+        </section>
+        
+</form>
+
+@section foot {
+    <script>
+        // Extend built-in Date object
+        // --> return new Date object after days added
+        Date.prototype.addDays = function(days) {
+            let date = new Date(this.valueOf());
+            date.setDate(date.getDate() + days);
+            return date;
+        };
+
+        // Extend built-in Date object
+        // --> return value in YYYY-MM-DD format
+        Date.prototype.format = function () {
+            return this.toISOString().substr(0, 10);
+        };
+
+        $('#CheckIn').on('input', e => {
+            let elm = $('#CheckOut')[0];
+            let d = e.target.valueAsDate;
+
+            // Update min property
+            elm.min = d.addDays(1).format();
+
+            // Update value if value less than min
+            if (elm.value < elm.min) {
+                elm.value = elm.min;
+            }
+        });
+
+        // Run the logic once as page loaded
+        $('#CheckIn').trigger('input');
+    </script>
+}

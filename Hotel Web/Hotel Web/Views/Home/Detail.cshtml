@@ -1,0 +1,80 @@
+﻿@model Reservation
+
+@{
+    ViewBag.Title = "Reservation Detail";
+}
+
+@section head {
+    <style>
+        td:not(:first-child) {
+            text-align: right;
+        }
+    </style>
+}
+
+<form class="form">
+    <label>Id</label>
+    <div>@Model.Id</div>
+    <br>
+
+    <label>Member</label>
+    <div>User1 (@Model.Username)</div>
+    <br>
+
+    <label>Room</label>
+    <div>@Model.RoomId (@Model.Room.RoomType.Name)</div>
+    <br>
+
+    <label>CheckIn</label>
+    <div>@Model.CheckIn.ToString("yyyy-MM-dd")</div>
+    <br>
+
+    <label>CheckOut</label>
+    <div>@Model.CheckOut.ToString("yyyy-MM-dd")</div>
+    <br>
+
+    <label>Day</label>
+    <div>@Model.Day</div>
+    <br>
+
+    <label>Status</label>
+    <div>@Model.Status</div>
+    <br>
+
+    <label>Paid</label>
+    <div>@(Model.Paid ? "Yes" : "No")</div>
+    <br>
+</form>
+
+<br>
+
+<table class="table">
+    <tr>
+        <th>Item</th>
+        <th>Price</th>
+        <th>Day</th>
+        <th>Person</th>
+        <th>Subtotal</th>
+    </tr>
+    <tr>
+        <td>Room</td>
+        <td>@Model.Price</td>
+        <td>@Model.Day</td>
+        <td></td>
+        <td>@(Model.Price * Model.Day)</td>
+    </tr>
+    @foreach (var a in Model.Services)
+    {
+        <tr>
+            <td>@a.ServiceType.Name</td>
+            <td>@a.Price</td>
+            <td>@Model.Day</td>
+            <td>@Model.Person</td>
+            <td>@(a.Price * Model.Day * Model.Person)</td>
+        </tr>
+    }
+    <tr>
+        <td colspan="4">Total</td>
+        <td>@Model.Total</td>
+    </tr>
+</table>
