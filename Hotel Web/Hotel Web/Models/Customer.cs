@@ -31,7 +31,7 @@ namespace Hotel_Web.Models
         public int LoginCount { get; set; }
         public string ResetToken { get; set; }
         public Nullable<System.DateTime> ResetExpire { get; set; }
-        public byte[] ActiveToken { get; set; }
+        public string ActiveToken { get; set; }
         public bool Active { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
