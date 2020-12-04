@@ -164,8 +164,8 @@ namespace Hotel_Web.Controllers
                     {
                         ReservationId = r.Id,
                         ServiceId = s.Id,
-                        Price = s.Price * 1,
-                        Quantity = 1
+                        Price = s.Price * q,
+                        Quantity = q
                     });
 
                     // Accumulate total

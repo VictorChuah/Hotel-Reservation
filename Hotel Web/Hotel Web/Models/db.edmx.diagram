@@ -14,10 +14,10 @@
         <AssociationConnector Association="dbModel.FK_Room_RoomType" />
         <EntityTypeShape EntityType="dbModel.Customer" Width="1.5" PointX="6.625" PointY="5.5" />
         <AssociationConnector Association="dbModel.FK_Reservation_Customer" />
-        <EntityTypeShape EntityType="dbModel.Service" Width="1.5" PointX="8.375" PointY="1.875" />
+        <EntityTypeShape EntityType="dbModel.Service" Width="1.5" PointX="8.5" PointY="1.75" />
         <AssociationConnector Association="dbModel.FK_Service_ToReservation" />
         <AssociationConnector Association="dbModel.FK_Service_ToServiceType" />
-      </Diagram>
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

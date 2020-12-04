@@ -7,6 +7,16 @@ using System.Web.Mvc;
 
 namespace Hotel_Web.Models
 {
+
+    public class RoomMetadata
+    {
+        [Required]
+        public string RoomTypeId { get; set; }
+    }
+    [MetadataType(typeof(RoomMetadata))]
+    public partial class Room { }
+
+
     public class CustomerMetadata
     {
         
@@ -40,6 +50,7 @@ namespace Hotel_Web.Models
         [StringLength(20)]
         public string Username { get; set; }
         [Required]
+        [StringLength(20, MinimumLength = 8)]
         public string Password { get; set; }
 
         public bool RememberMe { get; set; }
@@ -58,15 +69,15 @@ namespace Hotel_Web.Models
         public string Username { get; set; }
 
         [Required]
-        [StringLength(20,MinimumLength = 5)]
-        [RegularExpression(@"^(?=.+[a-z])(?=.+[A-Z])(?=.+\d)(?=.+[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{8,20}$",
+        [StringLength(20,MinimumLength = 8)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-!#@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!#@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{8,20}$",
             ErrorMessage = "Password must be between 6 to 20, contain at least 1 lower and uppercase, a digit and a symbol")]
         public string Password { get; set; }
 
         [Required]
         [Display(Name = "Confirm Password")]
-        [StringLength(20, MinimumLength = 6)]
-        [RegularExpression(@"^(?=.+[a-z])(?=.+[A-Z])(?=.+\d)(?=.+[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{6,20}$",
+        [StringLength(20, MinimumLength = 8)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-!#@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!#@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{8,20}$",
             ErrorMessage = "Password must be between 6 to 20, contain at least 1 lower and uppercase, a digit and a symbol")]
         [System.ComponentModel.DataAnnotations.Compare("Password")]
         public string Confirm { get; set; }
@@ -116,22 +127,53 @@ namespace Hotel_Web.Models
     {
         [Display(Name = "Current Password")]
         [Required]
-        [StringLength(20, MinimumLength = 6)]
-        [RegularExpression(@"^(?=.+[a-z])(?=.+[A-Z])(?=.+\d)(?=.+[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{6,20}$",
+        [StringLength(20, MinimumLength = 8)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-!#@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!#@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{8,20}$",
             ErrorMessage = "Password must be between 6 to 20, contain at least 1 lower and uppercase, a digit and a symbol")]
         public string Current { get; set; }
 
         [Display(Name = "New Password")]
         [Required]
-        [StringLength(20, MinimumLength = 6)]
-        [RegularExpression(@"^(?=.+[a-z])(?=.+[A-Z])(?=.+\d)(?=.+[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{6,20}$",
+        [StringLength(20, MinimumLength = 8)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-!#@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!#@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{8,20}$",
             ErrorMessage = "Password must be between 6 to 20, contain at least 1 lower and uppercase, a digit and a symbol")]
         public string New { get; set; }
 
         [Display(Name = "Confirm Password")]
         [Required]
-        [StringLength(20, MinimumLength = 6)]
-        [RegularExpression(@"^(?=.+[a-z])(?=.+[A-Z])(?=.+\d)(?=.+[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{6,20}$",
+        [StringLength(20, MinimumLength = 8)]
+        [RegularExpression(@"^(?=.+[a-z])(?=.+[A-Z])(?=.+\d)(?=.+[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{8,20}$",
+            ErrorMessage = "Password must be between 6 to 20, contain at least 1 lower and uppercase, a digit and a symbol")]
+        [System.ComponentModel.DataAnnotations.Compare("New")]
+        public string Confirm { get; set; }
+    }
+
+    public class forgetPassModel
+    {
+        [Required]
+        [StringLength(20)]
+        public string Username { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        [EmailAddress]
+        [RegularExpression(@"^.+@.+mail.com$", ErrorMessage = "Invalid Email format")]
+        public string Email { get; set; }
+    }
+
+    public class ResetPassModel
+    {
+        [Display(Name = "New Password")]
+        [Required]
+        [StringLength(20, MinimumLength = 8)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-!#@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!#@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{8,20}$",
+            ErrorMessage = "Password must be between 6 to 20, contain at least 1 lower and uppercase, a digit and a symbol")]
+        public string New { get; set; }
+
+        [Display(Name = "Confirm Password")]
+        [Required]
+        [StringLength(20, MinimumLength = 8)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-!#@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!#@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{8,20}$",
             ErrorMessage = "Password must be between 6 to 20, contain at least 1 lower and uppercase, a digit and a symbol")]
         [System.ComponentModel.DataAnnotations.Compare("New")]
         public string Confirm { get; set; }
@@ -201,6 +243,13 @@ namespace Hotel_Web.Models
 
     }
 
+    public class joinRoom {
+    
+        public Room room { get; set; }
+        public RoomType roomtype { get; set; }
+    
+    }
+
     public class InsertAdmin {
 
         [Required]
@@ -233,6 +282,42 @@ namespace Hotel_Web.Models
 
     }
 
+    public class addroom {
+
+        public string id { get; set; }
+        public string roomtype { get; set; }
+
+        public string status { get; set; }
+    
+    }
+
+    public class editRoomType {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public HttpPostedFileBase Photo { get; set; }
+        public string PhotoURL { get; set; }
+        public int person { get; set; }
+    }
+
+    public class addRoomType {
+
+        [Required]
+        [StringLength(50)]
+        public string name { get; set; }
+
+        [Required]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+        public decimal Price { get; set; }
+
+        [Required]
+        [ RegularExpression("^[1-4]{1}$", ErrorMessage = "Only In digit between 1 to 4 person ")] 
+        public int person { get; set; }
+
+        [Required]
+        public HttpPostedFileBase Photo { get; set; }
+    }
+
     public class ReserveVM
     {
         [Display(Name = "Room Type")]
@@ -240,7 +325,7 @@ namespace Hotel_Web.Models
 
         [Display(Name = "Price")]
         public decimal RoomPrice { get; set; }
-        
+
         public string RoomPhotoURL { get; set; }
 
         public string RoomTypeId { get; set; }
@@ -260,5 +345,4 @@ namespace Hotel_Web.Models
 
         public int Blanket { get; set; }
     }
-
 }
