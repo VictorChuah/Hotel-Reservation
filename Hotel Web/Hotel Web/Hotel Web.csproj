@@ -85,12 +85,6 @@
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
-    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
-      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
-    </Reference>
-    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
-      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
-    </Reference>	
     <Reference Include="System.Data.SQLite, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\lib\net46\System.Data.SQLite.dll</HintPath>
     </Reference>
@@ -151,7 +145,6 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\PagedList.css" />
     <Content Include="Global.asax" />
     <EntityDeploy Include="Models\db.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
@@ -160,11 +153,15 @@
     <Content Include="Image\Misc\favicon.png" />
     <Content Include="Image\Misc\loader.gif" />
     <Content Include="Image\Misc\Logo.PNG" />
+    <Content Include="Image\Misc\reserve background.jpg" />
     <Content Include="Image\Profile\lisa-1.jpg" />
     <Content Include="Image\Profile\photo.jpg" />
     <Content Include="Image\Profile\profilepic1.jpg" />
     <Content Include="Image\Profile\profilepic2.jpg" />
     <Content Include="Image\Profile\suzy-1.jpg" />
+    <Content Include="Image\promotion\promotion 1.jpg" />
+    <Content Include="Image\promotion\promotion 2.png" />
+    <Content Include="Image\promotion\sloggan.png" />
     <Content Include="Image\Room\Double bed %282%29.png" />
     <Content Include="Image\Room\Double bed%281%29.png" />
     <Content Include="Image\Room\Family Bed.png" />
@@ -196,6 +193,7 @@
     <Content Include="Content\bootstrap-reboot.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
+    <Content Include="App_Code\Helper.cshtml" />
     <None Include="Scripts\jquery-3.5.1.intellisense.js" />
     <Content Include="Models\db.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -377,12 +375,9 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Admin\AddAdmin.cshtml" />
-    <Content Include="Views\Admin\Room.cshtml" />
-    <Content Include="Views\Admin\_AddRoom.cshtml" />
-    <Content Include="Views\Home\AboutUs.cshtml" />
-    <Content Include="Views\Admin\RoomType.cshtml" />
-    <Content Include="Views\Admin\EditRoomType.cshtml" />
-    <Content Include="Views\Admin\AddRoomType.cshtml" />
+    <Content Include="Views\Home\Reserve.cshtml" />
+    <Content Include="Views\Home\RoomList.cshtml" />
+    <Content Include="Views\Home\Detail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

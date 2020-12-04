@@ -7,43 +7,34 @@
     <title>@ViewBag.Title</title>
     <link rel="shortcut icon" href="~/Image/Misc/Logo.png">
     <link rel="stylesheet" href="~/Content/app.css">
+    <style></style>
     <!-- Embedded CSS -->
     @RenderSection("head", false)
 </head>
 <body>
     <div class="info">@TempData["Info"]</div>
     <header>
-        <div>
-            @if (User.Identity.IsAuthenticated)
-            {
-                <span>Username = @User.Identity.Name</span>
-            }
-            @if (Session["PhotoURL"] != null)
-            {
-                <img src="~/Image/Profile/@Session["PhotoURL"]">
-            }
-        </div>
         <table>
             <tr>
-                <td><img src="~/Image/Misc/Logo.PNG" height="150" width="120"></td>
-                <td><h1><a href="">Funny Hotel</a></h1></td>
+                <th>
+                    <img src="~/Image/Misc/Logo.PNG" width="150" height="150"/>
+                </th>
+                <th>
+                    <h1><a href="~/Home/Index">Funny Budget Hotel</a></h1>
+                </th>
             </tr>
         </table>
-
-
     </header>
     <nav>
         <a href="~/Home/Index">Index</a>
+        <a href="~/Home/RoomList">RoomList</a>
+
         @if (User.Identity.IsAuthenticated)
         {
             <a href="~/Account/Logout">Logout</a>
         }
         else
         {
-            <a href="~/Home/Index">Home</a>
-            <a href="~/Home/Room">Room</a>
-            <a href="~/Home/AboutUs">About Us</a>
-            <a href="~/Home/Location">Location</a>
             <a href="~/Account/AdminLogin">Admin login</a>
             <a href="~/Account/CustLogin">Customer login</a>
             <a href="~/Account/Register">Register</a>
@@ -51,7 +42,8 @@
 
         @if (User.IsInRole("Member"))
         {
-            <a href="~/Account/Password">Reset Password</a>
+
+            <a href="~/Account/resetPass">Reset Password</a>
             <a href="~/Account/Detail">Detail (acc controller)</a>
             <!--<a href="~/Admin/_CustomerDetail">cust detail</a>-->
         }
@@ -67,7 +59,6 @@
             <a href="/Admin/AdminList">Admin List</a>
             <a href="/Admin/AdminEdit">Admin Edit</a>
             <a href="/Admin/ReservationList">Reservation</a>
-            <a href="/Admin/Room">Room</a>
         }
 
 
@@ -88,6 +79,8 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
     <script src="~/Scripts/jquery.maskedinput.js"></script>
     <script src="~/Scripts/app.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
     <!-- Embedded JS -->
     @RenderSection("foot", false)
 </body>
