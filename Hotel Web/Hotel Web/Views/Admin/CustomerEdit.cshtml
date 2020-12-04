@@ -11,7 +11,7 @@
     <div>
         <label class="upload">
             @Html.TextBoxFor(m => m.Photo, new { type = "file", accept = "image/jpeg,image/png", hidden = "" })
-            <img src="~/Image/Profile//@Model.PhotoURL">
+            <img src="~/Photo/@Model.PhotoURL">
         </label>
     </div>
     @Html.ValidationMessageFor(m => m.Photo)

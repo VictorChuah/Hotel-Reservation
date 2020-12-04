@@ -26,21 +26,6 @@ header a {
         text-decoration: none;
 }
 
-    header div {
-        float: right;
-    }
-
-        header div > * {
-            vertical-align: middle;
-        }
-
-        header div img {
-            width: 36px;
-            height: 36px;
-            border: 1px solid #999;
-            border-radius: 50%;
-        }
-
 nav {
     flex: 0 0 auto;
     background: #999;
