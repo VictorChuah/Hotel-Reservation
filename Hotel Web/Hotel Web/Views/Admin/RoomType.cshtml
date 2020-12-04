@@ -1,0 +1,78 @@
+﻿@model IEnumerable<RoomType>
+@{
+    ViewBag.Title = "Room Type";
+}
+
+
+@section head {
+    <style>
+        /* TODO */
+        .table img {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #333;
+            object-fit: cover;
+            position: absolute;
+            top: 50%;
+            left: calc(100% + 10px);
+            transform: translate(0, -50%);
+            display: none;
+        }
+
+        .table tr:hover img {
+            display: block;
+        }
+    </style>
+
+}
+
+<p id="p">@Model.Count() record(s)</p> <!--help to count the record in the database-->
+<!--Add button-->
+<table>
+
+    <tr>
+        <th width="100px"></th>
+        <th width="100px"></th>
+        <th width="100px"></th>
+        <th width="100px"></th>
+        <th width="200px" style="position: relative; padding-left:20px" ><button data-get="/Admin/AddRoomType">Add Room Type</button></th>
+
+    </tr>
+    
+</table>
+    <table class="table" id="detailCus">
+        <tr>
+            <th width="100px">Room Type Id</th>
+            <th width="100px">Name</th>
+            <th width="100px">Price</th>
+            <th width="100px">Person</th>
+            <th width="200px"></th>
+        </tr>
+
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.Id</td>
+                <td>@r.Name</td>
+                <td>RM @r.Price</td>
+                <td>@r.Person</td>
+                <td style="position: relative" align="center">
+                    @*<a href="~/Home/Detail?id=@s.Id">Detail</a>*@
+                    @* <a href="javascript:void(0);" class="anchorDetail" data-id="">Detail</a>*@
+                    <button data-get="/Admin/EditRoomType/@r.Id">Edit</button>
+                    <button data-post="/Admin/EditRoomType?RoomTypeId=@r.Id">Delete</button>
+                    <img src="~/Image/Profile/@r.PhotoURL" />
+                </td>
+
+            </tr>
+        }
+    </table>
+    <br>
+    <button data-get="/Admin/Room">Room</button>
+
+
+
+
+
+
+

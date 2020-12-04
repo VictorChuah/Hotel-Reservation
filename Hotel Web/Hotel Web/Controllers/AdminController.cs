@@ -43,10 +43,16 @@ namespace Hotel_Web.Controllers
             return null;
         }
 
-        private string SavePhoto(HttpPostedFileBase f)
+        private string SavePhoto(HttpPostedFileBase f, string type)
         {
             string name = Guid.NewGuid().ToString("n") + ".jpg";
-            string path = Server.MapPath($"~/Image/Profile/{name}");
+            string path = null;
+            if (type == "profile") {
+                path = Server.MapPath($"~/Image/Profile/{name}");
+            } else if (type == "room") {
+                path = Server.MapPath($"~/Image/Room/{name}");
+            }
+            
 
             var img = new WebImage(f.InputStream);
 
@@ -68,10 +74,19 @@ namespace Hotel_Web.Controllers
             return name;
         }
 
-        private void DeletePhoto(string name)
+        private void DeletePhoto(string name, string status)
         {
             name = System.IO.Path.GetFileName(name);
-            string path = Server.MapPath($"~/Image/Profile/{name}");
+            string path = null;
+            if (status == "profile")
+            {
+
+                path = Server.MapPath($"~/Image/Profile/{name}");
+            }
+            else if (status == "room") {
+                path = Server.MapPath($"~/Image/Room/{name}");
+            }
+          
             System.IO.File.Delete(path);
         }
         //=======================================================
@@ -82,9 +97,11 @@ namespace Hotel_Web.Controllers
         //===========================================================================
 
         [Authorize(Roles = "Admin")]
-        public ActionResult ListCustomer()
+        public ActionResult ListCustomer(string name = "")
         {
-            var model = db.Customers.Where(c => c.Active == true);
+            name = name.Trim();
+            //var model = db.Customers.Where(c => c.Active == true && c => c.Name == name).FirstOrDefault();
+            var model = db.Customers.Where(c => c.Active == true && c.Name.Contains(name));
             return View(model);
         }
 
@@ -162,8 +179,8 @@ namespace Hotel_Web.Controllers
                 if (model.Photo != null)
                 {
 
-                    DeletePhoto(c.PhotoURL);
-                    c.PhotoURL = SavePhoto(model.Photo);
+                    DeletePhoto(c.PhotoURL, "profile");
+                    c.PhotoURL = SavePhoto(model.Photo, "profile");
                 }
 
                 db.SaveChanges();
@@ -377,8 +394,8 @@ namespace Hotel_Web.Controllers
                 if (model.Photo != null)
                 {
 
-                    DeletePhoto(admin.PhotoURL);
-                    admin.PhotoURL = SavePhoto(model.Photo);
+                    DeletePhoto(admin.PhotoURL,"profile");
+                    admin.PhotoURL = SavePhoto(model.Photo, "profile");
                 }
 
                 db.SaveChanges();
@@ -439,7 +456,7 @@ namespace Hotel_Web.Controllers
                     PhoneNo = newAdmin.PhoneNo,
                     HashPass = HashPassword(newAdmin.Password),
                     Gender = newAdmin.Gender,
-                    PhotoURL = SavePhoto(newAdmin.Photo)
+                    PhotoURL = SavePhoto(newAdmin.Photo, "profile")
                 };
 
                 db.Admins.Add(a);
@@ -452,6 +469,220 @@ namespace Hotel_Web.Controllers
             return View(newAdmin);
 
         }
-        //==================================================================================================
+        //=====================================================================================================
+
+        //Room
+        //====================================================================================================
+
+        private string NextRoomId(string type)
+        {
+            string id = null;
+            if (type == "Room") {
+                string max = db.Rooms.Max(s => s.Id) ?? "R000";
+                int n = int.Parse(max.Substring(1));
+                id = (n + 1).ToString("'R'000");
+            } else if (type == "RoomType") {
+
+                string max = db.RoomTypes.Max(s => s.Id) ?? "RT000";
+                int n = int.Parse(max.Substring(2));
+                id = (n + 1).ToString("'RT'000");
+            }
+            return id;
+            
+        }
+        public ActionResult Room() {
+
+            List<Room> R = db.Rooms.ToList();
+            List<RoomType> RT = db.RoomTypes.ToList();
+
+            var display_room = from r in R
+                                join rt in RT on r.RoomTypeId equals rt.Id
+                                select new joinRoom { room = r, roomtype = rt};
+
+
+            return View(display_room);
+        }
+
+
+        public ActionResult AddRoom() {
+
+            ViewBag.RTList = new SelectList(db.RoomTypes, "Id", "Name");
+            var room = new Room {
+            
+                Id = NextRoomId("Room"),
+                Status = "A"
+
+            };
+
+
+            return PartialView("_AddRoom");
+        }
+
+        [HttpPost]
+        public ActionResult AddRoom( Room model) {
+
+            /*TempData["Info"] = "Room Added.";
+            if(roomtype == null){
+                return RedirectToAction("AdminList");
+            }
+            */
+            if (ModelState.IsValid) {
+                model.Id = NextRoomId("Room");
+                model.Status = "A";
+
+                db.Rooms.Add(model);
+                db.SaveChanges();
+                TempData["Info"] = "Room Added.";
+            }
+
+            string url = Request.UrlReferrer?.AbsolutePath ?? "/";
+            return Redirect(url);
+            
+            //return RedirectToAction("Room");
+        }
+
+        public ActionResult RoomEdit(string RoomId, char status) {
+
+            var room = db.Rooms.Find(RoomId);
+
+            if (room == null) {
+                
+                TempData["Info"] = "Edit Error!!";
+                return RedirectToAction("Room");
+            }
+
+            if (ModelState.IsValid) {
+
+                if (status == 'a')
+                {
+                    room.Status = "A";
+                }
+                else if (status == 'b')
+                {
+                    room.Status = "B";
+                }
+                else if (status == 'v') {
+                    room.Status = "V";
+                }
+
+                db.SaveChanges();
+                TempData["Info"] = "Room Status Updated..";
+
+
+            }
+
+            string url = Request.UrlReferrer?.AbsolutePath ?? "/";
+            return Redirect(url);
+        }
+
+        
+        public ActionResult RoomType() {
+
+            var roomtype = db.RoomTypes;
+
+            return View(roomtype);
+        }
+
+        public ActionResult EditRoomType(string id) {
+
+            var RoomType = db.RoomTypes.Find(id);
+
+            var Rt = new editRoomType
+            {
+                Id = RoomType.Id,
+                Name = RoomType.Name,
+                Price = RoomType.Price,
+                PhotoURL = RoomType.PhotoURL,
+                person = RoomType.Person
+
+            };
+            TempData["Info"] = "Database"+RoomType.Id + " Metadata" +Rt.Id;
+
+            return View(Rt);
+        }
+
+        [HttpPost]
+        public ActionResult EditRoomType(editRoomType models)
+        {
+
+            var RmTe = db.RoomTypes.Find(models.Id);
+
+            if (RmTe == null) {
+
+                TempData["Info"] = "Not Found " + models.Id + " name " + models.Name ;
+                return RedirectToAction("RoomType");
+            }
+
+            if (models.Photo != null) {
+                string err = ValidatePhoto(models.Photo); // validate the photo
+                if (err != null)
+                {
+                    ModelState.AddModelError("Photo", err);
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+
+                RmTe.Name = models.Name;
+                RmTe.Price = models.Price;
+                RmTe.Person = models.person;
+
+                if (models.Photo != null)
+                {
+
+                    DeletePhoto(RmTe.PhotoURL, "profile");
+                    RmTe.PhotoURL = SavePhoto(models.Photo, "profile");
+                }
+
+                db.SaveChanges();
+                TempData["Info"] = "Room Record edited";
+                return RedirectToAction("Room");
+            }
+
+
+            models.PhotoURL = RmTe.PhotoURL;
+            return View(models);
+        }
+        public ActionResult AddRoomType()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AddRoomType(addRoomType model) {
+
+
+            string err = ValidatePhoto(model.Photo);
+
+            if (err != null)
+            {
+
+                ModelState.AddModelError("Phote", err);
+            }
+
+            if (ModelState.IsValid)
+            {
+
+                var RT = new RoomType
+                {
+                    Id = NextRoomId("RoomType"),
+                    Name = model.name,
+                    Person = model.person,
+                    Price = model.Price,
+                    PhotoURL = SavePhoto(model.Photo, "room")
+                };
+
+                db.RoomTypes.Add(RT);
+                db.SaveChanges();
+
+                TempData["Info"] = "Room Type Inserted.";
+                return RedirectToAction("RoomType");
+            }
+
+            return View(model);
+        }
+        //====================================================================================================
+
     }
 }
