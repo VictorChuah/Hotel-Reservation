@@ -7,8 +7,7 @@ using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
-
-
+using PagedList;
 
 namespace Hotel_Web.Controllers
 {
@@ -97,12 +96,61 @@ namespace Hotel_Web.Controllers
         //===========================================================================
 
         [Authorize(Roles = "Admin")]
-        public ActionResult ListCustomer(string name = "")
+        public ActionResult ListCustomer(string sort, string sortdir, string name = "", int page = 1 )
         {
+            Func<Customer, object> fn = s => s.Username;
+            switch (sort)
+            { 
+                case "Username": fn = s => s.Username; break;
+                case "Name": fn = s => s.Name; break;
+                case "Gender": fn = s => s.Gender; break;
+                case "Phone": fn = s => s.PhoneNo; break;
+                case "Email": fn = s => s.Email; break;
+             }
+
+            string sorted = sortdir == "DESC" ?
+                      "OrderByDescending(fn)" :
+                      "OrderBy(fn)";
+
+            if (page < 1) {
+               
+                return RedirectToAction(null, new { page = 1 });
+            }
             name = name.Trim();
             //var model = db.Customers.Where(c => c.Active == true && c => c.Name == name).FirstOrDefault();
-            var model = db.Customers.Where(c => c.Active == true && c.Name.Contains(name));
-            return View(model);
+
+            if (sortdir == "DESC")
+            {
+                var model = db.Customers.Where(c => c.Active == true && c.Name.Contains(name)).OrderBy(c => c.Username).OrderByDescending(fn).ToPagedList(page, 2);
+
+                if (page > model.PageCount && model.PageCount != 0)
+                {
+
+                    return RedirectToAction(null, new { page = model.PageCount });
+
+                }
+                if (Request.IsAjaxRequest()) return PartialView("_CustomerList", model);
+
+                return View(model);
+            }
+            else {
+                var model = db.Customers.Where(c => c.Active == true && c.Name.Contains(name)).OrderBy(fn).ToPagedList(page, 2);
+
+                if (page > model.PageCount && model.PageCount != 0)
+                {
+
+                    return RedirectToAction(null, new { page = model.PageCount });
+
+                }
+
+                if (Request.IsAjaxRequest()) return PartialView("_CustomerList", model);
+
+                return View(model);
+            }
+             
+
+
+           
         }
 
         //auth?
@@ -118,9 +166,11 @@ namespace Hotel_Web.Controllers
         }
 
         [Authorize]
+        
         public ActionResult CustomerEdit(string username)
         {
             var model = db.Customers.Find(username);
+            TempData["info"] = model.Username;
 
             if (model == null)
             {
@@ -137,7 +187,7 @@ namespace Hotel_Web.Controllers
                 PhotoURL = model.PhotoURL
 
             };
-
+           
             return View(m);
 
         }
@@ -224,8 +274,9 @@ namespace Hotel_Web.Controllers
 //========================================================================================
 
         [Authorize(Roles = "Admin")]
-        public ActionResult ReservationList()
+        public ActionResult ReservationList( string name = "", int page = 1)
         {
+
 
             List<Customer> CusName = db.Customers.ToList();
             List<Reservation> Re = db.Reservations.ToList();
@@ -233,6 +284,8 @@ namespace Hotel_Web.Controllers
             List<RoomType> RT = db.RoomTypes.ToList();
             List<Service> service = db.Services.ToList();
             List<ServiceType> ST = db.ServiceTypes.ToList();
+
+            name = name.Trim();
 
             var multipletable = from c in CusName
                                 join re in Re on c.Username equals re.Username //into table1
@@ -245,14 +298,26 @@ namespace Hotel_Web.Controllers
                                 //from S in table4.DefaultIfEmpty()
                                 join st in ST on S.ServiceId equals st.Id //into table5
                                 //from st in table5.DefaultIfEmpty()
+                                where c.Name.Contains(name)
                                 select new MultipleClass { Cus = c, Re = re, room = r, roomtype = rt, se = S, Setype = st };
 
+            var tables = multipletable.ToPagedList(page, 10);
+
+            if (page > tables.PageCount && tables.PageCount != 0)
+            {
+
+                return RedirectToAction(null, new { page = tables.PageCount });
+
+            }
+            if (Request.IsAjaxRequest()) return PartialView("_ReservationList", tables);
+
+            return View(tables);
 
 
-            return View(multipletable);
 
         }
 
+        [HttpPost]
         public ActionResult ReservationUpdatePaid(string id, int status) {
 
             var reservationPaid = db.Reservations.Find(id);
@@ -275,7 +340,7 @@ namespace Hotel_Web.Controllers
                 }
                 else
                 {
-                    TempData["Info"] = "Error Invalid Status !!";
+                    TempData["Info"] = "Error Invalid Status !!" + status;
                 }
             }
             else {
@@ -286,12 +351,13 @@ namespace Hotel_Web.Controllers
             return Redirect(url);
         }
 
-        public ActionResult ReservationStatus(string id, int status) {
+        [HttpPost]
+        public ActionResult ReservationStatus(string id, string status) {
 
             var ReservationStatus = db.Reservations.Find(id);
             if (ReservationStatus != null) {
 
-                if (status == 0)
+                if (status == "0")
                 {
                     if (ReservationStatus.Paid == true)
                     {
@@ -303,7 +369,7 @@ namespace Hotel_Web.Controllers
                         TempData["Info"] = "Cannot Check Out. Payment Not Paid!!";
                     }
                 }
-                else if (status == 1) {
+                else if (status == "1") {
 
                     ReservationStatus.Status = "Check-In";
                     db.SaveChanges();
@@ -324,11 +390,54 @@ namespace Hotel_Web.Controllers
 
         
         [Authorize(Roles = "Admin")]
-        public ActionResult AdminList()
+        public ActionResult AdminList(string sort, string sortdir, string name = "", int page = 1)
         {
-            var admin = db.Admins;
+            Func<Admin, object> fn = s => s.Username;
 
-            return View(admin);
+            switch (sort)
+            {
+                case "Name": fn = s => s.Name; break;
+                case "Phone": fn = s => s.Gender; break;
+                case "Gender": fn = s => s.PhoneNo; break;
+                case "Email": fn = s => s.Email; break;
+            }
+
+            if (page < 1)
+            { 
+                return RedirectToAction(null, new { page = 1 });
+            }
+
+            name = name.Trim();
+
+            if (sortdir == "DESC")
+            {
+                var model = db.Admins.Where(c => c.Name.Contains(name)).OrderBy(c => c.Username).OrderByDescending(fn).ToPagedList(page, 2);
+
+                if (page > model.PageCount && model.PageCount != 0)
+                {
+
+                    return RedirectToAction(null, new { page = model.PageCount });
+
+                }
+                if (Request.IsAjaxRequest()) return PartialView("_AdminList", model);
+
+                return View(model);
+            }
+            else
+            {
+                var model = db.Admins.Where(c => c.Name.Contains(name)).OrderBy(fn).ToPagedList(page, 2);
+
+                if (page > model.PageCount && model.PageCount != 0)
+                {
+
+                    return RedirectToAction(null, new { page = model.PageCount });
+
+                }
+
+                if (Request.IsAjaxRequest()) return PartialView("_AdminList", model);
+
+                return View(model);
+            }
         }
 
         [Authorize(Roles = "Admin")]
@@ -490,17 +599,90 @@ namespace Hotel_Web.Controllers
             return id;
             
         }
-        public ActionResult Room() {
+        public ActionResult Room(string room, string type, int page = 1) {
 
             List<Room> R = db.Rooms.ToList();
             List<RoomType> RT = db.RoomTypes.ToList();
 
+            if (page < 1)
+            {
+                // new {} is object without class
+                return RedirectToAction(null, new { page = 1 }); // it mean if the page is 0 the system will send the user back to the same page
+
+            }
+
+
             var display_room = from r in R
                                 join rt in RT on r.RoomTypeId equals rt.Id
                                 select new joinRoom { room = r, roomtype = rt};
+           //=============================
+            if (type == "Id")
+            {
 
+                var display = display_room.Where(c => c.room.Id.Contains(room)).ToPagedList(page, 10); 
+                if (display == null) {
+                    TempData["info"] = "Record Not Found!";
+                }
 
-            return View(display_room);
+                if (page > display.PageCount && display.PageCount != 0)
+                {
+
+                    return RedirectToAction(null, new { page = display.PageCount });
+
+                }
+
+                if (Request.IsAjaxRequest()) return PartialView("_Room", display);
+                return View(display);
+
+            }
+            //===========================
+            else if (type == "status")
+            {
+                var display = display_room.Where(c => c.room.Status.Contains(room)).ToPagedList(page, 10); 
+
+                if (display == null)
+                {
+                    TempData["info"] = "Record Not Found!";
+                }
+
+                if (page > display.PageCount && display.PageCount != 0)
+                {
+
+                    return RedirectToAction(null, new { page = display.PageCount });
+
+                }
+                if (Request.IsAjaxRequest()) return PartialView("_Room", display);
+                return View(display);
+            }
+            //========================
+            else if (type == "name"){
+
+                var display = display_room.Where(c => c.roomtype.Name.Contains(room)).ToPagedList(page, 10); 
+
+                if (display == null)
+                {
+                    TempData["info"] = "Record Not Found!";
+                }
+
+                if (page > display.PageCount && display.PageCount != 0)
+                {
+
+                    return RedirectToAction(null, new { page = display.PageCount });
+
+                }
+                if (Request.IsAjaxRequest()) return PartialView("_Room", display);
+                return View(display);
+            }
+            //=================
+           var display_all_room = display_room.ToPagedList(page, 10);
+            if (page > display_all_room.PageCount && display_all_room.PageCount != 0)
+            {
+
+                return RedirectToAction(null, new { page = display_all_room.PageCount });
+
+            }
+            if (Request.IsAjaxRequest()) return PartialView("_Room", display_all_room);
+            return View(display_all_room);
         }
 
 
@@ -541,6 +723,7 @@ namespace Hotel_Web.Controllers
             //return RedirectToAction("Room");
         }
 
+        [HttpPost]
         public ActionResult RoomEdit(string RoomId, char status) {
 
             var room = db.Rooms.Find(RoomId);
@@ -562,6 +745,7 @@ namespace Hotel_Web.Controllers
                     room.Status = "B";
                 }
                 else if (status == 'v') {
+
                     room.Status = "V";
                 }
 

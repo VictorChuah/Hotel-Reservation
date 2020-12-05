@@ -1,90 +1,12 @@
-﻿@model  IEnumerable<MultipleClass>
+﻿
 @{
     ViewBag.Title = "Reservation List";
 }
 
 
 @section head {
-    <style>
-        /* TODO */
-        .table img {
-            width: 200px;
-            height: 200px;
-            border: 1px solid #333;
-            object-fit: cover;
-            position: absolute;
-            top: 50%;
-            left: calc(100% + 10px);
-            transform: translate(0, -50%);
-            display: none;
-        }
-
-        .table tr:hover img {
-            display: block;
-        }
-
-        .table td {
-            text-align:center;
-        }
-        button {
-            style = margin:5px;
-        }
-
-    </style>
+   
 }
-
-<p>@Model.Count() record(s)</p> <!--help to count the record in the database-->
-<table class="table">
-    <tr>
-
-        <th width="100">  Name  </th>
-        <th width="100">  Room  </th>
-        <th width="100">  service  </th>
-        <th width="100">  CheckIn  </th>
-        <th width="100">  CheckOut  </th>
-        <th width="100">  Person  </th>
-        <th width="100">  Total  </th>
-        <th width="100">  Paid  </th>
-        <th width="100">  Status  </th>
-        <th width="200"></th>
-    </tr>
-    <!--hahah hello world-->
-    @foreach (var r in Model)
-    {
-        <tr>
-            <td>@r.Cus.Name</td>
-            <td>@r.roomtype.Name</td>
-            <td>@r.Setype.Name</td>
-            <td>@r.Re.CheckIn</td>
-            <td>@r.Re.CheckOut</td>
-            <td>@r.Re.Person</td>
-            <td>@r.Re.Total</td>
-            <td>@r.Re.Paid</td>
-            <td>@r.Re.Status</td>
-            <td style="position: relative" class="button" >
-
-                @if (@r.Re.Paid == true)
-                {
-                    <button  data-post="/Admin/ReservationUpdatePaid?id=@r.Re.Id&status=0">Unpaid</button>
-                }
-                else
-                {
-                    <button data-post="/Admin/ReservationUpdatePaid?id=@r.Re.Id&status=1">Paid</button>
-                }
-
-                @if (r.Re.Status == "Reserved")
-                {
-                    <button data-get="/Admin/ReservationStatus?id=@r.Re.Id&status=1">Check-In</button>
-                }
-                else if (r.Re.Status == "Check-In")
-                {
-                    <button data-get="/Admin/ReservationStatus?id=@r.Re.Id&status=0">Check-Out</button>
-                }
-                <button data-get="/Admin/ReservationStatus?id=@r.Re.Id&status=0">Edit</button>
-
-                <img src="~/Image/Room/@r.roomtype.PhotoURL" />
-            </td>
-
-        </tr>
-    }
-</table>
+    <div id="target">
+        @Html.Partial("_ReservationList")
+    </div>
