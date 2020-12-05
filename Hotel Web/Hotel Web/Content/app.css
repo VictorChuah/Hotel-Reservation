@@ -82,19 +82,19 @@ main h1 {
     border-collapse: collapse;
 }
 
-    .table th, .table td {
-        border: 1px solid #333;
-        padding: 3px;
-    }
+.table th, .table td {
+    border: 1px solid #333;
+    padding: 3px;
+}
 
-    .table th {
-        background: #666;
-        color: #ffffff;
-    }
+.table th {
+    background: #666;
+    color: #ffffff;
+}
 
-    .table tr:hover td {
-        background: #ccc;
-    }
+.table tr:hover td {
+    background: #ccc;
+}
 
 .detail th {
     text-align: left;
@@ -104,13 +104,13 @@ main h1 {
     color: inherit;
 }
 
-    .table th a.ASC::after {
-        content: '\25B4';
-    }
+.table th a.ASC::after {
+    content: '\25B4';
+}
 
-    .table th a.DESC::after {
-        content: '\25BE';
-    }
+.table th a.DESC::after {
+    content: '\25BE';
+}
 
 /* Form ----------------------------------------------------------------------- */
 label > * {
@@ -199,7 +199,13 @@ label > * {
         object-fit: cover;
 }
 
+/* Google chart --------------------------------------------------------------- */
+#chart {
+    border: 1px solid #333;
+    background: #ccc url(/Images/loader-64.gif) no-repeat center;
+}
 
-
-
+#loader > * {
+    vertical-align: text-top;
+}
 

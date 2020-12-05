@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "Demo 1 : Pie Chart (1)";
+}
+
+<div id="chart" style="width: 500px; height: 400px"></div>
+
+<p>
+    <a href="#" id="reload">Reload</a> |
+    <a href="#" id="download" download="piechart.jpg">Download</a>
+</p>
+
+@section foot {
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        // TODO(1): Load chart library
+        google.charts.load('current', { packages: ['corechart'] });
+        google.charts.setOnLoadCallback(init);
+
+        // TODO(2): Initialize data table and chart
+        let dt, opt, cht;
+
+        function init() {
+            dt = new google.visualization.DataTable();
+            dt.addColumn('string', 'Services Type');
+            dt.addColumn('number', 'Count');
+
+   
+            opt = {
+                title: 'Services count by Reservation',
+                fontName: 'Calibri',
+                fontSize: '16',
+                titleTextStyle: { fontSize: '20' },
+                chartArea: {
+                    width: '90%',
+                    height: '90%',
+                    top: '50',
+                    left: '50'
+                },
+                //is3D: true,
+                pieHole: 0.1,
+                colors: ['red', 'orange', 'yellow', 'green', 'blue', 'darkblue', 'purple', 'pink']
+            };
+
+            cht = new google.visualization.PieChart($('#chart')[0]);
+
+            //cht.draw(dt, opt);
+
+            $('#reload').click();
+        }
+
+        // TODO(3): Reload event
+        $('#reload').click(e => {
+            e.preventDefault();
+
+            let url = '/Report/Data2';
+            let param = {};
+
+            $.getJSON(url, param, json => {
+                dt.removeRows(0, dt.getNumberOfRows());
+                dt.addRows(json);
+                cht.draw(dt, opt);
+            });
+
+
+        });
+
+        // TODO(4): Download event
+        $('Download').click(e => {
+            e.target.href = cht.getImageURI();
+        });
+
+    </script>
+}
+

@@ -34,7 +34,7 @@
           <Property Name="LoginCount" Type="int" Nullable="false" />
           <Property Name="ResetToken" Type="varchar" MaxLength="100" />
           <Property Name="ResetExpire" Type="datetime" />
-          <Property Name="ActiveToken" Type="varchar" MaxLength="50" />
+          <Property Name="ActiveToken" Type="varchar" MaxLength="100" />
           <Property Name="Active" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Reservation">
@@ -71,8 +71,6 @@
           <Property Name="PhotoURL" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="Person" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL WEB\HOTEL WEB\APP_DATA\DB.MDF.dbo.Service' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Service">
           <Key>
             <PropertyRef Name="ReservationId" />
@@ -157,15 +155,8 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
           <EntitySet Name="Reservation" EntityType="Self.Reservation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Room" EntityType="Self.Room" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RoomType" EntityType="Self.RoomType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Service" EntityType="Self.Service" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ServiceType" EntityType="Self.ServiceType" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Service" EntityType="Self.Service" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Service].[ReservationId] AS [ReservationId], 
-    [Service].[ServiceId] AS [ServiceId], 
-    [Service].[Price] AS [Price], 
-    [Service].[Quantity] AS [Quantity]
-    FROM [dbo].[Service] AS [Service]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="FK_Reservation_Customer" Association="Self.FK_Reservation_Customer">
             <End Role="Customer" EntitySet="Customer" />
             <End Role="Reservation" EntitySet="Reservation" />
@@ -358,7 +349,7 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
           <Property Name="LoginCount" Type="Int32" Nullable="false" />
           <Property Name="ResetToken" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="ResetExpire" Type="DateTime" Precision="3" />
-          <Property Name="ActiveToken" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ActiveToken" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Active" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Reservations" Relationship="dbModel.FK_Reservation_Customer" FromRole="Customer" ToRole="Reservation" />
         </EntityType>
