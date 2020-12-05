@@ -259,5 +259,10 @@ namespace Hotel_Web.Controllers
             return (n + 1).ToString("'R'000");
         }
 
+        public ActionResult Location() {
+
+            return View();
+        }
+
     }
 }

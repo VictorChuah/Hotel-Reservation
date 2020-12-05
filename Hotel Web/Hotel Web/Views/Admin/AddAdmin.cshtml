@@ -32,7 +32,7 @@
 
 
         @Html.LabelFor(m => m.PhoneNo)
-        @Html.TextBoxFor(m => m.PhoneNo, new { maxlength = "13" })
+        @Html.TextBoxFor(m => m.PhoneNo, new { maxlength = "13", placeholder = "xxx-xxxxxxxxx" })
         @Html.ValidationMessageFor(m => m.PhoneNo)
 
 
