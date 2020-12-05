@@ -110,6 +110,7 @@ namespace Hotel_Web.Models
         [Required]
         [StringLength(100)]
         [EmailAddress]
+        [System.Web.Mvc.Remote("CheckEmail", "Account", ErrorMessage = "Duplicated {0}.")]
         [RegularExpression(@"^.+@.+mail.com$", ErrorMessage = "Invalid Email format")]
         public string Email { get; set; }
 
@@ -118,6 +119,9 @@ namespace Hotel_Web.Models
         [Phone]
         [RegularExpression(@"^(01)([0-9]{1})\-([0-9]{7})$", ErrorMessage = "Invalid Phone Number")]
         public string Phone { get; set; }
+
+        [Required]
+        public string Gender { get; set; }
 
         public string PhotoURL { get; set; }
 

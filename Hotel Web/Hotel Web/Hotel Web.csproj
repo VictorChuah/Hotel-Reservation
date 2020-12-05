@@ -161,6 +161,7 @@
       <LastGenOutput>db.Designer.cs</LastGenOutput>
     </EntityDeploy>
     <Content Include="Image\Misc\favicon.png" />
+    <Content Include="Image\Misc\home.png" />
     <Content Include="Image\Misc\loader.gif" />
     <Content Include="Image\Misc\Logo.PNG" />
     <Content Include="Image\Misc\reserve background.jpg" />
@@ -409,6 +410,7 @@
     <Content Include="Views\Home\ReserveHistory.cshtml" />
     <Content Include="Views\Report\ReservationReport.cshtml" />
     <Content Include="Views\Report\ServicesReport.cshtml" />
+    <Content Include="Views\Home\Location.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -340,6 +340,8 @@ namespace Hotel_Web.Controllers
             {
                 Name = m.Name,
                 Email = m.Email,
+                Gender = m.Gender,
+                Phone = m.PhoneNo,
                 PhotoURL = m.PhotoURL
             };
 
@@ -351,7 +353,6 @@ namespace Hotel_Web.Controllers
         [Authorize]
         public ActionResult Detail(AccDetailModel model)
         {
-            // TODO: Get member record of the current member
             var m = db.Customers.Find(User.Identity.Name);
 
             if (m == null)
@@ -381,6 +382,10 @@ namespace Hotel_Web.Controllers
 
                 m.Name = model.Name;
                 m.Email = model.Email;
+                m.PhoneNo = model.Phone;
+                m.Gender = model.Gender;
+                m.PhotoURL = model.PhotoURL;
+
                 db.SaveChanges();
 
                 TempData["Info"] = "Detail updated.";
