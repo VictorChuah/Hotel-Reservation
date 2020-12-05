@@ -10,6 +10,35 @@
 
 </script>
 
+<style>
+    .tables {
+        border-collapse: collapse;
+    }
+
+        .tables th, .tables td {
+            border: 1px solid #333;
+            padding: 3px;
+        }
+
+        .tables th {
+            background: #666;
+            color: #ffffff;
+        }
+
+        .tables tr:hover td {
+            background: #ccc;
+        }
+
+    .detail th {
+        text-align: left;
+    }
+
+    .tables th a {
+        color: inherit;
+    }
+
+</style>
+
 
    
 <div class="modal-content">
@@ -19,7 +48,7 @@
         <table border="0" align="center" width="420px" >
             <tr>
                 <th align="left"><h2></h2></th>
-                <td style="padding-left:280px"><button type="button" id="closbtn" class="close">×</button></td>
+                <td style="padding-left:55%"><button type="button" id="closbtn" class="close">×</button></td>
             </tr>
         </table>
     </div>
@@ -34,7 +63,7 @@
             
             <img src="~/Image/Profile/@Model.PhotoURL">
         </p>
-        <table class="table detail" align="center">
+        <table class="tables detail" align="center">
             <tr>
                 <th>Name</th>
                 <td>@Model.Name</td>

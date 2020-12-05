@@ -272,10 +272,20 @@ namespace Hotel_Web.Models
         [EmailAddress]
         public string Email { get; set; }
 
+        [Display(Name = "Password")]
         [Required]
-        [StringLength(20, MinimumLength = 5)]
-       // [RegularExpression(@"^([A-Za-z]{1,}[0-9]{1,}[-!@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{1,}){5,20}$")]
+        [StringLength(20, MinimumLength = 6)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-!#@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!#@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{8,20}$",
+             ErrorMessage = "Password must be between 6 to 20, contain at least 1 lower and uppercase, a digit and a symbol")]
         public string Password { get; set; }
+
+        [Display(Name = "Confirm Password")]
+        [Required]
+        [StringLength(20, MinimumLength = 6)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-!#@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\])[A-Za-z\d-!#@$%^&*()_+|~=`{}\[\]:;'<>?,.\/\\]{8,20}$",
+            ErrorMessage = "Password must be between 6 to 20, contain at least 1 lower and uppercase, a digit and a symbol")]
+        [System.ComponentModel.DataAnnotations.Compare("Password")]
+        public string ComfirmPassword { get; set; }
 
         [Required]
         public HttpPostedFileBase Photo { get; set; }

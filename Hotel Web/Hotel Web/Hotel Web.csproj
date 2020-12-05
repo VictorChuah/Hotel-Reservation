@@ -151,6 +151,9 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\images\Jcrop.gif" />
+    <Content Include="Content\jquery.Jcrop.css" />
+    <Content Include="Content\jquery.Jcrop.min.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Global.asax" />
     <EntityDeploy Include="Models\db.edmx">
@@ -218,6 +221,8 @@
     <Content Include="Scripts\jquery-3.5.1.slim.js" />
     <Content Include="Scripts\jquery-3.5.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.Jcrop.js" />
+    <Content Include="Scripts\jquery.Jcrop.min.js" />
     <Content Include="Scripts\jquery.maskedinput.js" />
     <Content Include="Scripts\jquery.maskedinput.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
@@ -390,6 +395,10 @@
     <Content Include="Views\Admin\RoomType.cshtml" />
     <Content Include="Views\Admin\EditRoomType.cshtml" />
     <Content Include="Views\Admin\AddRoomType.cshtml" />
+    <Content Include="Views\Admin\_CustomerList.cshtml" />
+    <Content Include="Views\Admin\_ReservationList.cshtml" />
+    <Content Include="Views\Admin\_Room.cshtml" />
+    <Content Include="Views\Admin\_AdminList.cshtml" />
     <Content Include="Views\Account\ForgetPass.cshtml" />
     <Content Include="Views\Account\resetPass.cshtml" />
     <Content Include="Views\Home\Reserve.cshtml" />
@@ -397,6 +406,7 @@
     <Content Include="Views\Home\Detail.cshtml" />
     <Content Include="Views\Account\ActivateAccount.cshtml" />
     <Content Include="Views\Home\ReserveHistory.cshtml" />
+
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

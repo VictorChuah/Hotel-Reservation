@@ -144,7 +144,7 @@ label > * {
 /* Flash message-------------------------------------------------------------- */
 /*:not(:empty) if empty the css will not will not show*/
 .info:not(:empty) {
-    position: absolute; /*use to pop up and not lefta column to display the conten and the content will informn of the header in layout page*/
+   position: absolute; /*use to pop up and not lefta column to display the conten and the content will informn of the header in layout page*/
     background: #666;
     color: #fff;
     border: 1px solid #333;
@@ -153,6 +153,7 @@ label > * {
     max-width: 500px;
     left: 50%;
     transform: translate(-50%);
+
     top: -100px; /*the content will above 100%*/
     opacity: 0;
     animation: fade 3s linear 0s 1 normal;

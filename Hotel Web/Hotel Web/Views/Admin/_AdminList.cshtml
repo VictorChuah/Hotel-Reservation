@@ -1,0 +1,147 @@
+﻿@using PagedList
+@using PagedList.Mvc
+
+@model IPagedList<Admin>
+
+
+
+@{
+    // TODO: fields, sort and sortdir
+    string[] fields = { "Name", "Phone", "Gender", "Email" };
+    string sort = Request.Params["sort"];
+    string sortdir = Request.Params["sortdir"];
+
+    // TODO: AJAX option
+    var ao = new AjaxOptions
+    {
+
+        //HttpMethod = "get"
+        UpdateTargetId = "target",
+        LoadingElementId = "loader"
+
+    };
+
+}
+
+<style>
+    /* TODO */
+    .table img {
+        width: 100px;
+        height: 100px;
+        border: 1px solid #333;
+        object-fit: cover;
+        position: absolute;
+        top: 50%;
+        left: calc(100% + 10px);
+        transform: translate(0, -50%);
+        display: none;
+    }
+
+    .table tr:hover img {
+        display: block;
+    }
+
+    .table th {
+        width: 200px;
+    }
+</style>
+
+<script>
+
+   /* function detail(username) {
+
+        location.href = "/Admin/Admindetail?username=" + username;
+
+
+    }*/
+
+    function edit(username) {
+        location.href = "/Admin/AdminEdit?username=" + username;
+    }
+
+    function add() {
+        location.href = "/Admin/AddAdmin";
+    }
+
+</script>
+
+<div>
+    @Model.Count of @Model.TotalItemCount record(s) |
+    <!--totalitemcount will count the total record in the database and must have IpagedList to activate the function-->
+    Page @Model.PageNumber of @Model.PageCount
+
+    <!--<button data-get="/Admin/AddAdmin" style="left:20%;"> Add Admin</button>-->
+    <button onclick="add()">Add Admin</button>
+
+
+</div>
+
+<table class="table">
+    <tr>
+        <!--
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Gender</th>
+        <th>Email</th>
+        <th></th>-->
+        @foreach (var f in fields)
+        {
+            string d = "ASC";
+            string c = "";
+
+            if (f == sort)
+            {
+                d = sortdir == "DESC" ? "ASC" : "DESC";
+                c = sortdir;
+            }
+
+            <th>
+                <!-- TODO: AJAX link -->
+
+                @Ajax.ActionLink(f, null, new { sort = f, sortdir = d }, ao, new { @class = c })
+
+            </th>
+        }
+
+        <th width="200px"></th>
+    </tr>
+
+    @foreach (var a in Model)
+    {
+        <tr>
+            <td>@a.Name</td>
+            <td>@a.PhoneNo</td>
+            <td>@(a.Gender == "F" ? "👧🏻  Female" : "👦🏻 Male")</td>
+            <td>@a.Email</td>
+            <td style="position: relative">
+                @*<a href="~/Home/Detail?id=@s.Id">Detail</a>*@
+                @*<button data-get="/Admin/Admindetail?username=@a.Username">Detail</button>
+                  <button onclick="detail('@a.Username')">Detail</button>
+                  <button data-get="/Admin/AdminEdit?username=@a.Username">Edit</button>*@
+                <button onclick="edit('@a.Username')">Edit</button>
+                <img src="~/Image/Profile/@a.PhotoURL" />
+            </td>
+
+        </tr>
+    }
+</table>
+
+
+@{
+    var po = PagedListRenderOptions.ClassicPlusFirstAndLast;
+    po.LinkToFirstPageFormat = "First";
+    po.LinkToLastPageFormat = "Last";
+    po.LinkToPreviousPageFormat = "Previous";
+    po.LinkToNextPageFormat = "Next";
+
+    // TODO: AJAX option
+
+}
+
+<!-- TODO: Enable AJAX -->
+@Html.PagedListPager(
+    Model,
+    p => $"?page={p}",
+    PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(po, ao)
+)
+
