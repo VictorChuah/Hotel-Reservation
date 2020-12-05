@@ -163,6 +163,10 @@ namespace Hotel_Web.Controllers
                 else if (user.Active == false)                      //if didnt activate
                 {
                     TempData["Info"] = "Please check your email to activate your account.";
+                    string generate = model.Username + Guid.NewGuid().ToString("n");
+                    user.ActiveToken = generate;
+                    db.SaveChanges();
+                    SendEmail(user, null, generate, 'A');
                 }
                 else
                 {
@@ -233,6 +237,13 @@ namespace Hotel_Web.Controllers
             return Json(valid, JsonRequestBehavior.AllowGet);
         }
 
+        // GET: Account/CheckEmail 
+        public ActionResult CheckEmail(string email)
+        {
+            bool isValid = (db.Admins.Any(a => a.Email !=email) && db.Customers.Any(c => c.Email != email));
+            return Json(isValid, JsonRequestBehavior.AllowGet);
+        }
+
         // GET: Account/Register
         public ActionResult Register()
         {
@@ -251,10 +262,27 @@ namespace Hotel_Web.Controllers
                 ModelState.AddModelError("Username", "Duplicated Username.");
             }
 
+            if (ModelState.IsValidField("Email") && !(db.Admins.Any(a => a.Email != model.Email) && db.Customers.Any(c => c.Email != model.Email)))
+            {
+                ModelState.AddModelError("Email", "Duplicated Email.");
+
+            }
+
             string photoURL = null;
-            if(model.Photo != null)
+            if (model.Photo != null)
             {
                 photoURL = SavePhoto(model.Photo);
+            }
+            else 
+            {
+                if (model.Gender == "M")
+                {
+                    photoURL = "iconMale.jpg";
+                }
+                else if (model.Gender == "F")
+                {
+                    photoURL = "iconFemale.jpg";
+                }
             }
             
             string err = ValidatePhoto(model.Photo);

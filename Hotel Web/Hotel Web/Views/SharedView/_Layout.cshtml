@@ -17,13 +17,16 @@
         <div>
             @if (User.Identity.IsAuthenticated)
             {
-                <span>Welcome @User.Identity.Name</span>
+                <span>Welcome <a href="~/Account/Detail">@User.Identity.Name</a> </span>
             }
             @if (Session["PhotoURL"] != null)
             {
-                <img src="~/Image/Profile/@Session["PhotoURL"]">
+                <a href="~/Account/Detail">
+                    <img src="~/Image/Profile/@Session["PhotoURL"]">
+                </a>
             }
-        </div>
+
+</div>
         <table>
             <tr>
                 <th>
@@ -36,38 +39,19 @@
         </table>
     </header>
     <nav>
-        <a href="~/Home/Index">Index</a>
-
-
-        @if (User.Identity.IsAuthenticated)
+        <a href="~/Home/Index">Home</a>
+        @if (!User.Identity.IsAuthenticated)
         {
-            <a href="~/Account/Logout">Logout</a>
-        }
-        else
-        {
-            <a href="~/Home/Index">Home</a>
             <a href="~/Home/Room">Room</a>
-            <a href="~/Home/AboutUs">About Us</a>
-            <a href="~/Home/Location">Location</a>
-            <a href="~/Account/AdminLogin">Admin login</a>
-            <a href="~/Account/CustLogin">Customer login</a>
             <a href="~/Account/Register">Register</a>
-        }
 
+        }
         @if (User.IsInRole("Member"))
         {
-            <a href="~/Account/ChangePassword">ChangePassword</a>
-            <a href="~/Account/Detail">Detail (acc controller)</a>
+
             <a href="~/Home/RoomList">RoomList</a>
             <a href="~/Home/ReserveHistory">Reserve History</a>
-            <!--<a href="~/Admin/_CustomerDetail">cust detail</a>-->
         }
-
-        @if (User.IsInRole("Member") || User.IsInRole("Admin"))
-        {
-            //<a href="~/Admin/CustomerEdit">Customer Edit</a>
-        }
-
         @if (User.IsInRole("Admin"))
         {
             <a href="/Admin/ListCustomer">Customer List</a>
@@ -76,6 +60,30 @@
             <a href="/Admin/ReservationList">Reservation</a>
             <a href="/Admin/Room">Room</a>
         }
+            <a href="~/Home/AboutUs">About Us</a>
+            <a href="~/Home/Location">Location</a>
+
+
+        <div></div>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a href="~/Account/Logout">Logout</a>
+        }
+        else
+        {
+            <a href="~/Account/AdminLogin">Admin login</a>
+            <a href="~/Account/CustLogin">Customer login</a>
+        }
+
+
+
+        @if (User.IsInRole("Member") || User.IsInRole("Admin"))
+        {
+            //<a href="~/Admin/CustomerEdit">Customer Edit</a>
+        }
+
+
 
 
     </nav>

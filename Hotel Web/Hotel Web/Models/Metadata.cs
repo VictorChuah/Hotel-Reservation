@@ -88,6 +88,7 @@ namespace Hotel_Web.Models
         [Required]
         [StringLength(100)]
         [EmailAddress]
+        [System.Web.Mvc.Remote("CheckEmail", "Account", ErrorMessage = "Duplicated {0}.")]
         [RegularExpression(@"^.+@.+mail.com$", ErrorMessage = "Invalid Email format")]
         public string Email { get; set; }
 
