@@ -166,7 +166,6 @@ namespace Hotel_Web.Controllers
         }
 
         [Authorize]
-        
         public ActionResult CustomerEdit(string username)
         {
             var model = db.Customers.Find(username);
