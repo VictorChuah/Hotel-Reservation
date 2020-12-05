@@ -310,6 +310,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -407,6 +408,8 @@
     <Content Include="Views\Home\Detail.cshtml" />
     <Content Include="Views\Account\ActivateAccount.cshtml" />
     <Content Include="Views\Home\ReserveHistory.cshtml" />
+    <Content Include="Views\Report\ReservationReport.cshtml" />
+    <Content Include="Views\Report\ServicesReport.cshtml" />
     <Content Include="Views\Home\Location.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

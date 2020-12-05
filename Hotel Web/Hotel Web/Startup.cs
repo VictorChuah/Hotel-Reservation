@@ -15,7 +15,7 @@ namespace Hotel_Web
             var options = new CookieAuthenticationOptions
             {
                 AuthenticationType = "AUTH", // id of authetication
-                LoginPath = new PathString("/Account/Login"),
+                LoginPath = new PathString("/Account/CustLogin"),
                 LogoutPath = new PathString("/Account/Logout"),
             };
             app.UseCookieAuthentication(options);

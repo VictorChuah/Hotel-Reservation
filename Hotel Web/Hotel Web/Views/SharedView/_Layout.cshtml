@@ -42,14 +42,14 @@
         <a href="~/Home/Index">Home</a>
         @if (!User.Identity.IsAuthenticated)
         {
-            <a href="~/Home/Room">Room</a>
+            <a href="~/Home/RoomList">Room</a>
             <a href="~/Account/Register">Register</a>
 
         }
         @if (User.IsInRole("Member"))
         {
 
-            <a href="~/Home/RoomList">RoomList</a>
+            <a href="~/Home/RoomList">Room</a>
             <a href="~/Home/ReserveHistory">Reserve History</a>
         }
         @if (User.IsInRole("Admin"))
@@ -59,6 +59,8 @@
             <!-- <a href="/Admin/AdminEdit">Admin Edit</a>-->
             <a href="/Admin/ReservationList">Reservation</a>
             <a href="/Admin/Room">Room</a>
+            <a href="/Report/ReservationReport">Reservation Report</a>
+            <a href = "/Report/ServicesReport" >Services Report </a>
         }
             <a href="~/Home/AboutUs">About Us</a>
             <a href="~/Home/Location">Location</a>

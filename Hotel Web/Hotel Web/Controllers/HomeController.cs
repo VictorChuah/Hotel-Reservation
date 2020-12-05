@@ -37,7 +37,6 @@ namespace Hotel_Web.Controllers
         }
 
         //GET: Home/RoomList
-        [Authorize]
         public ActionResult RoomList()
         {
             var model = db.RoomTypes;
@@ -155,7 +154,7 @@ namespace Hotel_Web.Controllers
                     //NOTE: Insert AddOn through Reservation
                     r.Services.Add(new Service
                     {
-                        ReservationId = r.Id,
+                        //ReservationId = r.Id,
                         ServiceId = s.Id,
                         Price = s.Price,
                         Quantity = q
