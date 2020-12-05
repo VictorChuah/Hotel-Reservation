@@ -32,7 +32,13 @@
 <p>
     [
     <a href="/Account/Register">Register</a> |
-    <a href="/Account/Reset">Reset Password</a>
+    <a id='query' href="/Account/ForgetPass">Forget Password?</a>
     ]
 </p>
 
+@section foot {
+    <script>
+        let link = document.getElementById("query");
+        link.href = link.href + "?acc=" + 'a';
+    </script>
+}
