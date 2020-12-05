@@ -1,0 +1,20 @@
+﻿@using System.Web.Mvc
+
+@helper CheckBoxList(string name, MultiSelectList list, bool br = true)
+{
+    <div>
+        @foreach (var item in list)
+        {
+            string state = item.Selected ? "checked" : "";
+
+            <label>
+                <input type="checkbox" name="@name" @state value="@item.Value">@item.Text
+            </label>
+
+            if (br)
+            {
+                <br>
+            }
+        }
+    </div>
+}

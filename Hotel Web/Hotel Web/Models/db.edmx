@@ -34,7 +34,7 @@
           <Property Name="LoginCount" Type="int" Nullable="false" />
           <Property Name="ResetToken" Type="varchar" MaxLength="100" />
           <Property Name="ResetExpire" Type="datetime" />
-          <Property Name="ActiveToken" Type="varbinary" MaxLength="100" />
+          <Property Name="ActiveToken" Type="varchar" MaxLength="50" />
           <Property Name="Active" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Reservation">
@@ -197,18 +197,18 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
           <EntitySet Name="Rooms" EntityType="dbModel.Room" />
           <EntitySet Name="RoomTypes" EntityType="dbModel.RoomType" />
           <EntitySet Name="ServiceTypes" EntityType="dbModel.ServiceType" />
-          <EntitySet Name="Services" EntityType="dbModel.Service" />
           <AssociationSet Name="FK_Reservation_Room" Association="dbModel.FK_Reservation_Room">
             <End Role="Room" EntitySet="Rooms" />
             <End Role="Reservation" EntitySet="Reservations" />
           </AssociationSet>
-          <AssociationSet Name="FK_Service_ToReservation" Association="dbModel.FK_Service_ToReservation">
-            <End Role="Reservation" EntitySet="Reservations" />
-            <End Role="Service" EntitySet="Services" />
-          </AssociationSet>
           <AssociationSet Name="FK_Room_RoomType" Association="dbModel.FK_Room_RoomType">
             <End Role="RoomType" EntitySet="RoomTypes" />
             <End Role="Room" EntitySet="Rooms" />
+          </AssociationSet>
+          <EntitySet Name="Services" EntityType="dbModel.Service" />
+          <AssociationSet Name="FK_Service_ToReservation" Association="dbModel.FK_Service_ToReservation">
+            <End Role="Reservation" EntitySet="Reservations" />
+            <End Role="Service" EntitySet="Services" />
           </AssociationSet>
           <AssociationSet Name="FK_Service_ToServiceType" Association="dbModel.FK_Service_ToServiceType">
             <End Role="ServiceType" EntitySet="ServiceTypes" />
@@ -219,7 +219,7 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
             <End Role="Customer" EntitySet="Customers" />
             <End Role="Reservation" EntitySet="Reservations" />
           </AssociationSet>
-        </EntityContainer>
+          </EntityContainer>
         <EntityType Name="Admin">
           <Key>
             <PropertyRef Name="Username" />
@@ -283,18 +283,6 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
           <Property Name="Price" Type="Decimal" Nullable="false" Precision="6" Scale="2" />
           <NavigationProperty Name="Services" Relationship="dbModel.FK_Service_ToServiceType" FromRole="ServiceType" ToRole="Service" />
         </EntityType>
-        <EntityType Name="Service">
-          <Key>
-            <PropertyRef Name="ReservationId" />
-            <PropertyRef Name="ServiceId" />
-          </Key>
-          <Property Name="ReservationId" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
-          <Property Name="ServiceId" Type="String" Nullable="false" MaxLength="4" FixedLength="true" Unicode="false" />
-          <Property Name="Price" Type="Decimal" Precision="6" Scale="2" />
-          <Property Name="Quantity" Type="Int32" />
-          <NavigationProperty Name="Reservation" Relationship="dbModel.FK_Service_ToReservation" FromRole="Service" ToRole="Reservation" />
-          <NavigationProperty Name="ServiceType" Relationship="dbModel.FK_Service_ToServiceType" FromRole="Service" ToRole="ServiceType" />
-        </EntityType>
         <Association Name="FK_Reservation_Room">
           <End Type="dbModel.Room" Role="Room" Multiplicity="1" />
           <End Type="dbModel.Reservation" Role="Reservation" Multiplicity="*" />
@@ -307,18 +295,6 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Service_ToReservation">
-          <End Type="dbModel.Reservation" Role="Reservation" Multiplicity="1" />
-          <End Type="dbModel.Service" Role="Service" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Reservation">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Service">
-              <PropertyRef Name="ReservationId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Room_RoomType">
           <End Type="dbModel.RoomType" Role="RoomType" Multiplicity="1" />
           <End Type="dbModel.Room" Role="Room" Multiplicity="*" />
@@ -328,6 +304,30 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
             </Principal>
             <Dependent Role="Room">
               <PropertyRef Name="RoomTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Service">
+          <Key>
+            <PropertyRef Name="ReservationId" />
+            <PropertyRef Name="ServiceId" />
+          </Key>
+          <Property Name="ReservationId" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="ServiceId" Type="String" Nullable="false" MaxLength="4" FixedLength="true" Unicode="false" />
+          <Property Name="Price" Type="Decimal" Precision="6" Scale="2" />
+          <Property Name="Quantity" Type="Int32" />
+          <NavigationProperty Name="Reservation" Relationship="dbModel.FK_Service_ToReservation" FromRole="Service" ToRole="Reservation" />
+          <NavigationProperty Name="ServiceType" Relationship="dbModel.FK_Service_ToServiceType" FromRole="Service" ToRole="ServiceType" />
+        </EntityType>
+        <Association Name="FK_Service_ToReservation">
+          <End Type="dbModel.Reservation" Role="Reservation" Multiplicity="1" />
+          <End Type="dbModel.Service" Role="Service" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reservation">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Service">
+              <PropertyRef Name="ReservationId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -358,7 +358,7 @@ warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL 
           <Property Name="LoginCount" Type="Int32" Nullable="false" />
           <Property Name="ResetToken" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="ResetExpire" Type="DateTime" Precision="3" />
-          <Property Name="ActiveToken" Type="Binary" MaxLength="100" FixedLength="false" />
+          <Property Name="ActiveToken" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Active" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Reservations" Relationship="dbModel.FK_Reservation_Customer" FromRole="Customer" ToRole="Reservation" />
         </EntityType>

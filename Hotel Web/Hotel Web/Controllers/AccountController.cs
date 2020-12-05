@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity;
 using System.Security.Claims;
 using Microsoft.Owin.Security;
 using GoogleRecaptcha.Infrastructure.Attributes;
+using System.Net.Mail;
 
 namespace Hotel_Web.Controllers
 {
@@ -52,6 +53,18 @@ namespace Hotel_Web.Controllers
         {
             Request.GetOwinContext().Authentication.SignOut();
         }
+
+        /*private char checkUserRole(string username)
+        {
+            char role = ' ';
+
+            if (db.Customers.Find(username) != null)
+                role = 'c';
+            else if (db.Admins.Find(username) != null)
+                role = 'a';
+
+            return role;
+        }*/
 
         // --------------------------------------------------------------------
         // Photo helper functions
@@ -127,18 +140,12 @@ namespace Hotel_Web.Controllers
             if (ModelState.IsValid)
             {
                 var user = db.Customers.Find(model.Username);
-
-
+                //add active
                 if (user == null)                                       //no such user
                     ModelState.AddModelError("Username", "Username does not exist.");
 
-                else if (user.Blocked != null)                        //blocked
-                {
-                    //is current time passed the blocked time?
-                    Boolean checkBlock = (user.Blocked < DateTime.Now);
-                    if (checkBlock == false)
-                        ModelState.AddModelError("Username", "This account has been blocked until " + user.Blocked + ".");
-                }
+                else if (user.Blocked != null && user.Blocked > DateTime.Now)                        //blocked,is current time passed the blocked time?
+                    ModelState.AddModelError("Username", "This account has been blocked until " + user.Blocked + ".");
 
                 else if (!VerifyPassword(user.HashPass, model.Password)) //wrong password
                 {
@@ -153,10 +160,16 @@ namespace Hotel_Web.Controllers
                         db.SaveChanges();
                     }
                 }
+                else if (user.Active == false)                      //if didnt activate
+                {
+                    TempData["Info"] = "Please check your email to activate your account.";
+                }
                 else
                 {
                     SignIn(user.Username, "Member", model.RememberMe);
                     Session["PhotoURL"] = user.PhotoURL;
+                    user.Blocked = null;
+                    db.SaveChanges();
 
                     if (returnURL == "")
                     {
@@ -199,7 +212,6 @@ namespace Hotel_Web.Controllers
                     ModelState.AddModelError("Password", "Username and Password not matched.");
                 }
 
-                //if ()
             }
 
             return View(model);
@@ -253,6 +265,8 @@ namespace Hotel_Web.Controllers
 
             if (ModelState.IsValid)
             {
+                string generate = model.Username + Guid.NewGuid().ToString("n"); //activation code
+
                 var m = new Customer
                 {
                     Username = model.Username,
@@ -266,16 +280,19 @@ namespace Hotel_Web.Controllers
                     LoginCount = 0,
                     ResetToken = null,
                     ResetExpire = null,
-                    ActiveToken = null,
+                    ActiveToken = generate,
                     Active = false
                 };
 
                 db.Customers.Add(m);
                 db.SaveChanges();
 
-                TempData["Info"] = "Account registered. Please login.";
+                SendEmail(m, null, generate, 'A');    //send email
+
+                TempData["Info"] = "Account registered. Please go to email to active account.";
                 return RedirectToAction("CustLogin", "Account");
             }
+
 
             return View(model);
         }
@@ -348,7 +365,7 @@ namespace Hotel_Web.Controllers
 
         // GET: Account/Password
         [Authorize]
-        public ActionResult Password()
+        public ActionResult ChangePassword()
         {
             return View();
         }
@@ -356,7 +373,7 @@ namespace Hotel_Web.Controllers
         // POST: Account/Password
         [HttpPost]
         [Authorize]
-        public ActionResult Password(ChangePassModel model)
+        public ActionResult ChangePassword(ChangePassModel model)
         {
             var user = db.Customers.Find(User.Identity.Name);
 
@@ -379,10 +396,229 @@ namespace Hotel_Web.Controllers
             return View(model);
         }
 
-        // GET: Account/Reset
-        public ActionResult Reset()
+        // GET: Account/ForgetPass forgetpass -> reset pass
+        public ActionResult ForgetPass(forgetPassModel model, char acc)
         {
+            if (acc == 'c')
+            {
+                var user = db.Customers.Find(model.Username);
+
+                if (user == null || user.Email != model.Email)
+                {
+                    ModelState.AddModelError("Email", "Username and email not matched.");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    string generate = user.Username + Guid.NewGuid().ToString("n");
+                    user.ResetToken = generate;
+                    user.ResetExpire = DateTime.Now.AddMinutes(5);
+
+                    db.SaveChanges();
+
+                    SendEmail(user, null, generate, 'R');
+
+                    TempData["Info"] = "Please check your email to reset password.";
+                    return RedirectToAction("CustLogin", "Account");
+                }
+            }
+            else if (acc == 'a')
+            {
+                var user = db.Admins.Find(model.Username);
+
+                if (user == null || user.Email != model.Email)
+                {
+                    ModelState.AddModelError("Email", "Username and email not matched.");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    string generate = user.Username + Guid.NewGuid().ToString("n");
+                    user.ResetToken = generate;
+                    user.ResetExpire = DateTime.Now.AddMinutes(5);
+
+                    db.SaveChanges();
+
+                    SendEmail(null, user, generate, 'R');
+
+                    TempData["Info"] = "Please check your email to reset password.";
+                    return RedirectToAction("AdminLogin", "Account");
+                }
+            }
+            return View(model);
+        }
+
+        public ActionResult resetPass(string token, string username)
+        {
+            var user = db.Customers.Find(username);
+            var user1 = db.Admins.Find(username);
+
+            try
+            {
+                if (token != user.ResetToken || user.ResetExpire < DateTime.Now || user == null)
+                {
+                    TempData["Info"] = "Token not exist.";
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            try
+            {
+                if (token != user1.ResetToken || user1.ResetExpire < DateTime.Now || user1 == null)
+                {
+                    TempData["Info"] = "Token not exist.";
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult resetPass(ResetPassModel model, string username, char acc)
+        {
+            if (acc == 'c')
+            {
+                var user = db.Customers.Find(username);
+
+                if (ModelState.IsValid)
+                {
+                    user.HashPass = HashPassword(model.New);
+                    user.ResetToken = null;
+                    user.ResetExpire = null;
+                    db.SaveChanges();
+
+                    TempData["Info"] = "Password Updated";
+                    return RedirectToAction("CustLogin", "Account");
+                }
+            }
+            else if (acc == 'a')
+            {
+                var user = db.Admins.Find(username);
+
+                if (ModelState.IsValid)
+                {
+                    user.HashPass = HashPassword(model.New);
+                    user.ResetToken = null;
+                    user.ResetExpire = null;
+                    db.SaveChanges();
+
+                    TempData["Info"] = "Password Updated";
+                    return RedirectToAction("AdminLogin", "Account");
+                }
+            }
+
+            return RedirectToAction("Index","Home");
+        }
+
+        public ActionResult ActivateAccount(string token, string username)
+        {
+            var user = db.Customers.Find(username);
+
+            ViewBag.MetaRefresh = "<meta http-equiv='refresh' content='3;url=" + Url.Action("CustLogin", "Account") + "' />";
+
+            if (token == user.ActiveToken)
+            {
+                user.Active = true;
+                user.ActiveToken = null;
+                db.SaveChanges();
+                TempData["Info"] = "Account Activated!";
+            }
+            else
+                TempData["Info"] = "Invalid activate token!";
+
+            return View();
+        }
+
+        private void SendEmail(Customer user,Admin user1, string generate, char type)
+        {
+            var m = new MailMessage();
+
+            string name = " ";
+            string username = " ";
+            string email = " ";
+            string photo = " ";
+            char acc = ' ';
+
+            if (user != null)
+            {
+                name = user.Name;
+                username = user.Username;
+                email = user.Email;
+                photo = user.PhotoURL;
+                acc = 'c';
+            }
+            else if (user1 != null)
+            {
+                name = user1.Name;
+                username = user1.Username;
+                email = user1.Email;
+                photo = user1.PhotoURL;
+                acc = 'a';
+
+            }
+            else
+                RedirectToAction("Index", "Home");
+
+            m.To.Add($"{name} <{email}>");
+            m.IsBodyHtml = true;
+
+            if (photo != null)
+            {
+                string path = Server.MapPath($"~/Image/Profile/{photo}");
+                var att = new Attachment(path);
+                att.ContentId = "photo";
+                m.Attachments.Add(att);
+            }
+
+            string url = Url.Action("resetPass", "Account", new { token = generate, username = username, acc = acc }, "http");      //http
+            string url2 = Url.Action("resetPass", "Account", new { token = generate, username = username, acc = acc }, "https");      //https
+
+            if (type == 'R')    //reset pass
+            {
+                m.Subject = "Reset Password";
+                m.Body = $@"
+                <img src='cid:photo' style='width: 100px; height: 100px;
+                                            border: 1px solid #333'>
+                <p>Dear {name},<p>
+                <p>Please click the following link to reset your password</p>
+                <h1 style='color: red'><a href='{url}'>Reset Password</a></h1>
+                <p>If link above failed, please try the following link</p>
+                <p><a href='{url2}'>Second Link</a></p>
+                <p>From, Funny Hotel</p>
+                <img src='https://ibb.co/ChnmYWT'>
+            ";
+            }
+            else if (type == 'A')   //activate acc
+            {
+                url = Url.Action("ActivateAccount", "Account", new { token = generate, username = username, acc = acc }, "http");     //http
+                url2 = Url.Action("ActivateAccount", "Account", new { token = generate, username = username, acc = acc }, "https");       //https
+
+                m.Subject = "Activate Account";
+                m.Body = $@"
+                <img src='cid:photo' style='width: 100px; height: 100px;
+                                            border: 1px solid #333'>
+                <p>Dear {name},<p>
+                <p>Please click the following link to activate your account</p>
+                <h1 style='color: red'><a href='{url}'>Activate Account</a></h1>
+                <p>If link above failed, please try the following link</p>
+                <p><a href='{url2}'>Second Link</a></p>
+                <p>From, Funny Hotel</p>
+                <img src='https://ibb.co/ChnmYWT'>
+            ";
+            }
+            else
+                RedirectToAction("Index", "Home");
+
+            new SmtpClient().Send(m);
         }
 
     }
