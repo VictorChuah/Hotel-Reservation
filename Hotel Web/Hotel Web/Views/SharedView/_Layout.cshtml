@@ -16,7 +16,7 @@
         <div>
             @if (User.Identity.IsAuthenticated)
             {
-                <span>Username = @User.Identity.Name</span>
+                <span>Welcome @User.Identity.Name</span>
             }
             @if (Session["PhotoURL"] != null)
             {
