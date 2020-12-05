@@ -8,6 +8,7 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    background: url('/Image/Misc/reserve background.jpg');
 }
 
 header, footer {

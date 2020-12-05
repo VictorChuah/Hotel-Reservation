@@ -36,7 +36,7 @@
     </header>
     <nav>
         <a href="~/Home/Index">Index</a>
-        <a href="~/Home/RoomList">RoomList</a>
+
 
         @if (User.Identity.IsAuthenticated)
         {
@@ -57,6 +57,8 @@
         {
             <a href="~/Account/ChangePassword">ChangePassword</a>
             <a href="~/Account/Detail">Detail (acc controller)</a>
+            <a href="~/Home/RoomList">RoomList</a>
+            <a href="~/Home/ReserveHistory">Reserve History</a>
             <!--<a href="~/Admin/_CustomerDetail">cust detail</a>-->
         }
 

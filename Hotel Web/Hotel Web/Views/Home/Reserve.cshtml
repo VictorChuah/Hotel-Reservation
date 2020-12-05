@@ -3,6 +3,14 @@
     ViewBag.Title = "Reserve";
     string min = DateTime.Today.ToString("yyyy-MM-dd");
     string max = DateTime.Today.AddDays(30).ToString("yyyy-MM-dd");
+
+    var ao = new AjaxOptions
+    {
+        HttpMethod = "get",
+        UpdateTargetId = "target", // use to send the result to the destination when the result is come back
+        LoadingElementId = "loader", // specify the loading item
+        OnSuccess = "highlight"
+    };
 }
 <style>
     body {
@@ -24,10 +32,7 @@
 <form class="form" method="post">
     @Html.ValidationSummary(true)
     <table>
-        <tr>
-            <td class="a">@Html.LabelFor(m => m.RoomTypeId) </td>
-            <td><b>@Html.DisplayFor(m => m.RoomTypeId)</b></td>
-        </tr>
+       
         <tr>
             <td class="a">@Html.LabelFor(m => m.RoomTypeName) </td>
             <td><b>@Html.DisplayFor(m => m.RoomTypeName)</b></td>
@@ -36,7 +41,7 @@
 
         <tr>
             <td class="a">@Html.LabelFor(m => m.RoomPrice)</td>
-            <td><b>@Html.DisplayFor(m => m.RoomPrice)</b></td>
+            <td><b>RM @Html.DisplayFor(m => m.RoomPrice)</b></td>
         </tr>
 
         <tr>
@@ -53,7 +58,11 @@
 
         <tr>
             <td class="a">@Html.LabelFor(m => m.ServiceIds)
-            <td>@Helper.CheckBoxList("ServiceIds", ViewBag.ServiceList)</td>
+
+            @using (Ajax.BeginForm(ao))
+            {
+                <td> @Helper.CheckBoxList("ServiceIds", ViewBag.ServiceList) </td>
+            }
         </tr>
         <tr>
             <td style="font-size:20px; color:#ff0000;" colspan="2">If Have Add Bed or Blanket, please enter the amount that you want to add. Thank you</td>
@@ -67,7 +76,7 @@
                                                                                    new { value = 3, text = "3" },
                                                                                    new { value = 4, text = "4" },
                                                                                    new { value = 5, text = "5" },
-                                                                                   }, "value", "text", 2), "--Select Qty--")
+                                                                                   }, "value", "text", 2))
             </td>
         </tr>
         <tr>
@@ -121,5 +130,33 @@
 
         // Run the logic once as page loaded
         $('#CheckIn').trigger('input');
+
+        let timer = null;
+        // this java script is use to when the user typeing the result will also changing
+        // input event is the user type
+        // settimeout is use to show the result after half second when finish typing
+        $('#name').on('input', e => {
+
+            //$(e.target.form).submit();
+            clearTimeout(timer);
+            timer = setTimeout(() => $(e.target.form).submit(), 500);
+
+        })
+        function highligh() {
+            // trim is remove the blank space in the vale
+            let name = $('#name').val().trim();
+
+            if (!name) return;
+            let re = new RegExp(escapeRegExp(name), 'gi');
+
+            $('td;nth-child(2)').each((i, el) => {
+
+                let html = $(el).html.replace(re, '<mark></mark>');
+
+                $(el).html(html);
+
+            });
+        }
+
     </script>
 }

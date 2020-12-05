@@ -396,6 +396,7 @@
     <Content Include="Views\Home\RoomList.cshtml" />
     <Content Include="Views\Home\Detail.cshtml" />
     <Content Include="Views\Account\ActivateAccount.cshtml" />
+    <Content Include="Views\Home\ReserveHistory.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

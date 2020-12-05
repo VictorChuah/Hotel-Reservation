@@ -17,6 +17,10 @@
     }
 </style>
 <link href="~/Content/bootstrap.css" rel="stylesheet" />
+<form method="post">
+    <Label style="font-size:20px;padding:15px 10px 15px 0px;">Search for Room Type</Label>
+    @Html.TextBox("Room", null, new { autofocus = "" }) 
+</form>
 <marquee behavior="scroll" scrollamount="8" style="font-family: 'Lucida Calligraphy'; font-size:50px; background:#ff6a00;"> Welcome to Funny Burget Hotel. We will provide the best and full service.
 </marquee>
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
