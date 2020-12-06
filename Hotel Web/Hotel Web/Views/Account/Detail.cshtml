@@ -11,7 +11,7 @@
     <div>
         <label class="upload">
             <small>Select photo...</small>
-            @Html.TextBoxFor(m => m.Photo, new { type = "file", accept = "image/jpeg,image/png", hidden = "" })
+            @Html.TextBoxFor(m => m.Photo, new { type = "file", accept = "image/jpeg,image/png,image/jpg", hidden = "" })
             <img src="~/Image/Profile/@Model.PhotoURL">
         </label>
     </div>
@@ -33,7 +33,7 @@
     @Html.ValidationMessageFor(m => m.Email)
 
     @Html.LabelFor(m => m.Phone)
-    @Html.TextBoxFor(m => m.Phone, new { maxlength = 12 })
+    @Html.TextBoxFor(m => m.Phone, new { maxlength = 12, @placeholder = "601XXXXXXXX" })
     @Html.ValidationMessageFor(m => m.Phone)
 
     <section>
@@ -77,7 +77,7 @@
         });
 
         jQuery(function ($) {
-            $("#Phone").mask("999-9999999");
+            $("#Phone").mask("99999999999");
         });
     </script>
 }

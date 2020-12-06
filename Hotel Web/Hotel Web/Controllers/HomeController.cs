@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Net.Mail;
+using Nexmo.Api;
 
 namespace Hotel_Web.Controllers
 {
@@ -61,7 +62,7 @@ namespace Hotel_Web.Controllers
             return View(model);
         }
 
-        //POST: Home/Reverse
+        //POST: Home/Reserve
         [Authorize]
         [HttpPost]
         public ActionResult Reserve(ReserveVM model)
@@ -170,6 +171,24 @@ namespace Hotel_Web.Controllers
 
                 SendEmail(r.Username, r.Id);
 
+                var user = db.Customers.Find(User.Identity.Name);
+                var results = SMS.Send(new SMS.SMSRequest
+                {
+                    from = Configuration.Instance.Settings["appsettings:NEXMO_FROM_NUMBER"],
+                    to = user.PhoneNo,
+                    
+                    text = "Dear "      + user.Name     +
+                    @", your reservation is successful! Here is your reservation detail. 
+                    Room : "            + r.Room.RoomType.Name + @" Room
+                    Check In  : "       + r.CheckIn     + @" 12:00pm
+                    Check Out : "       + r.CheckOut    + @"12:00pm
+                    Total     : RM"     + r.Total       + @"
+                    Paid      : "       + r.Paid        + @" 
+                    More detail can review in website
+                    From, Super Admin"
+                });
+
+
                 TempData["Info"] = "Room reserved.";
                 return RedirectToAction("Detail", new { r.Id });
             }
@@ -258,11 +277,13 @@ namespace Hotel_Web.Controllers
             return (n + 1).ToString("'R'000");
         }
 
+        //show location
         public ActionResult Location() {
 
             return View();
         }
 
+        //show 
         public ActionResult Chat()
         {
             return View();
