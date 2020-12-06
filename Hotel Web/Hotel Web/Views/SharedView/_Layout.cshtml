@@ -11,7 +11,7 @@
     <!-- Embedded CSS -->
     @RenderSection("head", false)
 </head>
-<body>
+<body onload="DisplayClock(); setInterval('DisplayClock()', 1000);">
     <div class="info">@TempData["Info"]</div>
     <header>
         <div>
@@ -25,8 +25,10 @@
                     <img src="~/Image/Profile/@Session["PhotoURL"]">
                 </a>
             }
+        <p id="clock" style="padding-left:50px"> </p>
 
-</div>
+
+        </div>
         <table>
             <tr>
                 <th>
@@ -100,6 +102,7 @@
         Developed by <b>Funny Hotel</b> &middot;
         Copyrighted &copy; @DateTime.Today.Year
     </footer>
+
     <script src="~/Scripts/jquery-3.5.1.js"></script>
     <script src="~/Scripts/jquery.validate.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
