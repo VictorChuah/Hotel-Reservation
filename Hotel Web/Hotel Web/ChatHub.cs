@@ -30,10 +30,9 @@ namespace Hotel_Web
             return base.OnConnected();
         }
 
-        /*public Boolean CheckPass(string pass)
+        public Boolean CheckPass(string pass)
         {
-            Clients.
             return db.Admins.Any(a => a.HashPass == pass);
-        }*/
+        }
     }
 }
