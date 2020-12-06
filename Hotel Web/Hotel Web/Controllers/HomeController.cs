@@ -25,7 +25,7 @@ namespace Hotel_Web.Controllers
             var roomTypes = db.RoomTypes.Where(r => r.Name.Contains(Room)).FirstOrDefault();
             if (roomTypes != null)
             {
-                return RedirectToAction("Reserve", "Home",  new { RoomTypeId = roomTypes.Id });
+                return RedirectToAction("Reserve", "Home", new { RoomTypeId = roomTypes.Id });
             }
             else
             {
@@ -168,8 +168,8 @@ namespace Hotel_Web.Controllers
                 db.Reservations.Add(r);
                 db.SaveChanges();
 
-                SendEmail(r.Username,r.Id);
-                
+                SendEmail(r.Username, r.Id);
+
                 TempData["Info"] = "Room reserved.";
                 return RedirectToAction("Detail", new { r.Id });
             }
@@ -260,6 +260,11 @@ namespace Hotel_Web.Controllers
 
         public ActionResult Location() {
 
+            return View();
+        }
+
+        public ActionResult Chat()
+        {
             return View();
         }
 
