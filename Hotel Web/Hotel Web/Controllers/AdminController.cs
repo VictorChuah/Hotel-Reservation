@@ -598,11 +598,11 @@ namespace Hotel_Web.Controllers
             return id;
             
         }
-        public ActionResult Room(string room, string type, int page = 1) {
+        public ActionResult Room(string type, string room = "",  int page = 1) {
 
             List<Room> R = db.Rooms.ToList();
             List<RoomType> RT = db.RoomTypes.ToList();
-
+            room = room.Trim();
             if (page < 1)
             {
                 // new {} is object without class
@@ -613,7 +613,8 @@ namespace Hotel_Web.Controllers
 
             var display_room = from r in R
                                 join rt in RT on r.RoomTypeId equals rt.Id
-                                select new joinRoom { room = r, roomtype = rt};
+                                where !r.Status.Contains("D")
+                               select new joinRoom { room = r, roomtype = rt};
            //=============================
             if (type == "Id")
             {
@@ -864,6 +865,25 @@ namespace Hotel_Web.Controllers
             }
 
             return View(model);
+        }
+
+        public ActionResult DeleteRoom( string roomId) {
+
+            // TODO
+            var m = db.Rooms.Find(roomId);
+
+            if (m != null)
+            {
+
+                m.Status = "D";
+                db.SaveChanges();
+
+                TempData["Info"] = "Room Deleted.";
+            }
+
+            string url = Request.UrlReferrer?.AbsolutePath ?? "/";
+            return Redirect(url);
+
         }
         //====================================================================================================
 
