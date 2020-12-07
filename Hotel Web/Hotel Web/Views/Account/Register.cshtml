@@ -39,14 +39,18 @@
     @Html.ValidationMessageFor(m => m.Email)
 
     @Html.LabelFor(m => m.Phone)
-    @Html.TextBoxFor(m => m.Phone, new { maxlength = 12 })
+    @Html.TextBoxFor(m => m.Phone, new { maxlength = 12, @placeholder = "601XXXXXXXX" })
     @Html.ValidationMessageFor(m => m.Phone)
 
     @Html.LabelFor(m => m.Photo)
     <div>
         <label class="upload">
-            <small>Select photo...</small>
-            @Html.TextBoxFor(m => m.Photo, new { type = "file", accept = "image/jpeg,image/png", hidden = "" })
+            @Html.TextBoxFor(m => m.Photo, new
+            {
+                type = "file",
+                accept = "image/jpeg,image/png",
+                hidden = ""
+            })
             <img src="~/Image/Profile/photo.jpg">
         </label>
     </div>
@@ -70,8 +74,6 @@
 
 @section foot {
     <script>
-
-        $.validator.setDefaults({ ignore: '' });
 
         function validatePhoto(f) {
             let reType = /^image\/(jpeg|png)$/i;
@@ -103,7 +105,7 @@
         });
 
         jQuery(function ($) {
-            $("#Phone").mask("999-9999999");
+            $("#Phone").mask("99999999999");
         });
     </script>
 }

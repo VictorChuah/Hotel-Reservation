@@ -72,6 +72,8 @@
           <Property Name="PhotoURL" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="Person" Type="int" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'C:\USERS\DVP\SOURCE\REPOS\HOTEL-RESERVATION\HOTEL WEB\HOTEL WEB\APP_DATA\DB.MDF.dbo.Service' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Service">
           <Key>
             <PropertyRef Name="ReservationId" />
@@ -156,8 +158,15 @@
           <EntitySet Name="Reservation" EntityType="Self.Reservation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Room" EntityType="Self.Room" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RoomType" EntityType="Self.RoomType" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Service" EntityType="Self.Service" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ServiceType" EntityType="Self.ServiceType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Service" EntityType="Self.Service" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Service].[ReservationId] AS [ReservationId], 
+    [Service].[ServiceId] AS [ServiceId], 
+    [Service].[Price] AS [Price], 
+    [Service].[Quantity] AS [Quantity]
+    FROM [dbo].[Service] AS [Service]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_Reservation_Customer" Association="Self.FK_Reservation_Customer">
             <End Role="Customer" EntitySet="Customer" />
             <End Role="Reservation" EntitySet="Reservation" />
@@ -184,6 +193,7 @@
     <edmx:ConceptualModels>
       <Schema Namespace="dbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="dbEntities1" annotation:LazyLoadingEnabled="true">
+
           <EntitySet Name="RoomTypes" EntityType="dbModel.RoomType" />
           <EntitySet Name="Rooms" EntityType="dbModel.Room" />
           <AssociationSet Name="FK_Room_RoomType" Association="dbModel.FK_Room_RoomType">
@@ -201,16 +211,23 @@
           <AssociationSet Name="FK_Reservation_Customer" Association="dbModel.FK_Reservation_Customer">
             <End Role="Customer" EntitySet="Customers" />
             <End Role="Reservation" EntitySet="Reservations" />
+           </AssociationSet>
+
+          <EntitySet Name="Admins" EntityType="dbModel.Admin" />
+          <EntitySet Name="Rooms" EntityType="dbModel.Room" />
+          <EntitySet Name="RoomTypes" EntityType="dbModel.RoomType" />
+          <EntitySet Name="ServiceTypes" EntityType="dbModel.ServiceType" />
+          <AssociationSet Name="FK_Room_RoomType" Association="dbModel.FK_Room_RoomType">
+            <End Role="RoomType" EntitySet="RoomTypes" />
+            <End Role="Room" EntitySet="Rooms" />
+
           </AssociationSet>
           <EntitySet Name="Services" EntityType="dbModel.Service" />
-          <AssociationSet Name="FK_Service_ToReservation" Association="dbModel.FK_Service_ToReservation">
-            <End Role="Reservation" EntitySet="Reservations" />
-            <End Role="Service" EntitySet="Services" />
-          </AssociationSet>
           <AssociationSet Name="FK_Service_ToServiceType" Association="dbModel.FK_Service_ToServiceType">
             <End Role="ServiceType" EntitySet="ServiceTypes" />
             <End Role="Service" EntitySet="Services" />
           </AssociationSet>
+
         </EntityContainer>
         <EntityType Name="RoomType">
           <Key>
@@ -222,6 +239,37 @@
           <Property Name="PhotoURL" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Person" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Rooms" Relationship="dbModel.FK_Room_RoomType" FromRole="RoomType" ToRole="Room" />
+          </EntityType>
+
+          <EntitySet Name="Customers" EntityType="dbModel.Customer" />
+          <EntitySet Name="Reservations" EntityType="dbModel.Reservation" />
+          <AssociationSet Name="FK_Reservation_Customer" Association="dbModel.FK_Reservation_Customer">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="Reservation" EntitySet="Reservations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reservation_Room" Association="dbModel.FK_Reservation_Room">
+            <End Role="Room" EntitySet="Rooms" />
+            <End Role="Reservation" EntitySet="Reservations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Service_ToReservation" Association="dbModel.FK_Service_ToReservation">
+            <End Role="Reservation" EntitySet="Reservations" />
+            <End Role="Service" EntitySet="Services" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="Admin">
+          <Key>
+            <PropertyRef Name="Username" />
+          </Key>
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="HashPass" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PhoneNo" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Gender" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PhotoURL" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ResetToken" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ResetExpire" Type="DateTime" Precision="3" />
+
         </EntityType>
         <EntityType Name="Room">
           <Key>
@@ -265,6 +313,7 @@
           <NavigationProperty Name="Customer" Relationship="dbModel.FK_Reservation_Customer" FromRole="Reservation" ToRole="Customer" />
           <NavigationProperty Name="Services" Relationship="dbModel.FK_Service_ToReservation" FromRole="Reservation" ToRole="Service" />
         </EntityType>
+
         <Association Name="FK_Reservation_Room">
           <End Type="dbModel.Room" Role="Room" Multiplicity="1" />
           <End Type="dbModel.Reservation" Role="Reservation" Multiplicity="*" />
@@ -322,6 +371,11 @@
         <Association Name="FK_Reservation_Customer">
           <End Type="dbModel.Customer" Role="Customer" Multiplicity="1" />
           <End Type="dbModel.Reservation" Role="Reservation" Multiplicity="*" />
+
+        <!--<Association Name="FK_Room_RoomType">
+          <End Type="dbModel.RoomType" Role="RoomType" Multiplicity="1" />
+          <End Type="dbModel.Room" Role="Room" Multiplicity="*" />-->
+
           <ReferentialConstraint>
             <Principal Role="Customer">
               <PropertyRef Name="Username" />
@@ -340,21 +394,9 @@
           <Property Name="ServiceId" Type="String" Nullable="false" MaxLength="4" FixedLength="true" Unicode="false" />
           <Property Name="Price" Type="Decimal" Precision="6" Scale="2" />
           <Property Name="Quantity" Type="Int32" />
-          <NavigationProperty Name="Reservation" Relationship="dbModel.FK_Service_ToReservation" FromRole="Service" ToRole="Reservation" />
           <NavigationProperty Name="ServiceType" Relationship="dbModel.FK_Service_ToServiceType" FromRole="Service" ToRole="ServiceType" />
+          <NavigationProperty Name="Reservation" Relationship="dbModel.FK_Service_ToReservation" FromRole="Service" ToRole="Reservation" />
         </EntityType>
-        <Association Name="FK_Service_ToReservation">
-          <End Type="dbModel.Reservation" Role="Reservation" Multiplicity="1" />
-          <End Type="dbModel.Service" Role="Service" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Reservation">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Service">
-              <PropertyRef Name="ReservationId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Service_ToServiceType">
           <End Type="dbModel.ServiceType" Role="ServiceType" Multiplicity="1" />
           <End Type="dbModel.Service" Role="Service" Multiplicity="*" />
@@ -367,6 +409,83 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="Username" />
+          </Key>
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="HashPass" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PhoneNo" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Gender" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PhotoURL" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Blocked" Type="DateTime" Precision="3" />
+          <Property Name="LoginCount" Type="Int32" Nullable="false" />
+          <Property Name="ResetToken" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ResetExpire" Type="DateTime" Precision="3" />
+          <Property Name="ActiveToken" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Reservations" Relationship="dbModel.FK_Reservation_Customer" FromRole="Customer" ToRole="Reservation" />
+        </EntityType>
+        <EntityType Name="Reservation">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="RoomId" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="CheckIn" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CheckOut" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="6" Scale="2" />
+          <Property Name="Person" Type="Int32" Nullable="false" />
+          <Property Name="Day" Type="Int32" Nullable="false" />
+          <Property Name="Total" Type="Decimal" Nullable="false" Precision="8" Scale="2" />
+          <Property Name="Paid" Type="Boolean" Nullable="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="PaymentMethod" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Customer" Relationship="dbModel.FK_Reservation_Customer" FromRole="Reservation" ToRole="Customer" />
+          <NavigationProperty Name="Room" Relationship="dbModel.FK_Reservation_Room" FromRole="Reservation" ToRole="Room" />
+          <NavigationProperty Name="Services" Relationship="dbModel.FK_Service_ToReservation" FromRole="Reservation" ToRole="Service" />
+        </EntityType>
+        <Association Name="FK_Reservation_Customer">
+          <End Type="dbModel.Customer" Role="Customer" Multiplicity="1" />
+          <End Type="dbModel.Reservation" Role="Reservation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="Username" />
+            </Principal>
+            <Dependent Role="Reservation">
+              <PropertyRef Name="Username" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reservation_Room">
+          <End Type="dbModel.Room" Role="Room" Multiplicity="1" />
+          <End Type="dbModel.Reservation" Role="Reservation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Room">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Reservation">
+              <PropertyRef Name="RoomId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Service_ToReservation">
+          <End Type="dbModel.Reservation" Role="Reservation" Multiplicity="1" />
+          <End Type="dbModel.Service" Role="Service" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reservation">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Service">
+              <PropertyRef Name="ReservationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -393,6 +512,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+
           <EntitySetMapping Name="Reservations">
             <EntityTypeMapping TypeName="dbModel.Reservation">
               <MappingFragment StoreEntitySet="Reservation">
@@ -407,6 +527,25 @@
                 <ScalarProperty Name="CheckIn" ColumnName="CheckIn" />
                 <ScalarProperty Name="RoomId" ColumnName="RoomId" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
+                </MappingFragment>
+
+          <EntitySetMapping Name="Rooms">
+            <EntityTypeMapping TypeName="dbModel.Room">
+              <MappingFragment StoreEntitySet="Room">
+                <ScalarProperty Name="RoomTypeId" ColumnName="RoomTypeId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RoomTypes">
+            <EntityTypeMapping TypeName="dbModel.RoomType">
+              <MappingFragment StoreEntitySet="RoomType">
+                <ScalarProperty Name="Person" ColumnName="Person" />
+                <ScalarProperty Name="PhotoURL" ColumnName="PhotoURL" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -454,6 +593,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+
           <EntitySetMapping Name="Services">
             <EntityTypeMapping TypeName="dbModel.Service">
               <MappingFragment StoreEntitySet="Service">
@@ -461,6 +601,27 @@
                 <ScalarProperty Name="Price" ColumnName="Price" />
                 <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
                 <ScalarProperty Name="ReservationId" ColumnName="ReservationId" />
+                
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+
+          <EntitySetMapping Name="Reservations">
+            <EntityTypeMapping TypeName="dbModel.Reservation">
+              <MappingFragment StoreEntitySet="Reservation">
+                <ScalarProperty Name="PaymentMethod" ColumnName="PaymentMethod" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Paid" ColumnName="Paid" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Day" ColumnName="Day" />
+                <ScalarProperty Name="Person" ColumnName="Person" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="CheckOut" ColumnName="CheckOut" />
+                <ScalarProperty Name="CheckIn" ColumnName="CheckIn" />
+                <ScalarProperty Name="RoomId" ColumnName="RoomId" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

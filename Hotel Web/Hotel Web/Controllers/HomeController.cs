@@ -6,6 +6,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Net.Mail;
 using System.Configuration;
+using Nexmo.Api;
+
 
 namespace Hotel_Web.Controllers
 {
@@ -28,7 +30,7 @@ namespace Hotel_Web.Controllers
             var roomTypes = db.RoomTypes.Where(r => r.Name.Contains(Room)).FirstOrDefault();
             if (roomTypes != null)
             {
-                return RedirectToAction("Reserve", "Home",  new { RoomTypeId = roomTypes.Id });
+                return RedirectToAction("Reserve", "Home", new { RoomTypeId = roomTypes.Id });
             }
             else
             {
@@ -64,7 +66,7 @@ namespace Hotel_Web.Controllers
             return View(model);
         }
 
-        //POST: Home/Reverse
+        //POST: Home/Reserve
         [Authorize]
         [HttpPost]
         public ActionResult Reserve(ReserveVM model, string roomName, string type)
@@ -174,6 +176,7 @@ namespace Hotel_Web.Controllers
                 db.Reservations.Add(r);
                 db.SaveChanges();
 
+
                 
 
                 if (type.Equals("paypal")) {
@@ -199,6 +202,30 @@ namespace Hotel_Web.Controllers
                 
 
                
+
+                SendEmail(r.Username, r.Id);
+
+                var user = db.Customers.Find(User.Identity.Name);
+                var results = SMS.Send(new SMS.SMSRequest
+                {
+                    from = Configuration.Instance.Settings["appsettings:NEXMO_FROM_NUMBER"],
+                    to = user.PhoneNo,
+                    
+                    text = "Dear "      + user.Name     +
+                    @", your reservation is successful! Here is your reservation detail. 
+                    Room : "            + r.Room.RoomType.Name + @" Room
+                    Check In  : "       + r.CheckIn     + @" 12:00pm
+                    Check Out : "       + r.CheckOut    + @"12:00pm
+                    Total     : RM"     + r.Total       + @"
+                    Paid      : "       + r.Paid        + @" 
+                    More detail can review in website
+                    From, Super Admin"
+                });
+
+
+                TempData["Info"] = "Room reserved.";
+                return RedirectToAction("Detail", new { r.Id });
+
             }
             var m = db.RoomTypes.Find(model.RoomTypeId);
             var model1 = new ReserveVM
@@ -310,10 +337,12 @@ namespace Hotel_Web.Controllers
             return (n + 1).ToString("'R'000");
         }
 
+        //show location
         public ActionResult Location() {
 
             return View();
         }
+
 
         public ActionResult ValidateCommand(string ReservationId, string RoonName, string TotalPrice)
         {
@@ -415,5 +444,13 @@ namespace Hotel_Web.Controllers
 
             new SmtpClient().Send(m);
         }*/
+
+        //show 
+        public ActionResult Chat()
+        {
+            return View();
+        }
+
+
     }
 }

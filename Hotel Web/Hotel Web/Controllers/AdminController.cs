@@ -171,6 +171,18 @@ namespace Hotel_Web.Controllers
             var model = db.Customers.Find(username);
             TempData["info"] = model.Username;
 
+            if (ModelState.IsValidField("Email"))
+            {
+                if (db.Customers.Find(User.Identity.Name).Email == model.Email)
+                {
+
+                }
+                else if (db.Admins.Any(a => a.Email == model.Email) || db.Customers.Any(c => c.Email == model.Email))
+                {
+                    ModelState.AddModelError("Email", "Duplicated Email.");
+                }
+            }
+
             if (model == null)
             {
                 return RedirectToAction("ListCustomer");
@@ -540,13 +552,24 @@ namespace Hotel_Web.Controllers
                 return RedirectToAction("AdminList");
             }
 
+            if (ModelState.IsValidField("Email"))
+            {
+                if (db.Customers.Find(User.Identity.Name).Email == model.Email)
+                {
+
+                }
+                else if (db.Admins.Any(a => a.Email == model.Email) || db.Customers.Any(c => c.Email == model.Email))
+                {
+                    ModelState.AddModelError("Email", "Duplicated Email.");
+                }
+            }
+
             if (model.Photo != null)
             {
 
                 string err = ValidatePhoto(model.Photo); // validate the photo
                 if (err != null)
                 {
-
                     ModelState.AddModelError("Photo", err);
                 }
             }
@@ -566,7 +589,7 @@ namespace Hotel_Web.Controllers
                 {
 
                     DeletePhoto(admin.PhotoURL,"profile");
-                    admin.PhotoURL = SavePhoto(model.Photo, "profile");
+                    Session["PhotoUrl"] = admin.PhotoURL = SavePhoto(model.Photo, "profile");
                 }
 
                 db.SaveChanges();
@@ -607,6 +630,11 @@ namespace Hotel_Web.Controllers
 
                 ModelState.AddModelError("Username", "Duplicated Username.");
 
+            }
+
+            if (ModelState.IsValidField("Email") && (db.Admins.Any(a => a.Email == newAdmin.Email) || db.Customers.Any(c => c.Email == newAdmin.Email)))
+            {
+                ModelState.AddModelError("Email", "Duplicated Email.");
             }
 
             string err = ValidatePhoto(newAdmin.Photo);

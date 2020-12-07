@@ -29,7 +29,8 @@ namespace Hotel_Web.Models
         public string Username { get; set; }
 
         [Required]
-        [DataType(DataType.PhoneNumber, ErrorMessage = "Invalid Phone Number!")]
+        [Phone]
+        [RegularExpression(@"^(601)([0-9]{8})$", ErrorMessage = "Invalid Phone Number")]
         public int PhoneNo { get; set; }
         [Required]
         [RegularExpression(@"[FM]", ErrorMessage = "Invalid {0}.")]
@@ -95,10 +96,12 @@ namespace Hotel_Web.Models
         [Required]
         [StringLength(11)]
         [Phone]
-        [RegularExpression(@"^(01)([0-9]{1})\-([0-9]{7})$", ErrorMessage = "Invalid Phone Number")]
+        [RegularExpression(@"^(601)([0-9]{8})$", ErrorMessage = "Invalid Phone Number")]
         public string Phone { get; set; }
 
+        //[Required]
         public HttpPostedFileBase Photo { get; set; }
+
     }
 
     public class AccDetailModel
@@ -117,7 +120,7 @@ namespace Hotel_Web.Models
         [Required]
         [StringLength(11)]
         [Phone]
-        [RegularExpression(@"^(01)([0-9]{1})\-([0-9]{7})$", ErrorMessage = "Invalid Phone Number")]
+        [RegularExpression(@"^(601)([0-9]{8})$", ErrorMessage = "Invalid Phone Number")]
         public string Phone { get; set; }
 
         [Required]
@@ -195,7 +198,7 @@ namespace Hotel_Web.Models
         public string Username { get; set; }
 
         [Required]
-        [RegularExpression(@"^(01)([0-9]{1})[\-]([0-9]{7,9})$", ErrorMessage = "Invalid Phone Number")]
+        [RegularExpression(@"^(601)([0-9]{8})$", ErrorMessage = "Invalid Phone Number")]
         public string PhoneNo { get; set; }
         [Required]
         [RegularExpression(@"[FM]", ErrorMessage = "Invalid {0}.")]
@@ -203,6 +206,8 @@ namespace Hotel_Web.Models
         [Required]
         [StringLength(100)]
         [EmailAddress]
+        [System.Web.Mvc.Remote("CheckEmail", "Account", ErrorMessage = "Duplicated {0}.")]
+        [RegularExpression(@"^.+@.+mail.com$", ErrorMessage = "Invalid Email format")]
         public string Email { get; set; }
 
 
@@ -221,7 +226,7 @@ namespace Hotel_Web.Models
         public string Username { get; set; }
 
         [Required]
-        [RegularExpression(@"^(01)([0-9]{1})[\-]([0-9]{7,9})$", ErrorMessage = "Invalid Phone Number")]
+        [RegularExpression(@"^(601)([0-9]{8})$", ErrorMessage = "Invalid Phone Number")]
         public string PhoneNo { get; set; }
         [Required]
         [RegularExpression(@"[FM]", ErrorMessage = "Invalid {0}.")]
@@ -229,6 +234,8 @@ namespace Hotel_Web.Models
         [Required]
         [StringLength(100)]
         [EmailAddress]
+        [System.Web.Mvc.Remote("CheckEmail", "Account", ErrorMessage = "Duplicated {0}.")]
+        [RegularExpression(@"^.+@.+mail.com$", ErrorMessage = "Invalid Email format")]
         public string Email { get; set; }
 
 
@@ -267,7 +274,7 @@ namespace Hotel_Web.Models
         public string Username { get; set; }
 
         [Required]
-        [RegularExpression(@"^(01)([0-9]{1})[\-]([0-9]{7,9})$", ErrorMessage = "Invalid Phone Number")]
+        [RegularExpression(@"^(601)([0-9]{8})$", ErrorMessage = "Invalid Phone Number")]
         public string PhoneNo { get; set; }
         [Required]
         [RegularExpression(@"[FM]", ErrorMessage = "Invalid {0}.")]
@@ -275,6 +282,8 @@ namespace Hotel_Web.Models
         [Required]
         [StringLength(100)]
         [EmailAddress]
+        [System.Web.Mvc.Remote("CheckEmail", "Account", ErrorMessage = "Duplicated {0}.")]
+        [RegularExpression(@"^.+@.+mail.com$", ErrorMessage = "Invalid Email format")]
         public string Email { get; set; }
 
         [Display(Name = "Password")]
