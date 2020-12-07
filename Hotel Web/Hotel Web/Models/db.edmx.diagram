@@ -4,7 +4,23 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="7f498ece3f4f46959734d43b2bfbad84" Name="Diagram1" ZoomLevel="98">
+
+      <Diagram DiagramId="7f498ece3f4f46959734d43b2bfbad84" Name="Diagram1" ZoomLevel="75">
+        <EntityTypeShape EntityType="dbModel.RoomType" Width="1.5" PointX="0.75" PointY="1.875" />
+        <EntityTypeShape EntityType="dbModel.Room" Width="1.5" PointX="3" PointY="2" />
+        <AssociationConnector Association="dbModel.FK_Room_RoomType" />
+        <EntityTypeShape EntityType="dbModel.Reservation" Width="1.5" PointX="5.375" PointY="2" />
+        <AssociationConnector Association="dbModel.FK_Reservation_Room" />
+        <EntityTypeShape EntityType="dbModel.ServiceType" Width="1.5" PointX="12.5" PointY="5.75" />
+        <EntityTypeShape EntityType="dbModel.Admin" Width="1.5" PointX="8.125" PointY="5.75" />
+        <EntityTypeShape EntityType="dbModel.Customer" Width="1.5" PointX="0.75" PointY="6" />
+        <AssociationConnector Association="dbModel.FK_Reservation_Customer" />
+        <EntityTypeShape EntityType="dbModel.Service" Width="1.5" PointX="12.25" PointY="2.625" />
+        <AssociationConnector Association="dbModel.FK_Service_ToReservation" />
+        <AssociationConnector Association="dbModel.FK_Service_ToServiceType" />
+      </Diagram>
+
+     <!-- <Diagram DiagramId="7f498ece3f4f46959734d43b2bfbad84" Name="Diagram1" ZoomLevel="98">
         <EntityTypeShape EntityType="dbModel.Admin" Width="1.5" PointX="0.5" PointY="3.75" />
         <EntityTypeShape EntityType="dbModel.Room" Width="1.5" PointX="3.375" PointY="0.625" />
         <EntityTypeShape EntityType="dbModel.RoomType" Width="1.5" PointX="0.5" PointY="0.625" />
@@ -17,7 +33,8 @@
         <AssociationConnector Association="dbModel.FK_Reservation_Customer" />
         <AssociationConnector Association="dbModel.FK_Reservation_Room" />
         <AssociationConnector Association="dbModel.FK_Service_ToReservation" />
-        </Diagram>
+        </Diagram>-->
+
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

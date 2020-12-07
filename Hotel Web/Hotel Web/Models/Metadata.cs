@@ -317,10 +317,19 @@ namespace Hotel_Web.Models
 
     public class editRoomType {
         public string Id { get; set; }
+        [Required]
         public string Name { get; set; }
+
+        [Required]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
         public decimal Price { get; set; }
+
+
         public HttpPostedFileBase Photo { get; set; }
         public string PhotoURL { get; set; }
+
+        [Required]
+        [RegularExpression("^[1-4]{1}$", ErrorMessage = "Only In digit between 1 to 4 person ")]
         public int person { get; set; }
     }
 
