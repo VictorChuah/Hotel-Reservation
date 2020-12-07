@@ -10,13 +10,13 @@
         <EntityTypeShape EntityType="dbModel.RoomType" Width="1.5" PointX="0.5" PointY="0.625" />
         <EntityTypeShape EntityType="dbModel.ServiceType" Width="1.5" PointX="10" PointY="2.125" />
         <AssociationConnector Association="dbModel.FK_Room_RoomType" />
-        <EntityTypeShape EntityType="dbModel.Service" Width="1.5" PointX="7.875" PointY="1.75" />
-        <AssociationConnector Association="dbModel.FK_Service_ToServiceType" />
         <EntityTypeShape EntityType="dbModel.Customer" Width="1.5" PointX="3.25" PointY="3" />
         <EntityTypeShape EntityType="dbModel.Reservation" Width="1.5" PointX="5.875" PointY="0.5" />
         <AssociationConnector Association="dbModel.FK_Reservation_Customer" />
         <AssociationConnector Association="dbModel.FK_Reservation_Room" />
+        <EntityTypeShape EntityType="dbModel.Service" Width="1.5" PointX="7.875" PointY="1.5" />
         <AssociationConnector Association="dbModel.FK_Service_ToReservation" />
+        <AssociationConnector Association="dbModel.FK_Service_ToServiceType" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

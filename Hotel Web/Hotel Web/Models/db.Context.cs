@@ -29,8 +29,8 @@ namespace Hotel_Web.Models
         public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<RoomType> RoomTypes { get; set; }
         public virtual DbSet<ServiceType> ServiceTypes { get; set; }
-        public virtual DbSet<Service> Services { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Reservation> Reservations { get; set; }
+        public virtual DbSet<Service> Services { get; set; }
     }
 }

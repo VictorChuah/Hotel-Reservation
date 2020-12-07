@@ -18,7 +18,6 @@ namespace Hotel_Web
             list.Add(new { name, text });
             while (list.Count > 10) list.RemoveAt(0);
 
-            // Clients.All.ReceiveText(name, text);
             Clients.Caller.ReceiveText(name, text, "me");
             //Clients.All.ReceiveText(name, text, "admin");
             Clients.Others.ReceiveText(name, text);
@@ -30,9 +29,9 @@ namespace Hotel_Web
             return base.OnConnected();
         }
 
-        public Boolean CheckPass(string pass)
+        /*public Boolean CheckPass(string pass)
         {
             return db.Admins.Any(a => a.HashPass == pass);
-        }
+        }*/
     }
 }

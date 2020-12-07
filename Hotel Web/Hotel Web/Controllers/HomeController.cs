@@ -180,8 +180,8 @@ namespace Hotel_Web.Controllers
                     text = "Dear "      + user.Name     +
                     @", your reservation is successful! Here is your reservation detail. 
                     Room : "            + r.Room.RoomType.Name + @" Room
-                    Check In  : "       + r.CheckIn     + @" 12:00pm
-                    Check Out : "       + r.CheckOut    + @"12:00pm
+                    Check In  : "       + r.CheckIn     + @" 
+                    Check Out : "       + r.CheckOut    + @"
                     Total     : RM"     + r.Total       + @"
                     Paid      : "       + r.Paid        + @" 
                     More detail can review in website
