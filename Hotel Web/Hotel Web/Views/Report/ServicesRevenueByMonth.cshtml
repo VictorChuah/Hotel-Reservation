@@ -1,0 +1,138 @@
+﻿@{
+    ViewBag.Title = "";
+}
+
+@section head {
+    <style>
+        /* TODO: Format html tooltip */
+        .product {
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        .a {
+            flex: 0 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            background: none;
+            padding: 0;
+        }
+
+        .a > a {
+            font-size: 30px;
+            background: none;
+            color: #ff6a00;
+            text-decoration: none;
+            white-space: nowrap;
+            padding: 15px;
+        }
+        
+    </style>
+}
+
+<nav class="a">
+    <a href="~/Report/ReservationReport">Reservation</a>
+    <a href="/Report/ServicesReport">Services</a>
+    <a href="/Report/CompareByDaySales">Room</a>
+    <a href="/Report/ServicesRevenueByMonth">Services Revenue</a>
+</nav>
+
+<p>
+    <!-- TODO: Date input -->
+    @Html.TextBox("date", null, new { type = "date", min = ViewBag.Min, max = ViewBag.Max })
+
+    <span id="loader">
+        <img src="~/Image/Misc/loader.gif" />
+        Loading...
+    </span>
+</p>
+
+<div id="chart" style="width: 800px; height: 400px"></div>
+
+@section foot {
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', { packages: ['corechart'] });
+        google.charts.setOnLoadCallback(init);
+
+        let dt, opt, cht;
+
+        function init() {
+            dt = new google.visualization.DataTable();
+            dt.addColumn('string', 'Services');
+            dt.addColumn('number', 'Sales');
+            // TODO: Add tooltip column --> allow HTML
+            dt.addColumn({ role: 'tooltip', p: { html: true } });
+
+            let style = { bold: true, italic: false, fontSize: 20, color: 'blueviolet' };
+
+            opt = {
+                title: '--',
+                fontName: 'Calibri',
+                fontSize: 16,
+                titleTextStyle: { fontSize: 20 },
+                chartArea: { width: '85%', height: '70%', top: 60, left: 80 },
+                legend: 'none',
+                hAxis: { title: 'Services', titleTextStyle: style },
+                vAxis: { title: 'Sales', titleTextStyle: style },
+                animation: { duration: 500, startup: true },
+                colors: ['blueviolet'],
+                // TODO: Tooltip --> allow HTML
+                tooltip: {
+                    isHtml: true
+                }
+            };
+
+            cht = new google.visualization.ColumnChart($('#chart')[0]);
+
+            $('#date').change();
+        }
+
+        // TODO: Array of products
+        let arr = @Html.Raw(Json.Encode(ViewBag.Services));
+
+        $('#date').change(e => {
+            e.preventDefault();
+
+            // TODO: Simple input validation
+            let el = e.target;
+            if (el.value < el.min || el.value > el.max) {
+                el.value = el.max;
+            }
+
+            let url   = '/Report/Data7';
+            let param = {
+                date : $('#date').val()
+            };
+
+            $('#loader').show();
+
+            $.getJSON(url, param, json => {
+                //TODO: Add tooltip column
+                for (let data of json) {
+                    let s = arr.find(s => s.Id == data[0]);
+                    data[2] = `
+                        <div class="product">
+                            <b>${s.Name} (${s.Id})</b><br>
+                            Quantity  : <b>${data[1] / s.Price}</b><br>
+                            Unit Price: <b>RM ${s.Price}</b><br>
+                            Total     : <b>RM ${data[1]}</b>
+                        </div>
+
+                    `;
+                }
+
+                opt.title = 'Overall Revenue by Services - ' + param.date;
+
+                dt.removeRows(0, dt.getNumberOfRows());
+                dt.addRows(json);
+
+
+                cht.draw(dt, opt);
+
+                $('#loader').hide();
+            });
+        });
+    </script>
+}
+

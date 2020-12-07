@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Reservation>
+@{
+    ViewBag.Title = "Reservation List";
+}
+
+<form method="post" action="~/Report/ResetAll" style="display: inline-block" id="formResetAll">
+    <button disabled>Reset All</button>
+</form>
+
+<form method="post" action="~/Report/Generate" style="display: inline-block" id="formGenerate">
+    <button disabled>Generate</button>
+    <span id="loader" style="display: none">
+        <img src="~/Images/Misc/loader-16.gif">
+        Please wait...
+    </span>
+</form>
+
+<p>
+    [Reservation] = @Model.Count() records<br>
+    [Services] = @Model.Sum(o => o.Services.Count()) records
+</p>
+
+<table class="table">
+    <tr>
+        <th>Id</th>
+        <th>Date</th>
+        <th>Count</th>
+        <th>Total</th>
+    </tr>
+    @foreach (Reservation r in Model)
+    {
+        <tr>
+            <td>@r.Id</td>
+            <td>@r.CheckOut.ToString("yyyy-MM-dd")</td>
+            <td>@r.Services.Count()</td>
+            <td>@r.Total</td>
+        </tr>
+    }
+</table>
+
+@section foot {
+    <script>
+        $('#formResetAll').submit(function (e) {
+            let proceed = confirm('Delete All records? Regenerate records will take around 1 minute.');
+            if (proceed) {
+                // Proceed.
+            }
+            else {
+                e.preventDefault();
+            }
+        });
+
+        $('#formGenerate').submit(function (e) {
+            let proceed = confirm('The process will take around 1 minute. Proceed?');
+            if (proceed) {
+                $("#loader").show();
+            }
+            else {
+                e.preventDefault();
+            }
+        });
+
+        $('form button').prop('disabled', false);
+    </script>
+}
