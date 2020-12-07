@@ -5,13 +5,17 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Net.Mail;
+using System.Configuration;
 using Nexmo.Api;
+
 
 namespace Hotel_Web.Controllers
 {
     public class HomeController : Controller
     {
         dbEntities1 db = new dbEntities1();
+
+        public static string LocalreservationId = "";
 
         public ActionResult Index()
         {
@@ -65,8 +69,11 @@ namespace Hotel_Web.Controllers
         //POST: Home/Reserve
         [Authorize]
         [HttpPost]
-        public ActionResult Reserve(ReserveVM model)
+        public ActionResult Reserve(ReserveVM model, string roomName, string type)
         {
+            
+            
+
             DateTime min = DateTime.Today;
             DateTime max = DateTime.Today.AddDays(30);
 
@@ -120,7 +127,7 @@ namespace Hotel_Web.Controllers
 
             if (ModelState.IsValid)
             {
-
+                
                 // Process (1): Insert Reservation record
                 var r = new Reservation
                 {
@@ -165,16 +172,43 @@ namespace Hotel_Web.Controllers
                     r.Total += s.Price * r.Day * r.Person * q;
 
                 }
-
+                
                 db.Reservations.Add(r);
                 db.SaveChanges();
 
-                SendEmail(r.Username, r.Id);
+
+                
+
+                if (type.Equals("paypal")) {
+                    string roomname = model.RoomTypeName;
+                    decimal totalPrice = r.Total;
+                    // ValidateCommand( r.Id ,roomName, totalPrice);
+                    return RedirectToAction("ValidateCommand", new { ReservationId = r.Id, RoonName = roomname, TotalPrice = totalPrice });
+
+                } else if(type.Equals("Walk")) {
+
+                    var updatestatus = db.Reservations.Find(r.Id);
+
+                    updatestatus.PaymentMethod = "Walk In Pay";
+                    updatestatus.Paid = false;
+
+                    db.SaveChanges();
+
+                    SendEmail(r.Username, r.Id, "walk");
+                    return RedirectToAction("Detail", new { id = r.Id });
+
+                }
+
+                
+
+               
+
+                SendEmail(r.Username, r.Id, db.Reservations.Find(r.Id).PaymentMethod);
 
                 var user = db.Customers.Find(User.Identity.Name);
                 var results = SMS.Send(new SMS.SMSRequest
                 {
-                    from = Configuration.Instance.Settings["appsettings:NEXMO_FROM_NUMBER"],
+                    from = Nexmo.Api.Configuration.Instance.Settings["appsettings:NEXMO_FROM_NUMBER"],
                     to = user.PhoneNo,
                     
                     text = "Dear "      + user.Name     +
@@ -191,6 +225,7 @@ namespace Hotel_Web.Controllers
 
                 TempData["Info"] = "Room reserved.";
                 return RedirectToAction("Detail", new { r.Id });
+
             }
             var m = db.RoomTypes.Find(model.RoomTypeId);
             var model1 = new ReserveVM
@@ -205,7 +240,10 @@ namespace Hotel_Web.Controllers
             ViewBag.ServiceList = new MultiSelectList(db.ServiceTypes, "Id", "Name", model1.ServiceIds);
             return View(model1);
         }
-        private void SendEmail(string name, string Rid)
+
+
+
+        private void SendEmail(string name, string Rid, string paid_status)
         {
             var user = db.Customers.Find(name);
             var r = db.Reservations.Find(Rid);
@@ -215,7 +253,9 @@ namespace Hotel_Web.Controllers
             m.Subject = "Reservation Receipt";
             m.IsBodyHtml = true;
 
-            m.Body = $@"
+            if (paid_status == "walk")
+            {
+                m.Body = $@"
                 <p>Dear {user.Name},<p>
                 <p>Your reservation is successful<p>
                 <p>Here is your reservation detail<p>
@@ -228,6 +268,26 @@ namespace Hotel_Web.Controllers
                 <p>From, 👷 Super Admin</p>
 
             ";
+            }
+            else if(paid_status == "paypal") {
+
+                m.Body = $@"
+                <p>Dear {user.Name},<p>
+                <p>Your paymet is successful<p>
+                <p>Here is your reservation detail<p>
+                <p>Room          : {r.Room.RoomType.Name} Room<p>
+                <p>Check In      : {r.CheckIn}  12:00pm<p>
+                <p>Check Out     : {r.CheckOut} 12:00pm<p>
+                <p>Total         : RM{r.Total} <p>
+                <p>Paid          : {r.Paid} <p>
+                <p>Payment method: {r.PaymentMethod}<p>
+                <p>More detail can review in website<p>
+                <p>From, 👷 Super Admin</p>
+
+            ";
+
+            }
+   
 
             new SmtpClient().Send(m);
         }
@@ -283,11 +343,114 @@ namespace Hotel_Web.Controllers
             return View();
         }
 
+
+        public ActionResult ValidateCommand(string ReservationId, string RoonName, string TotalPrice)
+        {
+            LocalreservationId = ReservationId;
+            bool useSandbox = Convert.ToBoolean(ConfigurationManager.AppSettings["IsSandbox"]);
+            var paypal = new PayPalModel(useSandbox);
+
+            paypal.item_name = RoonName;
+            paypal.amount = TotalPrice;
+            return View(paypal);
+        }
+
+        public ActionResult PaidSuccess() {
+
+            var model = db.Reservations.Find(LocalreservationId);
+
+            if (model != null)
+            {
+                model.Paid = true;
+                model.PaymentMethod = "Paypal";
+                db.SaveChanges();
+
+
+                TempData["Info"] = "Room reserved.";
+
+                SendEmail(model.Username, model.Id, "paypal ");
+
+
+            }
+            else {
+                TempData["Info"] = "Not Found";
+            }
+
+            return RedirectToAction("Detail", new { id = LocalreservationId });
+
+        }
+
+        public ActionResult PaidCancel() {
+
+            var deleteReservation = db.Reservations.Find(LocalreservationId);
+
+             //var s = db.Services.Find(LocalreservationId);
+            var s =  db.Services;
+
+            foreach (var t in s) {
+               if(t.ReservationId == LocalreservationId)
+                {
+
+                    db.Services.Remove(t);
+                    db.SaveChanges();
+                }
+                
+            }
+            
+             db.Reservations.Remove(deleteReservation);
+             db.SaveChanges();
+
+          
+
+            TempData["Info"] = "Cancel Reservation";
+            return RedirectToAction("Index");
+            // return View();
+            //Detail(reservationId);
+
+            // return RedirectToAction("Detail","Home", new { id = reservationId });
+
+        }
+
+       /* private void successfulEmail(string Rid)
+        {   
+            var r = db.Reservations.Find(Rid);
+            var user = db.Customers.Find(r.Username);
+
+            var sPrice  = "";
+
+            foreach (var servicePrice in r.Services) {
+
+                sPrice += servicePrice.Price * servicePrice.Quantity;
+
+            
+            }
+
+
+            var m = new MailMessage();
+            m.To.Add($"{user.Name} <{user.Email}>");
+            m.Subject = "Reservation Receipt";
+            m.IsBodyHtml = true;
+
+            m.Body = $@"
+                <p>Dear {user.Name},<p>
+                <p>Your Payment is successful<p>
+                <br>
+                <p>Payment Detail<p>
+                <p>===========================<p>
+                <p>Total          : RM{r.Total} <p>
+                <p>Payment Type   : {r.PaymentMethod} <p>
+                <p>Payment Status : {r.Paid}<p>
+            ";
+
+            new SmtpClient().Send(m);
+        }*/
+
         //show 
         public ActionResult Chat()
         {
             return View();
         }
+
 
     }
 }

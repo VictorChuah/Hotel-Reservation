@@ -92,10 +92,12 @@
             </td>
         </tr>
     </table>
-        <section>
-            <button>Reserve</button>
+    <section>
+        <input type="hidden" name="roomName" value="@Model.RoomTypeName" />
+            <button name="type" value="Walk">Walk In Pay</button>
+            <button name="type" value="paypal">Pay With Paypal</button>
             <button type="reset">Reset</button>
-        </section>
+    </section>
         
 </form>
 
