@@ -172,7 +172,7 @@ namespace Hotel_Web.Controllers
                 db.Reservations.Add(r);
                 db.SaveChanges();
 
-                SendEmail(r.Username, r.Id);
+                //SendEmail(r.Username, r.Id);
 
                 
 
@@ -256,8 +256,8 @@ namespace Hotel_Web.Controllers
                 <p>Your reservation is successful<p>
                 <p>Here is your reservation detail<p>
                 <p>Room      : {r.Room.RoomType.Name} Room<p>
-                <p>Check In  : {r.CheckIn}  12:00pm<p>
-                <p>Check Out : {r.CheckOut} 12:00pm<p>
+                <p>Check In  : {r.CheckIn.ToString("yyyy-MM-dd")}  12:00pm<p>
+                <p>Check Out : {r.CheckOut.ToString("yyyy-MM-dd")} 12:00pm<p>
                 <p>Total     : RM{r.Total} <p>
                 <p>Paid      : {r.Paid} <p>
                 <p>More detail can review in website<p>
@@ -272,8 +272,8 @@ namespace Hotel_Web.Controllers
                 <p>Your paymet is successful<p>
                 <p>Here is your reservation detail<p>
                 <p>Room          : {r.Room.RoomType.Name} Room<p>
-                <p>Check In      : {r.CheckIn}  12:00pm<p>
-                <p>Check Out     : {r.CheckOut} 12:00pm<p>
+                <p>Check In      : {r.CheckIn.ToString("yyyy-MM-dd")}  12:00pm<p>
+                <p>Check Out     : {r.CheckOut.ToString("yyyy-MM-dd")} 12:00pm<p>
                 <p>Total         : RM{r.Total} <p>
                 <p>Paid          : {r.Paid} <p>
                 <p>Payment method: {r.PaymentMethod}<p>
@@ -364,7 +364,7 @@ namespace Hotel_Web.Controllers
 
                 TempData["Info"] = "Room reserved.";
 
-                SendEmail(model.Username, model.Id, "paypal ");
+                SendEmail(model.Username, model.Id, "paypal");
 
 
             }

@@ -386,7 +386,7 @@ namespace Hotel_Web.Controllers
             {
                 if (model.Photo != null)
                 {
-                    if ((model.PhotoURL != "iconMale.jpg") && (model.PhotoURL != "iconFemale.jpg"))
+                    if ((m.PhotoURL != "iconMale.jpg") && (m.PhotoURL != "iconFemale.jpg"))
                     {
                         DeletePhoto(m.PhotoURL);
                     }

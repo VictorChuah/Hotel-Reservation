@@ -7,7 +7,7 @@
 
 @Html.ValidationSummary(true)
 
-@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form" }))
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form", enctype= "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
@@ -69,11 +69,12 @@
     </section>
 }
 
-
-
-
 @section foot {
     <script>
+
+        $.validator.setDefaults({
+            ignore: ''
+        });
 
         function validatePhoto(f) {
             let reType = /^image\/(jpeg|png)$/i;
@@ -100,7 +101,6 @@
                 img.src = src;
                 e.target.value = '';
             }
-
             $(e.target).valid();
         });
 

@@ -79,7 +79,6 @@ namespace Hotel_Web.Controllers
             string path = null;
             if (status == "profile")
             {
-
                 path = Server.MapPath($"~/Image/Profile/{name}");
             }
             else if (status == "room") {
@@ -169,19 +168,7 @@ namespace Hotel_Web.Controllers
         public ActionResult CustomerEdit(string username)
         {
             var model = db.Customers.Find(username);
-            TempData["info"] = model.Username;
-
-            if (ModelState.IsValidField("Email"))
-            {
-                if (db.Customers.Find(User.Identity.Name).Email == model.Email)
-                {
-
-                }
-                else if (db.Admins.Any(a => a.Email == model.Email) || db.Customers.Any(c => c.Email == model.Email))
-                {
-                    ModelState.AddModelError("Email", "Duplicated Email.");
-                }
-            }
+            //TempData["info"] = model.Username;
 
             if (model == null)
             {
@@ -226,6 +213,17 @@ namespace Hotel_Web.Controllers
                 }
             }
 
+            if (ModelState.IsValidField("Email"))
+            {
+                if (c.Email == model.Email)
+                {
+
+                }
+                else if (db.Admins.Any(a => a.Email == model.Email) || db.Customers.Any(m => m.Email == model.Email))
+                {
+                    ModelState.AddModelError("Email", "Duplicated Email.");
+                }
+            }
 
 
             if (ModelState.IsValid)
@@ -554,11 +552,11 @@ namespace Hotel_Web.Controllers
 
             if (ModelState.IsValidField("Email"))
             {
-                if (db.Customers.Find(User.Identity.Name).Email == model.Email)
+                if (admin.Email == model.Email)
                 {
 
                 }
-                else if (db.Admins.Any(a => a.Email == model.Email) || db.Customers.Any(c => c.Email == model.Email))
+                else if (db.Admins.Any(a => a.Email == model.Email) || db.Customers.Any(m => m.Email == model.Email))
                 {
                     ModelState.AddModelError("Email", "Duplicated Email.");
                 }
@@ -587,8 +585,10 @@ namespace Hotel_Web.Controllers
 
                 if (model.Photo != null)
                 {
-
-                    DeletePhoto(admin.PhotoURL,"profile");
+                    if (admin.PhotoURL != null)
+                    {
+                        DeletePhoto(admin.PhotoURL, "profile");
+                    }
                     Session["PhotoUrl"] = admin.PhotoURL = SavePhoto(model.Photo, "profile");
                 }
 
@@ -913,7 +913,7 @@ namespace Hotel_Web.Controllers
 
                 db.SaveChanges();
                 TempData["Info"] = "Room Record edited";
-                return RedirectToAction("Room");
+                return RedirectToAction("RoomType");
             }
 
 

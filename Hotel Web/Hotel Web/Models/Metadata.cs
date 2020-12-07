@@ -99,7 +99,6 @@ namespace Hotel_Web.Models
         [RegularExpression(@"^(601)([0-9]{8})$", ErrorMessage = "Invalid Phone Number")]
         public string Phone { get; set; }
 
-        //[Required]
         public HttpPostedFileBase Photo { get; set; }
 
     }
@@ -317,6 +316,7 @@ namespace Hotel_Web.Models
 
     public class editRoomType {
         public string Id { get; set; }
+
         [Required]
         public string Name { get; set; }
 
@@ -324,8 +324,8 @@ namespace Hotel_Web.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
         public decimal Price { get; set; }
 
-
         public HttpPostedFileBase Photo { get; set; }
+
         public string PhotoURL { get; set; }
 
         [Required]
