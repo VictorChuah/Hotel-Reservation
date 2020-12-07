@@ -262,34 +262,20 @@ namespace Hotel_Web.Controllers
                 ModelState.AddModelError("Username", "Duplicated Username.");
             }
 
-            if (ModelState.IsValidField("Email") && !(db.Admins.Any(a => a.Email != model.Email) && db.Customers.Any(c => c.Email != model.Email)))
+            if (ModelState.IsValidField("Email") && (db.Admins.Any(a => a.Email == model.Email) || db.Customers.Any(c => c.Email == model.Email)))
             {
                 ModelState.AddModelError("Email", "Duplicated Email.");
-
             }
 
-            string photoURL = null;
             if (model.Photo != null)
             {
-                photoURL = SavePhoto(model.Photo);
-            }
-            else 
-            {
-                if (model.Gender == "M")
+                string err = ValidatePhoto(model.Photo); // validate the photo
+                if (err != null)
                 {
-                    photoURL = "iconMale.jpg";
-                }
-                else if (model.Gender == "F")
-                {
-                    photoURL = "iconFemale.jpg";
+                    ModelState.AddModelError("Photo", err);
                 }
             }
             
-            string err = ValidatePhoto(model.Photo);
-            if (err != null)
-            {
-                ModelState.AddModelError("Photo", err);
-            }
 
             if (ModelState.IsValid)
             {
@@ -303,7 +289,6 @@ namespace Hotel_Web.Controllers
                     PhoneNo = model.Phone,
                     Gender = model.Gender,
                     Email = model.Email,
-                    PhotoURL = photoURL,
                     Blocked = null,
                     LoginCount = 0,
                     ResetToken = null,
@@ -311,6 +296,22 @@ namespace Hotel_Web.Controllers
                     ActiveToken = generate,
                     Active = false
                 };
+
+                if (model.Photo != null)
+                {
+                    m.PhotoURL = SavePhoto(model.Photo);
+                }
+                else
+                {
+                    if (model.Gender == "M")
+                    {
+                        m.PhotoURL = "iconMale.jpg";
+                    }
+                    else if (model.Gender == "F")
+                    {
+                        m.PhotoURL = "iconFemale.jpg";
+                    }
+                }
 
                 db.Customers.Add(m);
                 db.SaveChanges();
@@ -340,6 +341,8 @@ namespace Hotel_Web.Controllers
             {
                 Name = m.Name,
                 Email = m.Email,
+                Gender = m.Gender,
+                Phone = m.PhoneNo,
                 PhotoURL = m.PhotoURL
             };
 
@@ -351,8 +354,19 @@ namespace Hotel_Web.Controllers
         [Authorize]
         public ActionResult Detail(AccDetailModel model)
         {
-            // TODO: Get member record of the current member
             var m = db.Customers.Find(User.Identity.Name);
+
+            if (ModelState.IsValidField("Email"))
+            {
+                if (db.Customers.Find(User.Identity.Name).Email == model.Email)
+                {
+
+                }
+                else if (db.Admins.Any(a => a.Email == model.Email) || db.Customers.Any(c => c.Email == model.Email))
+                {
+                    ModelState.AddModelError("Email", "Duplicated Email.");
+                }
+            }
 
             if (m == null)
             {
@@ -372,15 +386,20 @@ namespace Hotel_Web.Controllers
             {
                 if (model.Photo != null)
                 {
-                    DeletePhoto(m.PhotoURL);
-                    m.PhotoURL = SavePhoto(model.Photo);
+                    if ((m.PhotoURL != "iconMale.jpg") && (m.PhotoURL != "iconFemale.jpg"))
+                    {
+                        DeletePhoto(m.PhotoURL);
+                    }
 
-                     Session["PhotoUrl"] = m.PhotoURL = SavePhoto(model.Photo);
+                    Session["PhotoUrl"] = m.PhotoURL = SavePhoto(model.Photo);
 
                 }
 
                 m.Name = model.Name;
                 m.Email = model.Email;
+                m.PhoneNo = model.Phone;
+                m.Gender = model.Gender;
+
                 db.SaveChanges();
 
                 TempData["Info"] = "Detail updated.";

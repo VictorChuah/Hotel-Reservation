@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewBag.Title = "Chat";
+}
+
+@section head {
+    <style>
+        #text {
+            width: 450px;
+        }
+
+        #chat {
+            background: #ccc;
+            width: 500px;
+            height: 450px;
+            margin-top: 5px;
+            padding: 5px;
+            overflow-y: scroll;
+            /* TODO */
+            display: grid;
+            place-content: start;
+            place-items: start;
+            gap: 5px;
+        }
+
+        #chat > div {
+            background: #fff;
+            border: 1px solid #999;
+            border-radius: 5px;
+            padding: 5px;
+            word-break: break-all;
+        }
+
+        #chat > div.me {
+            background: lightgreen;
+        }
+    </style>
+}
+
+<form>
+    <input id="text" autofocus autocomplete="off">
+    <button>Send</button>
+</form>
+
+<div id="chat"></div>
+
+@section foot {
+
+    <script src="~/Scripts/jquery.signalR-2.4.1.js"></script>
+    <script src="~/signalR/js"></script>
+    <script>
+        // Proxy
+        const proxy = $.connection.chatHub;
+
+        proxy.client = {
+            receiveText(name, text, cls = '') {
+                $('#chat').prepend(`<div class="${cls}"><b>${name}:</b> ${text}</div>`);
+            },
+            initialize(list) {
+                for (let { name, text } of list) {
+                    proxy.client.receiveText(name, text);
+                }
+            }
+        };
+
+        // Connection
+        $.connection.hub.start().then(main);
+
+        function main() {
+
+            let name = prompt('Enter name')?.trim() || 'Anonymous';
+            /*let allow = true;
+
+            do {
+                let name = prompt('Enter name')?.trim() || 'Anonymous';
+
+                if (name == 'Admin') {
+                    let pass = prompt('Enter Password');
+
+                    if (!(window.location.href = '@Url.Action("CheckPass", "ChatHub")/' + id;)) {
+                        allow = false;
+                    }
+
+                }
+            }while (!allow)*/
+
+            $('form').submit(e => {
+                e.preventDefault();
+                let text = $('#text').val().trim();
+                if (text) {
+                    proxy.server.sendText(name, text);
+                }
+                $('#text').val('').focus();
+            });
+        }
+    </script>
+}

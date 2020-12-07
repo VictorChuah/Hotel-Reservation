@@ -1,6 +1,14 @@
 ﻿@using PagedList
 @using PagedList.Mvc
-@model  IPagedList<MultipleClass>
+@model  IPagedList<Reservation>
+
+
+@{
+
+
+
+}
+
 
 
 <style>
@@ -26,15 +34,14 @@
     }
 
     button {
-         margin:5px;
+        margin: 5px;
     }
-    
 </style>
 
 <script>
     function updateUnpaid(id, status) {
         //var id = $("#Bunpaid").val();
-       // var status = $("#unpaid").val();
+        // var status = $("#unpaid").val();
 
         //location.href = "/Admin/ReservationUpdatePaid?id=" + id + "&status=" + status;
 
@@ -55,7 +62,7 @@
 
     function updateStatus(id, status) {
         //var id = $("#Bstatus").val();
-       // var status = $("#IStatus").val()
+        // var status = $("#IStatus").val()
 
         //location.href = "/Admin/ReservationUpdatePaid?id=" + $("#Bstatus").val() + "&status=" + $("#IStatus").val();
 
@@ -74,17 +81,25 @@
         });
     }
 
+    function searchyear() {
+
+        var SelectedYear = $("#year").val();
+
+        location.href = "/Admin/ReservationList?SelectedYear=" + SelectedYear;
+
+
+    }
+
 </script>
 
-<form>
-    <div>
 
-        <p style="display:inline-block; margin-right:5px">Search: </p>@Html.TextBox("name", null, new { autofocus = "" })
-        <!--<input type="text" name="name" autofocus value="">-->
-        <!--it use to enter the name then the name will in the textbox and make a autofocus-->
-    </div>
-</form>
+<div>
 
+    @*<p style="display:inline-block; margin-right:5px">Search: </p>@Html.TextBox("name", null, new { autofocus = "" })*@
+    <!--<input type="text" name="name" autofocus value="">-->
+    <!--it use to enter the name then the name will in the textbox and make a autofocus-->
+   
+</div>
 <p>
     @Model.Count of @Model.TotalItemCount record(s) |
     Page @Model.PageNumber of @Model.PageCount
@@ -93,15 +108,16 @@
 <table class="table">
     <tr>
 
-        <th width="100">  Name  </th>
+        <th width="100">  Reservation Id  </th>
+        <th width="100">  Username  </th>
         <th width="100">  Room  </th>
-        <th width="100">  service  </th>
         <th width="100">  CheckIn  </th>
         <th width="100">  CheckOut  </th>
         <th width="100">  Person  </th>
         <th width="100">  Total  </th>
         <th width="100">  Paid  </th>
         <th width="100">  Status  </th>
+        <th width="100"> Payment Method</th>
         <th width="200"></th>
 
 
@@ -110,45 +126,46 @@
     @foreach (var r in Model)
     {
         <tr>
-            <td>@r.Cus.Name</td>
-            <td>@r.roomtype.Name</td>
-            <td>@r.Setype.Name</td>
-            <td>@r.Re.CheckIn</td>
-            <td>@r.Re.CheckOut</td>
-            <td>@r.Re.Person</td>
-            <td>@r.Re.Total</td>
-            <td>@r.Re.Paid</td>
-            <td>@r.Re.Status</td>
+            <td>@r.Id</td>
+            <td>@r.Username</td>
+            <td>@r.Room.RoomType.Name</td>
+            <td>@r.CheckIn.ToString("yyyy-MM-dd")</td>
+            <td>@r.CheckOut.ToString("yyyy-MM-dd")</td>
+            <td>@r.Person</td>
+            <td>@r.Total</td>
+            <td>@r.Paid</td>
+            <td>@r.Status</td>
+            <td>@r.PaymentMethod</td>
             <td style="position: relative" class="button">
 
-                @if (@r.Re.Paid == true)
+                @if (@r.Paid == true)
                 {
                     // <button data-post="/Admin/ReservationUpdatePaid?id=@r.Re.Id">Unpaid</button>
-                    <button id="Bunpaid" value="@r.Re.Id" onclick="updateUnpaid('@r.Re.Id', 0)">Unpaid</button>
+                    <button id="Bunpaid" value="@r.Id" onclick="updateUnpaid('@r.Id', 0)">Unpaid</button>
                     <input type="hidden" id="unpaid" name="name" value=0 />
                 }
                 else
                 {
                     //<button data-post="/Admin/ReservationUpdatePaid?id=@r.Re.Id">Paid</button>
-                    <button id="Bunpaid" value="@r.Re.Id" onclick="updateUnpaid('@r.Re.Id', 1)">paid</button>
+                    <button id="Bunpaid" value="@r.Id" onclick="updateUnpaid('@r.Id', 1)">paid</button>
                     <input type="hidden" id="unpaid" name="name" value=1 />
                 }
 
-                @if (r.Re.Status == "Reserved")
+                @if (r.Status == "Reserved")
                 {
                     //<button data-get="/Admin/ReservationStatus?id=@r.Re.Id">Check-In</button>
-                    <button id="Bstatus" value="@r.Re.Id" onclick="updateStatus('@r.Re.Id', 1)">Check-In</button>
+                    <button id="Bstatus" value="@r.Id" onclick="updateStatus('@r.Id', 1)">Check-In</button>
                     <input type="hidden" id="IStatus" name="name" value="1" />
                 }
-                else if (r.Re.Status == "Check-In")
+                else if (r.Status == "Check-In")
                 {
                     //<button data-get="/Admin/ReservationStatus?id=@r.Re.Id">Check-Out</button>
-                    <button id="Bstatus" value="@r.Re.Id" onclick="updateStatus('@r.Re.Id', 0)">Check-Out</button>
+                    <button id="Bstatus" value="@r.Id" onclick="updateStatus('@r.Id', 0)">Check-Out</button>
                     <input type="hidden" id="IStatus" name="name" value="0" />
                 }
-                <button data-get="/Admin/ReservationStatus?id=@r.Re.Id&status=0">Edit</button>
+                <button data-get="/Admin/ReservationStatus?id=@r.Id&status=0">Edit</button>
 
-                <img src="~/Image/Room/@r.roomtype.PhotoURL" />
+                <img src="~/Image/Room/@r.Room.RoomType.PhotoURL" />
             </td>
 
         </tr>

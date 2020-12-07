@@ -7,60 +7,66 @@
 
 
 
-    <form method="post" class="form" enctype="multipart/form-data">
-        @Html.ValidationSummary(true)
+<form method="post" class="form" enctype="multipart/form-data">
+    @Html.ValidationSummary(true)
 
 
-        @Html.LabelFor(m => m.Photo)
-        <div>
-            <label class="upload">
-                @Html.TextBoxFor(m => m.Photo, new { type = "file", accept = "image/jpeg,image/png", hidden = "" })
-                <img src="~/Image/Profile/photo.jpg">
-            </label>
-        </div>
-        @Html.ValidationMessageFor(m => m.Photo)
+    @Html.LabelFor(m => m.Photo)
+    <div>
+        <label class="upload">
+            @Html.TextBoxFor(m => m.Photo, new
+            {
+                type = "fi" +
+           "le",
+                accept = "image/jpeg,image/png",
+                hidden = ""
+            })
+            <img src="~/Image/Profile/photo.jpg">
+        </label>
+    </div>
+    @Html.ValidationMessageFor(m => m.Photo)
 
 
-        @Html.LabelFor(m => m.Username)
-        @Html.TextBoxFor(m => m.Username, new { maxlength = 20, autofocus = "" })
-        @Html.ValidationMessageFor(m => m.Username)
+    @Html.LabelFor(m => m.Username)
+    @Html.TextBoxFor(m => m.Username, new { maxlength = 20, autofocus = "" })
+    @Html.ValidationMessageFor(m => m.Username)
 
 
-        @Html.LabelFor(m => m.Name)
-        @Html.TextBoxFor(m => m.Name, new { maxlength = "50", autofocus = "" })
-        @Html.ValidationMessageFor(m => m.Name)
+    @Html.LabelFor(m => m.Name)
+    @Html.TextBoxFor(m => m.Name, new { maxlength = "50", autofocus = "" })
+    @Html.ValidationMessageFor(m => m.Name)
 
 
-        @Html.LabelFor(m => m.PhoneNo)
-        @Html.TextBoxFor(m => m.PhoneNo, new { maxlength = "13" })
-        @Html.ValidationMessageFor(m => m.PhoneNo)
+    @Html.LabelFor(m => m.PhoneNo)
+    @Html.TextBoxFor(m => m.PhoneNo, new { maxlength = "13", @placeholder = "601XXXXXXXX" })
+    @Html.ValidationMessageFor(m => m.PhoneNo)
 
 
-        @Html.LabelFor(m => m.Gender)
-        <div>
-            <label>@Html.RadioButtonFor(m => m.Gender, "F")Female</label>
-            <label>@Html.RadioButtonFor(m => m.Gender, "M")Male</label>
-        </div>
-        @Html.ValidationMessageFor(m => m.Gender)
+    @Html.LabelFor(m => m.Gender)
+    <div>
+        <label>@Html.RadioButtonFor(m => m.Gender, "F")Female</label>
+        <label>@Html.RadioButtonFor(m => m.Gender, "M")Male</label>
+    </div>
+    @Html.ValidationMessageFor(m => m.Gender)
 
-        @Html.LabelFor(m => m.Email)
-        @Html.TextBoxFor(m => m.Email, new { maxlength = "30" })
-        @Html.ValidationMessageFor(m => m.Email)
-
-
-        @Html.LabelFor(m => m.Password)
-        @Html.TextBoxFor(m => m.Password, new { maxlength = "20" })
-        @Html.ValidationMessageFor(m => m.Password)
+    @Html.LabelFor(m => m.Email)
+    @Html.TextBoxFor(m => m.Email, new { maxlength = "100" })
+    @Html.ValidationMessageFor(m => m.Email)
 
 
-        @Html.LabelFor(m => m.ComfirmPassword)
-        @Html.TextBoxFor(m => m.ComfirmPassword, new { maxlength = "20" })
-        @Html.ValidationMessageFor(m => m.ComfirmPassword)
-        <section>
-            <button>Submit</button>
-            <button type="reset">Reset</button>
-        </section>
-    </form>
+    @Html.LabelFor(m => m.Password)
+    @Html.PasswordFor(m => m.Password, new { maxlength = "20" })
+    @Html.ValidationMessageFor(m => m.Password)
+
+
+    @Html.LabelFor(m => m.ComfirmPassword)
+    @Html.PasswordFor(m => m.ComfirmPassword, new { maxlength = "20" })
+    @Html.ValidationMessageFor(m => m.ComfirmPassword)
+    <section>
+        <button>Submit</button>
+        <button type="reset">Reset</button>
+    </section>
+</form>
 
 @section foot {
     <script>
@@ -95,6 +101,10 @@
                 e.target.value = '';
             }
             $(e.target).valid();
+        });
+
+        jQuery(function ($) {
+            $("#PhoneNo").mask("99999999999");
         });
     </script>
 }

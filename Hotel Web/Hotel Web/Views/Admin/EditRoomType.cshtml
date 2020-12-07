@@ -12,31 +12,28 @@
         <div>
             <label class="upload">
                 @Html.TextBoxFor(m => m.Photo, new { type = "file", accept = "image/jpeg,image/png", hidden = "" })
-                <img src="~/Image/Room/">
+                <img src="~/Image/Room/@Model.PhotoURL">
             </label>
         </div>
-        @*   @Html.ValidationMessageFor(m => m.Photo))*@
-        <br>
+           @Html.ValidationMessageFor(m => m.Photo)
+        
         @Html.LabelFor(m => m.Id)
         <b>@Html.DisplayFor(m => m.Id)</b>
 
-        <br>
+        <br />
         @Html.LabelFor(m => m.Name)
         @Html.TextBoxFor(m => m.Name, new { maxlength = "50", autofocus = "" })
-        @* @Html.ValidationMessageFor(m => m.Name)*@
+        @Html.ValidationMessageFor(m => m.Name)
 
-        <br>
+        
         @Html.LabelFor(m => m.Price)
         @Html.TextBoxFor(m => m.Price, new { maxlength = "13" })
-        @*@Html.ValidationMessageFor(m => m.Price)*@
+        @Html.ValidationMessageFor(m => m.Price)
 
 
-
-
-        <br>
         @Html.LabelFor(m => m.person)
         @Html.TextBoxFor(m => m.person, new { maxlength = "30" })
-        @*@Html.ValidationMessageFor(m => m.person)*@
+        @Html.ValidationMessageFor(m => m.person)
 
         <section>
             <button>Edit</button>

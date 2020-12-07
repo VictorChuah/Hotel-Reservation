@@ -19,6 +19,8 @@ namespace Hotel_Web
                 LogoutPath = new PathString("/Account/Logout"),
             };
             app.UseCookieAuthentication(options);
+
+            app.MapSignalR();
         }
     }
 }

@@ -7,25 +7,34 @@
 <form class="form" method="post" enctype="multipart/form-data">
     @Html.ValidationSummary(true)
 
+    @Html.LabelFor(m => m.Photo)
+    <div>
+        <label class="upload">
+            <small>Select photo...</small>
+            @Html.TextBoxFor(m => m.Photo, new { type = "file", accept = "image/jpeg,image/png,image/jpg", hidden = "" })
+            <img src="~/Image/Profile/@Model.PhotoURL">
+        </label>
+    </div>
+    @Html.ValidationMessageFor(m => m.Photo)
+
     @Html.LabelFor(m => m.Name)
     @Html.TextBoxFor(m => m.Name, new { maxlength = 100 })
     @Html.ValidationMessageFor(m => m.Name)
+
+    @Html.LabelFor(m => m.Gender)
+    <div>
+        <label>@Html.RadioButtonFor(m => m.Gender, "M")Male</label>
+        <label>@Html.RadioButtonFor(m => m.Gender, "F")Female</label>
+    </div>
+    @Html.ValidationMessageFor(m => m.Gender)
 
     @Html.LabelFor(m => m.Email)
     @Html.TextBoxFor(m => m.Email, new { maxlength = 100 })
     @Html.ValidationMessageFor(m => m.Email)
 
-    @Html.LabelFor(m => m.Photo)
-    <div>
-        <label class="upload">
-            <small>Select photo...</small>
-            @Html.TextBoxFor(m => m.Photo, new { type = "file", accept = "image/jpeg,image/png", hidden = "" })
-            <img src="~/Photo/@Model.PhotoURL">
-        </label>
-    </div>
-    @Html.ValidationMessageFor(m => m.Photo)
-
-    <a href="~/Account/ChangePassword">ChangePassword</a>
+    @Html.LabelFor(m => m.Phone)
+    @Html.TextBoxFor(m => m.Phone, new { maxlength = 12, @placeholder = "601XXXXXXXX" })
+    @Html.ValidationMessageFor(m => m.Phone)
 
     <section>
         <button>Submit</button>
@@ -33,9 +42,10 @@
     </section>
 </form>
 
+<a href="~/Account/ChangePassword">ChangePassword</a>
+
 @section foot {
     <script>
-        // Copy from demo W6B and W7A
 
         function validatePhoto(f) {
             let reType = /^image\/(jpeg|png)$/i;
@@ -62,6 +72,12 @@
                 img.src = src;
                 e.target.value = '';
             }
+
+        $(e.target).valid();
+        });
+
+        jQuery(function ($) {
+            $("#Phone").mask("99999999999");
         });
     </script>
 }
