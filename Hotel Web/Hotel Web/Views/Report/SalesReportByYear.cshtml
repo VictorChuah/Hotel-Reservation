@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = " Sales Report (Year)";
+}
+<style>
+    .a {
+        flex: 0 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        background: none;
+        padding: 0;
+    }
+
+    .a > a {
+        font-size: 30px;
+        background: none;
+        color: #ff6a00;
+        text-decoration: none;
+        white-space: nowrap;
+        padding: 15px;
+
+    }
+
+</style>
+
+<nav class="a">
+    <a href="/Report/SalesReportByYear">Year</a>
+    <a href="/Report/SalesReportByMonth">Month</a>
+    <a href="/Report/SalesReportByDay">Day</a>
+</nav>
+
+<div id="chart" style="width: 800px; height: 400px"></div>
+
+<p>
+    <a href="#" id="reload">Reload</a>
+</p>
+
+@section foot {
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', { packages: ['corechart'] });
+        google.charts.setOnLoadCallback(init);
+
+        let dt, opt, cht;
+
+        function init() {
+            dt = new google.visualization.DataTable();
+            // Data table columns
+            dt.addColumn('string', 'Year');
+            dt.addColumn('number', 'Sales');
+
+            let style = { bold: true, italic: false, fontSize: 20, color: 'crimson' };
+
+            opt = {
+                title: 'Overall Sales By Year',
+                fontName: 'Calibri',
+                fontSize: 16,
+                titleTextStyle: { fontSize: 20 },
+                chartArea: { width: '85%', height: '70%', top: 60, left: 80 },
+                legend: 'none',
+                hAxis: { title: 'Year', titleTextStyle: style, format: '#' }, // TODO: Format
+                vAxis: { title: 'Sales (RM)', titleTextStyle: style }, // TODO: Format
+                animation: { duration: 500, startup: true },
+                colors: ['crimson']
+            };
+
+            cht = new google.visualization.ColumnChart($('#chart')[0]);
+
+            $('#reload').click();
+        }
+
+        $('#reload').click(e => {
+            e.preventDefault();
+
+            let url = '/Report/Data3';
+            let param = {};
+
+            $.getJSON(url, param, json => {
+                dt.removeRows(0, dt.getNumberOfRows());
+                dt.addRows(json);
+
+                // Format year (column 0) --> tooltip
+                new google.visualization.NumberFormat({ pattern: '#' })
+                    .format(dt, 0);
+
+                // Format sales (column 1) --> tooltip
+                new google.visualization.NumberFormat({ prefix: 'RM ' })
+                    .format(dt, 1);
+
+                cht.draw(dt, opt);
+            });
+        });
+    </script>
+}

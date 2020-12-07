@@ -409,6 +409,12 @@
     <Content Include="Views\Home\ReserveHistory.cshtml" />
     <Content Include="Views\Report\ReservationReport.cshtml" />
     <Content Include="Views\Report\ServicesReport.cshtml" />
+    <Content Include="Views\Report\SalesReportByYear.cshtml" />
+    <Content Include="Views\Report\ReservationList.cshtml" />
+    <Content Include="Views\Report\SalesReportByMonth.cshtml" />
+    <Content Include="Views\Report\SalesReportByDay.cshtml" />
+    <Content Include="Views\Report\CompareByDaySales.cshtml" />
+    <Content Include="Views\Report\ServicesRevenueByMonth.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

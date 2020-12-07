@@ -1,0 +1,142 @@
+﻿
+@{
+    ViewBag.Title = "";
+}
+
+<style>
+    .a {
+        flex: 0 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        background: none;
+        padding: 0;
+    }
+
+    .a > a {
+        font-size: 30px;
+        background: none;
+        color: #ff6a00;
+        text-decoration: none;
+        white-space: nowrap;
+        padding: 15px;
+    }
+</style>
+<nav class="a">
+    <a href="~/Report/ReservationReport">Reservation</a>
+    <a href="/Report/ServicesReport">Services</a>
+    <a href="/Report/CompareByDaySales">Room</a>
+    <a href="/Report/ServicesRevenueByMonth">Services Revenue</a>
+</nav>
+
+<p>
+    @Html.DropDownList("year", (SelectList)ViewBag.YearList)
+    @Html.DropDownList("month", (SelectList)ViewBag.MonthList)
+    @Html.DropDownList("r1", (SelectList)ViewBag.RoomList)
+    @Html.DropDownList("r2", (SelectList)ViewBag.RoomList)
+
+    <span id="loader">
+        <img src="~/Image/Misc/loader.gif" />
+        Loading...
+    </span>
+</p>
+
+<div id="chart" style="width: 800px; height: 400px; background: #fff"></div>
+
+@section foot {
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', { packages: ['corechart'] });
+        google.charts.setOnLoadCallback(init);
+
+        let dt, opt, cht;
+
+        function init() {
+            dt = new google.visualization.DataTable();
+            // TODO: Data table columns
+            dt.addColumn('date', 'Day')
+            dt.addColumn('number', 'r1')
+            dt.addColumn('number', 'r2')
+
+            let style = { bold: true, italic: false, fontSize: 20, color: 'darkred' };
+
+            opt = {
+                title: '--',
+                fontName: 'Calibri',
+                fontSize: 16,
+                titleTextStyle: { fontSize: 20 },
+                chartArea: { width: '70%', height: '70%', top: 60, left: 80 },
+                hAxis: { title: 'Day', titleTextStyle: style, maxTextLines: 1, format: 'dd MMM' }, // TODO: Format
+                vAxis: { title: 'Sales (RM)', titleTextStyle: style },
+                animation: { duration: 500, startup: true },
+                crosshair: { trigger: 'focus', color: 'red', opacity: 0.5 }
+            };
+
+            cht = new google.visualization.LineChart($('#chart')[0]);
+
+            // Event (ready --> alert if no data)
+            google.visualization.events.addListener(cht, 'ready', e => {
+                if (dt.getNumberOfRows() == 0) {
+                    alert('No data.');
+                    cht.clearChart();
+                }
+            });
+
+            $('#year').change();
+        }
+
+        // TODO: #r2 selection box --> select 2nd option
+        if ($('#r2 option').length > 1) {
+            $('#r2')[0].selectedIndex = 1;
+        }
+
+        $('#year,#month,#r1,#r2').change(e => {
+            e.preventDefault();
+
+            let url = '/Report/Data6';
+            let param = {
+                year: $('#year').val(),
+                month: $('#month').val(),
+                r1: $('#r1').val(),
+                r2: $('#r2').val(),
+            };
+
+            $('#loader').show();
+
+            $.getJSON(url, param, json => {
+                // Append year and month
+                opt.title = 'Overall Sales By Day - '
+                    + param.year + ' '
+                    + $('#month option:selected').text();
+
+                // TODO: Update column labels
+                dt.setColumnLabel(1, $('#r1 option:selected').text());
+                dt.setColumnLabel(2, $('#r2 option:selected').text());
+
+                dt.removeRows(0, dt.getNumberOfRows());
+
+                // Convert date string to date
+                for (let data of json) {
+                    data[0] = new Date(data[0]);
+                }
+
+                dt.addRows(json);
+
+                // Format day (column 0) --> tooltip
+                new google.visualization.DateFormat({ pattern: 'dd MMMM yyyy' })
+                    .format(dt, 0);
+
+                // Format sales (column 1) --> tooltip
+                new google.visualization.NumberFormat({ prefix: 'RM ' })
+                    .format(dt, 1);
+
+                // Format sales (column 2) --> tooltip
+                new google.visualization.NumberFormat({ prefix: 'RM ' })
+                    .format(dt, 2);
+
+                cht.draw(dt, opt);
+
+                $('#loader').hide();
+            });
+        });
+    </script>
+}
