@@ -602,32 +602,20 @@ namespace Hotel_Web.Controllers
         [HttpPost]
         public ActionResult AddAdmin (InsertAdmin newAdmin) {
 
-            if (db.Admins.Find(newAdmin.Username) != null) {
-
-                ModelState.AddModelError("Username", "Duplicated Username.");
-            
-            }
-            string photos = "";
-            if (newAdmin.Photo == null)
+            if (db.Admins.Find(newAdmin.Username) != null)
             {
 
-                photos = "photo.jpg";
+                ModelState.AddModelError("Username", "Duplicated Username.");
 
             }
-            else {
-             string err = ValidatePhoto(newAdmin.Photo);
+
+            string err = ValidatePhoto(newAdmin.Photo);
 
             if (err != null)
             {
 
                 ModelState.AddModelError("Phote", err);
             }
-
-                photos = SavePhoto(newAdmin.Photo, "profile");
-
-            }
-
-           
 
             if (ModelState.IsValid)
             {
@@ -640,7 +628,7 @@ namespace Hotel_Web.Controllers
                     PhoneNo = newAdmin.PhoneNo,
                     HashPass = HashPassword(newAdmin.Password),
                     Gender = newAdmin.Gender,
-                    PhotoURL = photos
+                    PhotoURL = SavePhoto(newAdmin.Photo, "profile")
                 };
 
                 db.Admins.Add(a);
