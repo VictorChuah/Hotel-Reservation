@@ -8,7 +8,6 @@ using System.Net.Mail;
 using System.Configuration;
 using Nexmo.Api;
 
-
 namespace Hotel_Web.Controllers
 {
     public class HomeController : Controller
@@ -71,9 +70,6 @@ namespace Hotel_Web.Controllers
         [HttpPost]
         public ActionResult Reserve(ReserveVM model, string roomName, string type)
         {
-            
-            
-
             DateTime min = DateTime.Today;
             DateTime max = DateTime.Today.AddDays(30);
 
@@ -127,7 +123,7 @@ namespace Hotel_Web.Controllers
 
             if (ModelState.IsValid)
             {
-                
+
                 // Process (1): Insert Reservation record
                 var r = new Reservation
                 {
@@ -176,6 +172,7 @@ namespace Hotel_Web.Controllers
                 db.Reservations.Add(r);
                 db.SaveChanges();
 
+                SendEmail(r.Username, r.Id);
 
                 
 
@@ -225,7 +222,6 @@ namespace Hotel_Web.Controllers
 
                 TempData["Info"] = "Room reserved.";
                 return RedirectToAction("Detail", new { r.Id });
-
             }
             var m = db.RoomTypes.Find(model.RoomTypeId);
             var model1 = new ReserveVM
