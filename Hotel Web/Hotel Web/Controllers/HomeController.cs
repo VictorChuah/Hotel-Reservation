@@ -187,7 +187,7 @@ namespace Hotel_Web.Controllers
                 db.Reservations.Add(r);
                 db.SaveChanges();
 
-                SendEmail(r.Username,r.Id);
+                //SendEmail(r.Username,r.Id);
                 List<Reservation> rt = db.Reservations.ToList();
 
                 //Update the room status that already check out

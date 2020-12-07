@@ -389,6 +389,12 @@ namespace Hotel_Web.Controllers
 
         }
 
+        public ActionResult ReservationEdit(string id)
+        {
+            var model = db.Reservations.Find(id);
+            return View(model);
+        }
+
         [HttpPost]
         public ActionResult ReservationUpdatePaid(string id, int status) {
 
