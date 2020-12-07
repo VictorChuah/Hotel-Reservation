@@ -13,12 +13,18 @@
         div {
             font-size: 20px;
         }
-
-
     </style>
 }
 
-    
+<script>
+
+    function paypal(RoomName, TotalPrice, Id) {
+        location.href = "/Home/ValidateCommand?RoonName=" + RoomName + "&TotalPrice=" + TotalPrice + "&ReservationId=" + Id;
+    }
+
+</script>
+
+
 <form class="form">
     <label>Id</label>
     <div>@Model.Id</div>
@@ -87,3 +93,6 @@
         <td style="color:#ff0000; font-weight: bold;">RM @Model.Total</td>
     </tr>
 </table>
+
+<button data-get="/Home/Index">Back</button>
+

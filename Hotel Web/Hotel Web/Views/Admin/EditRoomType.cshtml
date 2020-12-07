@@ -15,7 +15,7 @@
                 <img src="~/Image/Room/">
             </label>
         </div>
-        @*   @Html.ValidationMessageFor(m => m.Photo))*@
+           @Html.ValidationMessageFor(m => m.Photo))
         <br>
         @Html.LabelFor(m => m.Id)
         <b>@Html.DisplayFor(m => m.Id)</b>
@@ -23,12 +23,12 @@
         <br>
         @Html.LabelFor(m => m.Name)
         @Html.TextBoxFor(m => m.Name, new { maxlength = "50", autofocus = "" })
-        @* @Html.ValidationMessageFor(m => m.Name)*@
+         @Html.ValidationMessageFor(m => m.Name)
 
         <br>
         @Html.LabelFor(m => m.Price)
         @Html.TextBoxFor(m => m.Price, new { maxlength = "13" })
-        @*@Html.ValidationMessageFor(m => m.Price)*@
+        @Html.ValidationMessageFor(m => m.Price)
 
 
 
@@ -36,7 +36,7 @@
         <br>
         @Html.LabelFor(m => m.person)
         @Html.TextBoxFor(m => m.person, new { maxlength = "30" })
-        @*@Html.ValidationMessageFor(m => m.person)*@
+        @Html.ValidationMessageFor(m => m.person)
 
         <section>
             <button>Edit</button>

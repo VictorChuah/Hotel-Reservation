@@ -1,12 +1,133 @@
 ﻿
 @{
     ViewBag.Title = "Reservation List";
+
+    var ao = new AjaxOptions
+    {
+        HttpMethod = "get",
+        UpdateTargetId = "target", // use to send the result to the destination when the result is come back
+        LoadingElementId = "loader", // specify the loading item
+        OnSuccess = "highlight"
+    };
+}
+
+
+@{
+
+    /*  List<SelectListItem> listItems = new List<SelectListItem>();
+      listItems.Add(new SelectListItem
+      {
+          Text = "--Select--",
+          Value = ""
+      });
+      listItems.Add(new SelectListItem
+      {
+          Text = "Username",
+          Value = "username"
+      });
+      listItems.Add(new SelectListItem
+      {
+          Text = "Payment Method",
+          Value = "Payment_Method",
+          Selected = true
+      });
+      listItems.Add(new SelectListItem
+      {
+          Text = "Reservation Id",
+          Value = "ReservationId"
+      });
+      listItems.Add(new SelectListItem
+      {
+          Text = "Year",
+          Value = "year"
+      });*/
+
 }
 
 
 @section head {
-   
+
+    <script>
+        function change() {
+
+            var value = $("#searchBy").val();
+            if (value == "year") {
+                $("#SearchYear").show()
+                $("#searchValue").hide()
+            } else {
+                $("#SearchYear").hide()
+                $("#searchValue").show()
+            }
+
+        }
+
+        function searchYear(year) {
+
+            if (year != null) {
+
+                location.href = "/Admin/ReservationList?SelectedYear=" + $("#year").val();
+                $("#searchValue").hide()
+            }
+
+        }
+    </script>
+
 }
-    <div id="target">
-        @Html.Partial("_ReservationList")
-    </div>
+
+@using (Ajax.BeginForm(ao))
+{
+
+    <p style="display:inline-block; margin-right:5px">Search: </p>
+   @* @Html.DropDownList("type", new SelectList { new List<objcet> { new objcet { ValueExtensions = 0, TextAreaExtensions = "--select--" } } })*@
+    @Html.DropDownList("type", new SelectList(new List<object>{new { value = 0, text = "--Select--"},
+                                                                                new { value = "username", text = "Username" },
+                                                                                new { value = "Payment_Method", text = "Payment Method" },
+                                                                                new { value = "ReservationId", text = "Reservation Id" },
+                                                                                new { value = "year", text = "Year" },
+                                                                                }, "value", "text", 2), new { id = "searchBy", onchange= "change()" })
+
+
+    <div id="SearchYear" hidden>@Html.DropDownList("Year", (SelectList)ViewBag.year, "-Select-", new { id = "year", onchange = "searchYear('year')" })</div>
+
+    <div id="searchValue">@Html.TextBox("name", null, new { autofocus = "" })</div>
+
+}
+
+<div id="target">
+    @Html.Partial("_ReservationList")
+</div>
+
+
+@section foot{
+    <script>
+        let timer = null;
+        // this java script is use to when the user typeing the result will also changing
+        // input event is the user type
+        // settimeout is use to show the result after half second when finish typing
+        $('#name').on('input', e => {
+
+            //$(e.target.form).submit();
+            clearTimeout(timer);
+            timer = setTimeout(() => $(e.target.form).submit(), 500);
+
+        })
+        function highligh() {
+            // trim is remove the blank space in the vale
+            let name = $('#name').val().trim();
+
+            if (!name) return;
+            let re = new RegExp(escapeRegExp(name), 'gi');
+
+            $('td;nth-child(2)').each((i, el) => {
+
+                let html = $(el).html.replace(re, '<mark></mark>');
+
+                $(el).html(html);
+
+            });
+        }
+
+
+    </script>
+
+}

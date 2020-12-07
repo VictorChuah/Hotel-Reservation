@@ -31,10 +31,11 @@ namespace Hotel_Web.Models
         public decimal Total { get; set; }
         public bool Paid { get; set; }
         public string Status { get; set; }
+        public string PaymentMethod { get; set; }
     
         public virtual Room Room { get; set; }
+        public virtual Customer Customer { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Service> Services { get; set; }
-        public virtual Customer Customer { get; set; }
     }
 }

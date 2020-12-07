@@ -272,35 +272,96 @@ namespace Hotel_Web.Controllers
 // reservation
 //========================================================================================
 
+        private SelectList GetYearList(int min, int max, bool reserve = false) {
+
+            var items = new List<int>();
+
+            for (int n = min; n <= max; n++) {
+                items.Add(n);
+            }
+            if (reserve) items.Reverse();
+            return new SelectList(items);
+        }
+
+
         [Authorize(Roles = "Admin")]
-        public ActionResult ReservationList( string name = "", int page = 1)
+        public ActionResult ReservationList(string type, int SelectedYear = 0, string name = "", int page = 1)
         {
+            TempData["Info"] = SelectedYear;
+            int min = DateTime.Today.Year;
+            int max = DateTime.Today.Year;
+
+            min = db.Reservations.Min(o => o.CheckOut).Year;
+            max = db.Reservations.Max(o => o.CheckOut).Year;
+            ViewBag.year = GetYearList(min, max);
 
 
-            List<Customer> CusName = db.Customers.ToList();
-            List<Reservation> Re = db.Reservations.ToList();
-            List<Room> room = db.Rooms.ToList();
-            List<RoomType> RT = db.RoomTypes.ToList();
-            List<Service> service = db.Services.ToList();
-            List<ServiceType> ST = db.ServiceTypes.ToList();
+
+         
 
             name = name.Trim();
 
-            var multipletable = from c in CusName
-                                join re in Re on c.Username equals re.Username //into table1
-                                //from re in table1.DefaultIfEmpty()
-                                join r in room on re.RoomId equals r.Id //into table2
-                                //from r in table2.DefaultIfEmpty()
-                                join rt in RT on r.RoomTypeId equals rt.Id //into table3
-                                //from rt in table3.DefaultIfEmpty()
-                                join S in service on re.Id equals S.ReservationId //into table4
-                                //from S in table4.DefaultIfEmpty()
-                                join st in ST on S.ServiceId equals st.Id //into table5
-                                //from st in table5.DefaultIfEmpty()
-                                where c.Name.Contains(name)
-                                select new MultipleClass { Cus = c, Re = re, room = r, roomtype = rt, se = S, Setype = st };
 
-            var tables = multipletable.ToPagedList(page, 10);
+
+            var reservationList = db.Reservations.Where(c => c.Username.Contains(name));
+
+            //search by year
+            if (SelectedYear != 0)
+            {
+                reservationList = reservationList.Where(y => y.CheckOut.Year == SelectedYear);
+            }
+
+
+            var tables = reservationList.OrderByDescending(x => x.CheckOut).ToPagedList(page, 10);
+
+            //search by username
+            if (type == "username")
+            {
+
+                tables = tables.Where(r => r.Username.Contains(name)).ToPagedList(page, 10);
+
+                if (page > tables.PageCount && tables.PageCount != 0)
+                {
+
+                    return RedirectToAction(null, new { page = tables.PageCount });
+
+                }
+                if (Request.IsAjaxRequest()) return PartialView("_ReservationList", tables);
+
+                return View(tables);
+
+            }
+            //search by payment method
+            else if (type == "Payment_Method")
+            {
+                tables = tables.Where(r => r.PaymentMethod.Contains(name)).ToPagedList(page, 10);
+
+                if (page > tables.PageCount && tables.PageCount != 0)
+                {
+
+                    return RedirectToAction(null, new { page = tables.PageCount });
+
+                }
+                if (Request.IsAjaxRequest()) return PartialView("_ReservationList", tables);
+
+                return View(tables);
+            }
+            //search by reservation id
+            else if (type == "ReservationId") {
+
+                tables = tables.Where(r => r.Id.Contains(name) ).ToPagedList(page, 10);
+
+                if (page > tables.PageCount && tables.PageCount != 0)
+                {
+
+                    return RedirectToAction(null, new { page = tables.PageCount });
+
+                }
+                if (Request.IsAjaxRequest()) return PartialView("_ReservationList", tables);
+
+                return View(tables);
+
+            }
 
             if (page > tables.PageCount && tables.PageCount != 0)
             {
@@ -311,6 +372,8 @@ namespace Hotel_Web.Controllers
             if (Request.IsAjaxRequest()) return PartialView("_ReservationList", tables);
 
             return View(tables);
+
+
 
 
 
@@ -544,14 +607,27 @@ namespace Hotel_Web.Controllers
                 ModelState.AddModelError("Username", "Duplicated Username.");
             
             }
+            string photos = "";
+            if (newAdmin.Photo == null)
+            {
 
-            string err = ValidatePhoto(newAdmin.Photo);
+                photos = "photo.jpg";
+
+            }
+            else {
+             string err = ValidatePhoto(newAdmin.Photo);
 
             if (err != null)
             {
 
                 ModelState.AddModelError("Phote", err);
             }
+
+                photos = SavePhoto(newAdmin.Photo, "profile");
+
+            }
+
+           
 
             if (ModelState.IsValid)
             {
@@ -564,7 +640,7 @@ namespace Hotel_Web.Controllers
                     PhoneNo = newAdmin.PhoneNo,
                     HashPass = HashPassword(newAdmin.Password),
                     Gender = newAdmin.Gender,
-                    PhotoURL = SavePhoto(newAdmin.Photo, "profile")
+                    PhotoURL = photos
                 };
 
                 db.Admins.Add(a);
