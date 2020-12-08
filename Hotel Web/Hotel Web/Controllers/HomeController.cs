@@ -111,7 +111,7 @@ namespace Hotel_Web.Controllers
 
                 room = db.Rooms
                          .Except(occupied)
-                             .FirstOrDefault(r => r.RoomTypeId == model.RoomTypeId);
+                         .FirstOrDefault(r => r.RoomTypeId == model.RoomTypeId);
 
                 if (room == null)
                 {
@@ -120,13 +120,27 @@ namespace Hotel_Web.Controllers
 
             }
 
-
-            if (ModelState.IsValid)
+            var servicesType1 = db.ServiceTypes.Where(s => model.ServiceIds.Contains(s.Id));
+            foreach (var s in servicesType1)
             {
+                if(s.Name == "Bed" && model.Bed == 0)
+                {
+                    ModelState.AddModelError("Bed", "Please select the quantity that you want added.");
+                }
+                else if (s.Name == "Blanket" && model.Bed == 0)
+                {
+                    ModelState.AddModelError("Blanket", "Please select the quantity that you want added.");
+                }
+            }
 
+
+                if (ModelState.IsValid)
+                {
+                
                 // Process (1): Insert Reservation record
                 var r = new Reservation
                 {
+                    
                     Id = NextId(),
                     Username = User.Identity.Name,
                     RoomId = room.Id,
@@ -136,6 +150,7 @@ namespace Hotel_Web.Controllers
                     CheckOut = model.CheckOut,
                     Paid = false,
                     Status = "Reserved"
+                    
                 };
 
                 r.Day = (r.CheckOut - r.CheckIn).Days;
@@ -171,6 +186,37 @@ namespace Hotel_Web.Controllers
                 
                 db.Reservations.Add(r);
                 db.SaveChanges();
+
+                SendEmail(r.Username,r.Id);
+                List<Reservation> rt = db.Reservations.ToList();
+
+                //Update the room status that already check out
+                foreach (var rn in rt)
+                {
+                    if (rn.Status == "Check-In" && rn.CheckOut < DateTime.Today)
+                    {
+                        rn.Room.Status = "A";
+                        rn.Status = "Check-Out";
+                        db.SaveChanges();
+                    }
+                    else if (rn.Status == "Reserved" && rn.CheckOut < DateTime.Today)
+                    {
+                        rn.Room.Status = "A";
+                        rn.Status = "Check-Out";
+                        db.SaveChanges();
+                    }
+                    else if (rn.Status == "Reserved" && rn.CheckIn < DateTime.Today)
+                    {
+                        room.Status = "V";
+                        db.SaveChanges();
+                    }
+                    else if (rn.Status == "Reserved" && rn.CheckIn == DateTime.Today)
+                    {
+                        room.Status = "V";
+                        db.SaveChanges();
+                    }
+
+                }
 
                 //SendEmail(r.Username, r.Id);
 
@@ -236,9 +282,10 @@ namespace Hotel_Web.Controllers
                     From, Super Admin"
                 });*/
 
-
                 TempData["Info"] = "Room reserved.";
                 return RedirectToAction("Detail", new { r.Id });
+
+                
             }
             var m = db.RoomTypes.Find(model.RoomTypeId);
             var model1 = new ReserveVM
@@ -254,9 +301,8 @@ namespace Hotel_Web.Controllers
             return View(model1);
         }
 
-
-
         private void SendEmail(string name, string Rid, string paid_status)
+
         {
             var user = db.Customers.Find(name);
             var r = db.Reservations.Find(Rid);
@@ -345,9 +391,9 @@ namespace Hotel_Web.Controllers
 
         private string NextId()
         {
-            string max = db.Reservations.Max(r => r.Id) ?? "R000";
+            string max = db.Reservations.Max(r => r.Id) ?? "R00000";
             int n = int.Parse(max.Substring(1));
-            return (n + 1).ToString("'R'000");
+            return (n + 1).ToString("'R'00000");
         }
 
         //show location

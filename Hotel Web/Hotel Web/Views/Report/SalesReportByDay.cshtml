@@ -1,0 +1,135 @@
+﻿@{
+    ViewBag.Title = "Sales Report (Day)";
+}
+
+<style>
+    .a {
+        flex: 0 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        background: none;
+        padding: 0;
+    }
+
+    .a > a {
+        font-size: 30px;
+        background: none;
+        color: #ff6a00;
+        text-decoration: none;
+        white-space: nowrap;
+        padding: 15px;
+    }
+</style>
+
+<nav class="a">
+    <a href="/Report/SalesReportByYear">Year</a>
+    <a href="/Report/SalesReportByMonth">Month</a>
+    <a href="/Report/SalesReportByDay">Day</a>
+</nav>
+
+<p>
+    @Html.DropDownList("year", (SelectList)ViewBag.YearList)
+    @Html.DropDownList("month", (SelectList)ViewBag.MonthList)
+
+    <span id="loader">
+        <img src="~/Image/Misc/loader.gif" />
+        Loading...
+    </span>
+</p>
+
+<div id="chart" style="width: 800px; height: 400px; background: #fff"></div>
+
+
+@section foot {
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', { packages: ['corechart'] });
+        google.charts.setOnLoadCallback(init);
+
+        let dt, opt, cht;
+
+        function init() {
+            dt = new google.visualization.DataTable();
+            // Data table columns
+            dt.addColumn('date', 'Day');
+            dt.addColumn('number', 'Sales');
+
+            let style = { bold: true, italic: false, fontSize: 20, color: 'darkorange' };
+
+            opt = {
+                title: '--',
+                fontName: 'Calibri',
+                fontSize: 16,
+                titleTextStyle: { fontSize: 20 },
+                chartArea: { width: '85%', height: '70%', top: 60, left: 80 },
+                legend: 'none',
+                hAxis: { title: 'Day', titleTextStyle: style, maxTextLines: 1, format: 'dd MMM' }, // TODO: Format
+                vAxis: { title: 'Sales (RM)', titleTextStyle: style },
+                animation: { duration: 500, startup: true },
+                colors: ['cyan'],
+                // Other options (crosshair)
+                crosshair: {
+                    trigger: 'focus',
+                    color: 'red',
+                    opacity: 0.5,
+                    orientation: 'both' // horizontal or vertical
+                }
+            };
+
+            cht = new google.visualization.LineChart($('#chart')[0]);
+
+            // Event (ready --> alert if no data)
+            google.visualization.events.addListener(cht, 'ready', e => {
+                if (dt.getNumberOfRows() == 0) {
+                    alert('No data.');
+                    cht.clearChart();
+                }
+            });
+
+            $('#year').change();
+        }
+
+        $('#year,#month').change(e => {
+            e.preventDefault();
+
+            // Set param
+            let url = '/Report/Data5';
+            let param = {
+                year: $('#year').val(),
+                month: $('#month').val()
+            };
+
+            $('#loader').show();
+
+            $.getJSON(url, param, json => {
+                // Append year and month
+                opt.title = 'Overall Sales By Day - '
+                    + param.year + ' '
+                    + $('#month option:selected').text();
+
+                dt.removeRows(0, dt.getNumberOfRows());
+
+                // Convert date string to date
+                for (let data of json) {
+                    data[0] = new Date(data[0]);
+                }
+
+                dt.addRows(json);
+
+                // Format day (column 0) --> tooltip
+                new google.visualization.DateFormat({ pattern: 'dd MMMM yyyy' })
+                    .format(dt, 0);
+
+                // Format sales (column 1) --> tooltip
+                new google.visualization.NumberFormat({ prefix: 'RM ' })
+                    .format(dt, 1);
+
+                cht.draw(dt, opt);
+
+                $('#loader').hide();
+            });
+        });
+    </script>
+}
+
+

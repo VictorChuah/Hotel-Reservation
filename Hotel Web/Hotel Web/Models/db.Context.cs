@@ -25,7 +25,6 @@ namespace Hotel_Web.Models
             throw new UnintentionalCodeFirstException();
         }
     
-
         public virtual DbSet<Admin> Admins { get; set; }
         public virtual DbSet<RoomType> RoomTypes { get; set; }
         public virtual DbSet<Room> Rooms { get; set; }
