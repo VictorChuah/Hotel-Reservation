@@ -182,7 +182,9 @@ namespace Hotel_Web.Controllers
                     // ValidateCommand( r.Id ,roomName, totalPrice);
                     return RedirectToAction("ValidateCommand", new { ReservationId = r.Id, RoonName = roomname, TotalPrice = totalPrice });
 
-                } else if(type.Equals("Walk")) {
+                } 
+                else if(type.Equals("Walk")) 
+                {
 
                     var updatestatus = db.Reservations.Find(r.Id);
 
@@ -191,18 +193,33 @@ namespace Hotel_Web.Controllers
 
                     db.SaveChanges();
 
-                    SendEmail(r.Username, r.Id, "walk");
-                    return RedirectToAction("Detail", new { id = r.Id });
+                    SendEmail(r.Username, r.Id, "walk"); //email
+
+                    var user = db.Customers.Find(User.Identity.Name); //sms
+                    var results = SMS.Send(new SMS.SMSRequest
+                    {
+                        from = Nexmo.Api.Configuration.Instance.Settings["appsettings:NEXMO_FROM_NUMBER"],
+                        to = user.PhoneNo,
+
+                        text = "Dear " + user.Name +
+                        @", your reservation is successful! Here is your reservation detail. 
+                        Room : " + r.Room.RoomType.Name + @" Room
+                        Check In  : " + r.CheckIn + @" 
+                        Check Out : " + r.CheckOut + @"
+                        Total     : RM" + r.Total + @"
+                        Paid      : " + r.Paid + @" 
+                        More detail can review in website
+                        From, Super Admin"
+                     });
+
+                        return RedirectToAction("Detail", new { id = r.Id }
+                    );
 
                 }
 
-                
+                //SendEmail(r.Username, r.Id, db.Reservations.Find(r.Id).PaymentMethod);
 
-               
-
-                SendEmail(r.Username, r.Id, db.Reservations.Find(r.Id).PaymentMethod);
-
-                var user = db.Customers.Find(User.Identity.Name);
+                /*var user = db.Customers.Find(User.Identity.Name);
                 var results = SMS.Send(new SMS.SMSRequest
                 {
                     from = Nexmo.Api.Configuration.Instance.Settings["appsettings:NEXMO_FROM_NUMBER"],
@@ -217,7 +234,7 @@ namespace Hotel_Web.Controllers
                     Paid      : "       + r.Paid        + @" 
                     More detail can review in website
                     From, Super Admin"
-                });
+                });*/
 
 
                 TempData["Info"] = "Room reserved.";
