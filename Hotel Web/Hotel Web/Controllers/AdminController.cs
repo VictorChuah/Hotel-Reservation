@@ -418,7 +418,7 @@ namespace Hotel_Web.Controllers
             
             ViewBag.TypeList = new SelectList(db.RoomTypes.OrderBy(t => t.Person), "Id", "Name");
             ViewBag.ServiceList = new MultiSelectList(db.ServiceTypes, "Id", "Name", model.ServiceIds);
-
+            ViewBag.ServicePrice = db.ServiceTypes;
 
             return View(model);
         }
@@ -541,6 +541,8 @@ namespace Hotel_Web.Controllers
 
             ViewBag.TypeList = new SelectList(db.RoomTypes.OrderBy(t => t.Person), "Id", "Name");
             ViewBag.ServiceList = new MultiSelectList(db.ServiceTypes, "Id", "Name", model.ServiceIds);
+            ViewBag.ServicePrice = db.ServiceTypes;
+
             return View(model);
 
 

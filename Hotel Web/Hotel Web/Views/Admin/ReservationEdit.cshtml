@@ -4,6 +4,13 @@
     string min = DateTime.Today.ToString("yyyy-MM-dd");
     string max = DateTime.Today.AddDays(30).ToString("yyyy-MM-dd");
 
+    var ao = new AjaxOptions
+    {
+        HttpMethod = "get",
+        UpdateTargetId = "target", // use to send the result to the destination when the result is come back
+        LoadingElementId = "loader", // specify the loading item
+        OnSuccess = "highlight"
+    };
 }
 <style>
     body {
@@ -53,7 +60,16 @@
 
         <tr>
             <td class="a">@Html.LabelFor(m => m.ServiceIds)</td>
-            <td>@Helper.CheckBoxList("ServiceIds", ViewBag.ServiceList)</td>
+            @using (Ajax.BeginForm(ao))
+            {
+                <td style="width:50px;"> @Helper.CheckBoxList("ServiceIds", ViewBag.ServiceList) </td>
+            }
+            <td>
+                @foreach (var sp in ViewBag.ServicePrice)
+                {
+                    <text>RM</text> @sp.Price <br />
+                }
+            </td>
         </tr>
             <tr>
                 <td style="font-size:20px; color:#ff0000;" colspan="2">If Have Add Bed or Blanket, please enter the amount that you want to add. Thank you</td>
@@ -88,9 +104,6 @@
             </tr>
         </table>
     <section>
-        @*<input type="hidden" name="roomName" value="@Model.RoomTypeName" />
-        <button name="type" value="Walk">Walk In Pay</button>
-        <button name="type" value="paypal">Pay With Paypal</button>*@
         <button>Edit</button>
         <button type="reset">Reset</button>
         <button data-get="/Admin/ReservationDetail/@Model.id">Back</button>
@@ -130,32 +143,32 @@
         // Run the logic once as page loaded
         $('#CheckIn').trigger('input');
 
-        //let timer = null;
-        //// this java script is use to when the user typeing the result will also changing
-        //// input event is the user type
-        //// settimeout is use to show the result after half second when finish typing
-        //$('#name').on('input', e => {
+        let timer = null;
+        // this java script is use to when the user typeing the result will also changing
+        // input event is the user type
+        // settimeout is use to show the result after half second when finish typing
+        $('#name').on('input', e => {
 
-        //    //$(e.target.form).submit();
-        //    clearTimeout(timer);
-        //    timer = setTimeout(() => $(e.target.form).submit(), 500);
+            $(e.target.form).submit();
+            clearTimeout(timer);
+            timer = setTimeout(() => $(e.target.form).submit(), 500);
 
-        //})
-        //function highligh() {
-        //    // trim is remove the blank space in the vale
-        //    let name = $('#name').val().trim();
+        })
+        function highligh() {
+            // trim is remove the blank space in the vale
+            let name = $('#name').val().trim();
 
-        //    if (!name) return;
-        //    let re = new RegExp(escapeRegExp(name), 'gi');
+            if (!name) return;
+            let re = new RegExp(escapeRegExp(name), 'gi');
 
-        //    $('td;nth-child(2)').each((i, el) => {
+            $('td;nth-child(2)').each((i, el) => {
 
-        //        let html = $(el).html.replace(re, '<mark></mark>');
+                let html = $(el).html.replace(re, '<mark></mark>');
 
-        //        $(el).html(html);
+                $(el).html(html);
 
-        //    });
-        //}
+            });
+        }
 
     </script>
 }
