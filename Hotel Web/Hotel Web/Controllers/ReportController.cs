@@ -11,12 +11,13 @@ namespace Hotel_Web.Controllers
     {
         dbEntities1 db = new dbEntities1();
 
-        // GET: Report
+        //GET: Report/ReservationReport
         public ActionResult ReservationReport()
         {
             return View();
         }
 
+        //Data - ReservationReport
         public ActionResult Data1()
         {
             var dt = db.Reservations
@@ -27,11 +28,13 @@ namespace Hotel_Web.Controllers
             return Json(dt, JsonRequestBehavior.AllowGet);
         }
 
+        //GET: Report/ServicesReport
         public ActionResult ServicesReport()
         {
             return View();
         }
 
+        //Data - ServicesReport
         public ActionResult Data2()
         {
             var dt = db.Services
@@ -42,11 +45,13 @@ namespace Hotel_Web.Controllers
             return Json(dt, JsonRequestBehavior.AllowGet);
         }
 
+        //GET: Report/SalesReportByYear
         public ActionResult SalesReportByYear()
         {
             return View();
         }
 
+        //Data - SalesReportByYear
         public ActionResult Data3()
         {
             var dt = db.Reservations
@@ -60,13 +65,7 @@ namespace Hotel_Web.Controllers
             return Json(dt, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ReservationList()
-        {
-            var model = db.Reservations;
-
-            return View(model);
-        }
-
+        //GET: Report/SalesReportByMonth
         public ActionResult SalesReportByMonth()
         {
             // Return available years for DropDownList
@@ -82,6 +81,7 @@ namespace Hotel_Web.Controllers
             return View();
         }
 
+        //Data - SalesReportByMonth
         public ActionResult Data4(int year = 0)
         {
             var dict = new Dictionary<string, decimal>
@@ -112,6 +112,7 @@ namespace Hotel_Web.Controllers
             return Json(dt, JsonRequestBehavior.AllowGet);
         }
 
+        //GET: Report/SalesReportByDay
         public ActionResult SalesReportByDay()
         {
             // Return available years
@@ -138,6 +139,7 @@ namespace Hotel_Web.Controllers
             return View();
         }
 
+        //Data - SalesReportByDay
         public ActionResult Data5(int year = 0, int month = 0)
         {
             var dt = db.Reservations
@@ -153,6 +155,7 @@ namespace Hotel_Web.Controllers
             return Json(dt, JsonRequestBehavior.AllowGet);
         }
 
+        //GET: Report/RoomRevenue - (2)
         public ActionResult CompareByDaySales()
         {
             int min = DateTime.Today.Year;
@@ -180,6 +183,7 @@ namespace Hotel_Web.Controllers
             return View();
         }
 
+        //Data - RoomRevenue - (2)
         public ActionResult Data6(int year, int month, string r1, string r2)
         {
             // TODO: Return overall sales by day (filter by year and month)
@@ -198,6 +202,7 @@ namespace Hotel_Web.Controllers
             return Json(dt, JsonRequestBehavior.AllowGet);
         }
 
+        //GET: Report/ServicesRevenueByDay
         public ActionResult ServicesRevenueByMonth()
         {
             DateTime min = DateTime.Today;
@@ -217,6 +222,7 @@ namespace Hotel_Web.Controllers
             return View();
         }
 
+        //Data - ServicesRevenueByDay
         public ActionResult Data7(DateTime date)
         {
             // TODO: Return overall quantity sold by product (filter by day)
@@ -388,7 +394,6 @@ namespace Hotel_Web.Controllers
                 }
             }
             
-
             // Reenable DB tracking and validation after saved
             db.Configuration.AutoDetectChangesEnabled = true;
             db.Configuration.ValidateOnSaveEnabled = true;
@@ -410,5 +415,14 @@ namespace Hotel_Web.Controllers
             return (n + 1).ToString("'R'00000");
         }
 
+        //GET: Report/ReservationList
+        public ActionResult ReservationList()
+        {
+            var model = db.Reservations;
+
+            return View(model);
+        }
     }
+
+    
 }

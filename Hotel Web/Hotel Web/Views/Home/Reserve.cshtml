@@ -12,6 +12,13 @@
         OnSuccess = "highlight"
     };
 }
+<script>
+    function changebg() {
+        document.getElementsByName(name).style.color = "blue";
+    }
+
+</script>
+
 <style>
     body {
         background: url('/Image/Misc/reserve background.jpg');
@@ -26,157 +33,98 @@
     button {
         font-size: 20px;
     }
+
+
 </style>
 
-<script>
-  @* /* function cal() {
-       var checkedValue = new Array();
-        $('#check:checked').each(function () {
+<img src="~/Image/Room/@Model.RoomPhotoURL" width="300" height="250" style="border:1px solid #111;" />
+<form class="form" method="post">
+    @Html.ValidationSummary(true)
+    <table>
 
-            checkedValue.push($(this).val());
+        <tr>
+            <td class="a">@Html.LabelFor(m => m.RoomTypeName) </td>
+            <td><b>@Html.DisplayFor(m => m.RoomTypeName)</b></td>
+            <td>@Html.ValidationMessageFor(m => m.RoomTypeName)</td>
+        </tr>
+        <tr>
+            <td class="a">@Html.LabelFor(m => m.RoomPrice)</td>
+            <td><b>RM @Html.DisplayFor(m => m.RoomPrice)</b></td>
+        </tr>
+        <tr>
+            <td class="a">@Html.LabelFor(m => m.Person)</td>
+            <td><b>@Html.DisplayFor(m => m.Person)</b></td>
+        </tr>
+        <tr>
+            <td class="a">@Html.LabelFor(m => m.CheckIn)</td>
+            <td>@Html.TextBoxFor(m => m.CheckIn, "{0:yyyy-MM-dd}", new { type = "date", min, max })</td>
+            <td>@Html.ValidationMessageFor(m => m.CheckIn)</td>
+        </tr>
 
-        });
-      //  var checkedValue = $("#check:checked").val();
-       // var jsonString = JSON.stringify(checkedValue);
-        var checkIn = $("#checkInDate").val();
-        var checkOut = $("#checkOutDate").val();
-        var day = new Date(checkOut) - new Date(checkIn);
-        day = day / 86400000;
-        if (day >= 0) {
-            var price = @Model.RoomPrice* day;
-        }
+        <tr>
+            <td class="a">@Html.LabelFor(m => m.CheckOut)</td>
+            <td>@Html.TextBoxFor(m => m.CheckOut, "{0:yyyy-MM-dd}", new { type = "date", min, max })</td>
+            <td>@Html.ValidationMessageFor(m => m.CheckOut)</td>
+        </tr>
 
-
-        // $("#DisPrice").value = price;
-        console.log(checkedValue);
-        document.getElementById("DisPrice").value = price;
-
-        if (checkedValue != null) {
-            $.ajax({
-                type: "GET",
-                url: "/Home/CalculatePrice",
-                data: {
-                    'SelectedService': checkedValue,
-                    'price': price
-                },
-                datatype: "json",
-                success: function (data) {
-                    console.log(data);
-
-                  //  document.getElementById("DisPrice").value = ViewBag.totalPrice;
-                },
-            });
-
-        } else {
-            document.getElementById("DisPrice").value = price;
-        }
-
-
-
-
-    }*@
-
-
-
-</script>
-
-
-<div onload="cal()">
-    <img src="~/Image/Room/@Model.RoomPhotoURL" width="300" height="250" style="border:1px solid #111;" />
-    <form class="form" method="post">
-        @Html.ValidationSummary(true)
-        <table>
-
-            <tr>
-                <td class="a">@Html.LabelFor(m => m.RoomTypeName) </td>
-                <td><b>@Html.DisplayFor(m => m.RoomTypeName)</b></td>
-                <td>@Html.ValidationMessageFor(m => m.RoomTypeName)</td>
-            </tr>
-
-            <tr>
-                <td class="a">@Html.LabelFor(m => m.RoomPrice)</td>
-                <td><b>RM @Html.DisplayFor(m => m.RoomPrice)</b></td>
-            </tr>
-
-            <tr>
-                <td class="a">@Html.LabelFor(m => m.CheckIn)</td>
-                <td>@Html.TextBoxFor(m => m.CheckIn, "{0:yyyy-MM-dd}", new {  type = "date", min, max })</td>
-                <td>@Html.ValidationMessageFor(m => m.CheckIn)</td>
-            </tr>
-
-            <tr>
-                <td class="a">@Html.LabelFor(m => m.CheckOut)</td>
-                <td>@Html.TextBoxFor(m => m.CheckOut, "{0:yyyy-MM-dd}", new {   type = "date", min, max })</td>
-                <td>@Html.ValidationMessageFor(m => m.CheckOut)</td>
-            </tr>
-
-            <tr>
-                <td class="a">
-                    @Html.LabelFor(m => m.ServiceIds)
-
-                    @using (Ajax.BeginForm(ao))
-                    {
-                    <td> @Helper.CheckBoxList("ServiceIds", ViewBag.ServiceList) </td>
+        <tr>
+            <td class="a">@Html.LabelFor(m => m.ServiceIds)</td>
+            @using (Ajax.BeginForm(ao))
+            {
+            <td style="width:50px;"> @Helper.CheckBoxList("ServiceIds", ViewBag.ServiceList) </td>
+            }
+            <td>
+                @foreach (var sp in ViewBag.ServicePrice)
+                {
+                    <text>RM</text> @sp.Price <br />
                 }
-                </tr>
-                <tr>
-                    <td style="font-size:20px; color:#ff0000;" colspan="2">If Have Add Bed or Blanket, please enter the amount that you want to add. Thank you</td>
-                </tr>
-                <tr>
-                    <td class="a">Bed Add :</td>
-                    <td>
-                        @Html.DropDownListFor(m => m.Bed, new SelectList(new List<object>{new { value = 0, text = "--Select Qty--"},
-                                                                                           new { value = 1, text = "1" },
-                                                                                           new { value = 2, text = "2" },
-                                                                                           new { value = 3, text = "3" },
-                                                                                           new { value = 4, text = "4" },
-                                                                                           new { value = 5, text = "5" },
-                                                                                           }, "value", "text", 2))
-                    </td>
-                    <td>@Html.ValidationMessageFor(m => m.Bed)</td>
-                </tr>
-                <tr>
-                    <td class="a">Blanket :</td>
-                    <td>
-                        @Html.DropDownListFor(m => m.Blanket, new SelectList(new List<object>{new { value = 0, text = "--Select Qty--"},
-                                                                                          new { value = 1, text = "1" },
-                                                                                          new { value = 2, text = "2" },
-                                                                                          new { value = 3, text = "3" },
-                                                                                          new { value = 4, text = "4" },
-                                                                                          new { value = 5, text = "5" },
-                                                                                          }, "value", "text", 2))
-                    </td>
-                    <td>@Html.ValidationMessageFor(m => m.Blanket)</td>
-                </tr>
-                <tr>
-                    <td>
-                        Price
-                    </td>
-                    <td>
-                        @if (ViewBag.totalPrice != null)
-                        {
-                            <input type="text" name="name" id="DisPrice" value="@ViewBag.totalPrice" readonly />
-                        }
-                        else
-                        {
-                            <input type="text" name="name" id="DisPrice" value="@Model.RoomPrice" readonly />
-                        }
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:20px; color:#ff0000;" colspan="2">If Have Add Bed or Blanket, please enter the amount that you want to add. Thank you</td>
+        </tr>
+        <tr>
+            <td class="a">Bed Add :</td>
+            <td>
+                @Html.DropDownListFor(m => m.Bed, new SelectList(new List<object>{new { value = 0, text = "--Select Qty--"},
+                                                                                    new { value = 1, text = "1" },
+                                                                                    new { value = 2, text = "2" },
+                                                                                    new { value = 3, text = "3" },
+                                                                                    new { value = 4, text = "4" },
+                                                                                    new { value = 5, text = "5" },
+                                                                                    }, "value", "text", 2))
+            </td>
+            <td>@Html.ValidationMessageFor(m => m.Bed)</td>
+        </tr>
+        <tr>
+            <td class="a">Blanket :</td>
+            <td>
+                @Html.DropDownListFor(m => m.Blanket, new SelectList(new List<object>{new { value = 0, text = "--Select Qty--"},
+                                                                                    new { value = 1, text = "1" },
+                                                                                    new { value = 2, text = "2" },
+                                                                                    new { value = 3, text = "3" },
+                                                                                    new { value = 4, text = "4" },
+                                                                                    new { value = 5, text = "5" },
+                                                                                    }, "value", "text", 2))
+            </td>
+            <td>@Html.ValidationMessageFor(m => m.Blanket)</td>
+        </tr>
+        <tr>
+            <td class="a">@Html.LabelFor(m => m.price)</td>
+            <td><b>RM @Html.DisplayFor(m => m.price)</b></td>
+        </tr>
 
-                    </td>
-                </tr>
-            </table>
-            <div>
-            </div>
+    </table>
+    <section>
+        <input type="hidden" name="roomName" value="@Model.RoomTypeName" />
+        <button name="type" value="Walk">Walk In Pay</button>
+        <button name="type" value="paypal">Pay With Paypal</button>
+        <button type="reset">Reset</button>
+        <button name="type" value="cal">Calculate</button>
+    </section>
 
-            <section>
+</form>
 
-                <button name="type" value="Walk">Walk In Pay</button>
-                <button name="type" value="paypal">Pay With Paypal</button>
-                <button type="reset">Reset</button>
-            </section>
-
-        </form>
-    </div>
 
 @section foot {
     <script>
@@ -211,18 +159,18 @@
         $('#CheckIn').trigger('input');
 
         let timer = null;
-        // this java script is use to when the user typeing the result will also changing
-        // input event is the user type
-        // settimeout is use to show the result after half second when finish typing
+        //this java script is use to when the user typeing the result will also changing
+        //input event is the user type
+        //settimeout is use to show the result after half second when finish typing
         $('#name').on('input', e => {
 
-            //$(e.target.form).submit();
+            $(e.target.form).submit();
             clearTimeout(timer);
             timer = setTimeout(() => $(e.target.form).submit(), 500);
 
         })
         function highligh() {
-            // trim is remove the blank space in the vale
+            //trim is remove the blank space in the vale
             let name = $('#name').val().trim();
 
             if (!name) return;
@@ -239,3 +187,5 @@
 
     </script>
 }
+
+

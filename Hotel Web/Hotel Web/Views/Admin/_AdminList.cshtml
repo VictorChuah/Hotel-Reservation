@@ -44,6 +44,12 @@
     .table th {
         width: 200px;
     }
+
+    td {
+        text-align: center;
+    }
+
+
 </style>
 
 <script>
@@ -65,18 +71,20 @@
 
 </script>
 
-<div>
-    @Model.Count of @Model.TotalItemCount record(s) |
-    <!--totalitemcount will count the total record in the database and must have IpagedList to activate the function-->
-    Page @Model.PageNumber of @Model.PageCount
 
-    <!--<button data-get="/Admin/AddAdmin" style="left:20%;"> Add Admin</button>-->
-    <button onclick="add()">Add Admin</button>
-
-
-</div>
+    
 
 <table class="table">
+    <tr>
+        <th style="border: 0; text-align:left; background:none; color: black;" colspan="4">
+            @Model.Count of @Model.TotalItemCount record(s) |
+            <!--totalitemcount will count the total record in the database and must have IpagedList to activate the function-->
+            Page @Model.PageNumber of @Model.PageCount
+        </th>
+        <th style="border: 0; background:none;" colspan="4">
+            <button onclick="add()">Add Admin</button>
+        </th>
+    </tr>
     <tr>
         <!--
         <th>Name</th>

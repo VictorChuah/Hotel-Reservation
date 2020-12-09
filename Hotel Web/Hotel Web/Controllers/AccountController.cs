@@ -386,11 +386,13 @@ namespace Hotel_Web.Controllers
             {
                 if (model.Photo != null)
                 {
-                    if ((m.PhotoURL != "iconMale.jpg") && (m.PhotoURL != "iconFemale.jpg"))
-                    {
-                        DeletePhoto(m.PhotoURL);
+                    if(m.PhotoURL != null)
+                    { 
+                        if ((m.PhotoURL != "iconMale.jpg") && (m.PhotoURL != "iconFemale.jpg"))
+                        {
+                            DeletePhoto(m.PhotoURL);
+                        }
                     }
-
                     Session["PhotoUrl"] = m.PhotoURL = SavePhoto(model.Photo);
 
                 }
