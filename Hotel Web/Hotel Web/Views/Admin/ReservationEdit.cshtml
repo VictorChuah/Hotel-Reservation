@@ -70,39 +70,41 @@
                     <text>RM</text> @sp.Price <br />
                 }
             </td>
+
         </tr>
-            <tr>
-                <td style="font-size:20px; color:#ff0000;" colspan="2">If Have Add Bed or Blanket, please enter the amount that you want to add. Thank you</td>
-            </tr>
-            <tr>
-                <td class="a">Bed Add :</td>
-                <td>
-                    @Html.DropDownListFor(m => m.Bed, new SelectList(new List<object>{ new { value = 0, text = "--Select Qty--"},
-                                                                                       new { value = 1, text = "1" },
-                                                                                       new { value = 2, text = "2" },
-                                                                                       new { value = 3, text = "3" },
-                                                                                       new { value = 4, text = "4" },
-                                                                                       new { value = 5, text = "5" },
-                                                                                       }, "value", "text", 2))
-                                                                                       
-                </td>
-                <td>@Html.ValidationMessageFor(m => m.Bed)</td>
-            </tr>
-            <tr>
-                <td class="a">Blanket :</td>
-                <td>
-                    @Html.DropDownListFor(m => m.Blanket, new SelectList(new List<object>{new { value = 0, text = "--Select Qty--"},
-                                                                                      new { value = 1, text = "1" },
-                                                                                      new { value = 2, text = "2" },
-                                                                                      new { value = 3, text = "3" },
-                                                                                      new { value = 4, text = "4" },
-                                                                                      new { value = 5, text = "5" },
-                                                                                      }, "value", "text", 2))
-                                                                                      
-                </td>
-                <td>@Html.ValidationMessageFor(m => m.Blanket)</td>
-            </tr>
-        </table>
+        <tr>
+            <td style="font-size:20px; color:#ff0000;" colspan="2">If Have Add Bed or Blanket, please enter the amount that you want to add. Thank you</td>
+        </tr>
+        <tr>
+            <td class="a">Bed Add :</td>
+            <td>
+                @Html.DropDownListFor(m => m.Bed, new SelectList(new List<object>{ new { value = 0, text = "--Select Qty--"},
+                                                                                   new { value = 1, text = "1" },
+                                                                                   new { value = 2, text = "2" },
+                                                                                   new { value = 3, text = "3" },
+                                                                                   new { value = 4, text = "4" },
+                                                                                   new { value = 5, text = "5" },
+                                                                                   }, "value", "text", 2))
+
+            </td>
+            <td>@Html.ValidationMessageFor(m => m.Bed)</td>
+
+        </tr>
+        <tr>
+            <td class="a">Blanket :</td>
+            <td>
+                @Html.DropDownListFor(m => m.Blanket, new SelectList(new List<object>{new { value = 0, text = "--Select Qty--"},
+                                                                                  new { value = 1, text = "1" },
+                                                                                  new { value = 2, text = "2" },
+                                                                                  new { value = 3, text = "3" },
+                                                                                  new { value = 4, text = "4" },
+                                                                                  new { value = 5, text = "5" },
+                                                                                  }, "value", "text", 2))
+
+            </td>
+            <td>@Html.ValidationMessageFor(m => m.Blanket)</td>
+        </tr>
+    </table>
     <section>
         <button>Edit</button>
         <button type="reset">Reset</button>
@@ -115,7 +117,7 @@
     <script>
         // Extend built-in Date object
         // --> return new Date object after days added
-        Date.prototype.addDays = function(days) {
+        Date.prototype.addDays = function (days) {
             let date = new Date(this.valueOf());
             date.setDate(date.getDate() + days);
             return date;
@@ -172,5 +174,3 @@
 
     </script>
 }
-
-

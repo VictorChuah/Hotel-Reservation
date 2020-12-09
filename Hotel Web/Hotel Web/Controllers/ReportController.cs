@@ -301,9 +301,6 @@ namespace Hotel_Web.Controllers
 
             DateTime timer = DateTime.Now;
 
-            // Disable DB tracking and validation --> fast performance
-            //db.Configuration.AutoDetectChangesEnabled = false;
-            //db.Configuration.ValidateOnSaveEnabled = false;
 
             for (DateTime d = a; d <= b; d = d.AddDays(+1))
             {

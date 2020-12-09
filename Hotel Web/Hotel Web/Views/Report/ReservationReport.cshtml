@@ -43,7 +43,7 @@
 
         function init() {
             dt = new google.visualization.DataTable();
-            // TODO: Data table columns: Group and Count
+
             dt.addColumn('string', 'Room Type');
             dt.addColumn('number', 'Count');
 
@@ -61,7 +61,7 @@
                     top: 60,
                     left: 80
                 },
-                // TODO: vAxis, hAxis, legend, animation, orientation
+
                 legend: 'none',
                 vAxis: {
                     title: 'Reservation Count',
@@ -100,7 +100,6 @@
         $('#toggle').click(e => {
             e.preventDefault();
 
-            // TODO: Toggle orientation (horizontal <--> vertical)
             //       Toggle axis (vAxis <--> hAxis)
             opt.orientation = opt.orientation == 'horizontal' ? 'vertical' : 'horizontal';
             [opt.vAxis, opt.hAxis] = [opt.hAxis, opt.vAxis];

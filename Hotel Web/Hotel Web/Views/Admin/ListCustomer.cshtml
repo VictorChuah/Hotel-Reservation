@@ -1,6 +1,4 @@
-﻿
-
-@{
+﻿@{
     ViewBag.Title = "List Customer";
 
     var ao = new AjaxOptions
@@ -19,22 +17,14 @@
 
 @using (Ajax.BeginForm(ao))
 {
-
   <p style="display:inline-block; margin-right:5px">Search: </p>@Html.TextBox("name", null, new { autofocus = "" })
-
 }
-
-
-
-<!--<input type="text" name="name" autofocus value="">-->
-<!--it use to enter the name then the name will in the textbox and make a autofocus-->
 
 
 <div id="target">
     @Html.Partial("_CustomerList")
 </div>
 
-<!-- TODO: JavaScript -->
 @section foot{
     <script>
         let timer = null;

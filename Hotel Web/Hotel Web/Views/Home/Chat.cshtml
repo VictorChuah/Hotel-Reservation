@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Chat";
 }
 
@@ -16,7 +15,6 @@
             margin-top: 5px;
             padding: 5px;
             overflow-y: scroll;
-            /* TODO */
             display: grid;
             place-content: start;
             place-items: start;
@@ -69,20 +67,6 @@
         function main() {
 
             let name = prompt('Enter name')?.trim() || 'Anonymous';
-            /*let allow = true;
-
-            do {
-                let name = prompt('Enter name')?.trim() || 'Anonymous';
-
-                if (name == 'Admin') {
-                    let pass = prompt('Enter Password');
-
-                    if (!(window.location.href = '@Url.Action("CheckPass", "ChatHub")/' + id;)) {
-                        allow = false;
-                    }
-
-                }
-            }while (!allow)*/
 
             $('form').submit(e => {
                 e.preventDefault();

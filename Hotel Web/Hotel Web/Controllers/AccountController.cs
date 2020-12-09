@@ -54,18 +54,6 @@ namespace Hotel_Web.Controllers
             Request.GetOwinContext().Authentication.SignOut();
         }
 
-        /*private char checkUserRole(string username)
-        {
-            char role = ' ';
-
-            if (db.Customers.Find(username) != null)
-                role = 'c';
-            else if (db.Admins.Find(username) != null)
-                role = 'a';
-
-            return role;
-        }*/
-
         // --------------------------------------------------------------------
         // Photo helper functions
         // --------------------------------------------------------------------
@@ -209,15 +197,12 @@ namespace Hotel_Web.Controllers
                     {
                         return RedirectToAction("Index", "Home");
                     }
-
                 }
                 else
                 {
                     ModelState.AddModelError("Password", "Username and Password not matched.");
                 }
-
             }
-
             return View(model);
         }
 
@@ -256,7 +241,6 @@ namespace Hotel_Web.Controllers
         [ValidateGoogleCaptcha]
         public ActionResult Register(RegisterModel model)
         {
-
             if (ModelState.IsValidField("Username") && db.Customers.Find(model.Username) != null && db.Admins.Find(model.Username) != null)
             {
                 ModelState.AddModelError("Username", "Duplicated Username.");
@@ -322,7 +306,6 @@ namespace Hotel_Web.Controllers
                 return RedirectToAction("CustLogin", "Account");
             }
 
-
             return View(model);
         }
 
@@ -330,7 +313,7 @@ namespace Hotel_Web.Controllers
         [Authorize]
         public ActionResult Detail()
         {
-             var m = db.Customers.Find(User.Identity.Name);
+            var m = db.Customers.Find(User.Identity.Name);
 
             if (m == null)
             {
@@ -394,7 +377,6 @@ namespace Hotel_Web.Controllers
                         }
                     }
                     Session["PhotoUrl"] = m.PhotoURL = SavePhoto(model.Photo);
-
                 }
 
                 m.Name = model.Name;
