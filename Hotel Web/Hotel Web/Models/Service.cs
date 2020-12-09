@@ -19,7 +19,7 @@ namespace Hotel_Web.Models
         public Nullable<decimal> Price { get; set; }
         public Nullable<int> Quantity { get; set; }
     
-        public virtual ServiceType ServiceType { get; set; }
         public virtual Reservation Reservation { get; set; }
+        public virtual ServiceType ServiceType { get; set; }
     }
 }

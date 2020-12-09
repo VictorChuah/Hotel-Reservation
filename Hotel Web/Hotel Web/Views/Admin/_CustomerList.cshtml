@@ -239,7 +239,8 @@
             <td>@c.Email</td>
             <td style="position: relative" align="center">
                 @*<a href="~/Home/Detail?id=@s.Id">Detail</a>*@
-                <a href="javascript:void(0);" class="anchorDetail" data-id="@c.Username">Detail</a>
+                <button data-get="javascript:void(0);" data-id="@c.Username" class="anchorDetail"> Detail </button>
+                <!--<a href="javascript:void(0);" class="anchorDetail" data-id="@c.Username">Detail</a>-->
                 <!-- <button data-get="/Admin/CustomerEdit?username=@c.Username">Edit</button>-->
                 <button id="edit" onclick="edit('@c.Username')">Edit</button>
                 <button id="delete" value="@c.Username" onclick="deleteMember('@c.Username')">Delete</button>

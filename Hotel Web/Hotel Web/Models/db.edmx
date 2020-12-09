@@ -71,6 +71,7 @@
           <Property Name="Price" Type="decimal" Precision="6" Scale="2" Nullable="false" />
           <Property Name="PhotoURL" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="Person" Type="int" Nullable="false" />
+          <Property Name="Status" Type="bit" />
         </EntityType>
         <EntityType Name="Service">
           <Key>
@@ -186,12 +187,7 @@
         <EntityContainer Name="dbEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Admins" EntityType="dbModel.Admin" />
           <EntitySet Name="Rooms" EntityType="dbModel.Room" />
-          <EntitySet Name="RoomTypes" EntityType="dbModel.RoomType" />
           <EntitySet Name="ServiceTypes" EntityType="dbModel.ServiceType" />
-          <AssociationSet Name="FK_Room_RoomType" Association="dbModel.FK_Room_RoomType">
-            <End Role="RoomType" EntitySet="RoomTypes" />
-            <End Role="Room" EntitySet="Rooms" />
-          </AssociationSet>
           <EntitySet Name="Customers" EntityType="dbModel.Customer" />
           <EntitySet Name="Reservations" EntityType="dbModel.Reservation" />
           <AssociationSet Name="FK_Reservation_Customer" Association="dbModel.FK_Reservation_Customer">
@@ -210,6 +206,11 @@
           <AssociationSet Name="FK_Service_ToServiceType" Association="dbModel.FK_Service_ToServiceType">
             <End Role="ServiceType" EntitySet="ServiceTypes" />
             <End Role="Service" EntitySet="Services" />
+          </AssociationSet>
+          <EntitySet Name="RoomTypes" EntityType="dbModel.RoomType" />
+          <AssociationSet Name="FK_Room_RoomType" Association="dbModel.FK_Room_RoomType">
+            <End Role="RoomType" EntitySet="RoomTypes" />
+            <End Role="Room" EntitySet="Rooms" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Admin">
@@ -233,19 +234,8 @@
           <Property Name="Id" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="RoomTypeId" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
-          <NavigationProperty Name="RoomType" Relationship="dbModel.FK_Room_RoomType" FromRole="Room" ToRole="RoomType" />
           <NavigationProperty Name="Reservations" Relationship="dbModel.FK_Reservation_Room" FromRole="Room" ToRole="Reservation" />
-        </EntityType>
-        <EntityType Name="RoomType">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Price" Type="Decimal" Nullable="false" Precision="6" Scale="2" />
-          <Property Name="PhotoURL" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Person" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Rooms" Relationship="dbModel.FK_Room_RoomType" FromRole="RoomType" ToRole="Room" />
+          <NavigationProperty Name="RoomType" Relationship="dbModel.FK_Room_RoomType" FromRole="Room" ToRole="RoomType" />
         </EntityType>
         <EntityType Name="ServiceType">
           <Key>
@@ -256,18 +246,6 @@
           <Property Name="Price" Type="Decimal" Nullable="false" Precision="6" Scale="2" />
           <NavigationProperty Name="Services" Relationship="dbModel.FK_Service_ToServiceType" FromRole="ServiceType" ToRole="Service" />
         </EntityType>
-        <Association Name="FK_Room_RoomType">
-          <End Type="dbModel.RoomType" Role="RoomType" Multiplicity="1" />
-          <End Type="dbModel.Room" Role="Room" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="RoomType">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Room">
-              <PropertyRef Name="RoomTypeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="Username" />
@@ -367,6 +345,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="RoomType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="6" Scale="2" />
+          <Property Name="PhotoURL" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Person" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Boolean" />
+          <NavigationProperty Name="Rooms" Relationship="dbModel.FK_Room_RoomType" FromRole="RoomType" ToRole="Room" />
+        </EntityType>
+        <Association Name="FK_Room_RoomType">
+          <End Type="dbModel.RoomType" Role="RoomType" Multiplicity="1" />
+          <End Type="dbModel.Room" Role="Room" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RoomType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Room">
+              <PropertyRef Name="RoomTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -393,17 +395,6 @@
               <MappingFragment StoreEntitySet="Room">
                 <ScalarProperty Name="RoomTypeId" ColumnName="RoomTypeId" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="RoomTypes">
-            <EntityTypeMapping TypeName="dbModel.RoomType">
-              <MappingFragment StoreEntitySet="RoomType">
-                <ScalarProperty Name="Person" ColumnName="Person" />
-                <ScalarProperty Name="PhotoURL" ColumnName="PhotoURL" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -461,6 +452,18 @@
                 <ScalarProperty Name="Price" ColumnName="Price" />
                 <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
                 <ScalarProperty Name="ReservationId" ColumnName="ReservationId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RoomTypes">
+            <EntityTypeMapping TypeName="dbModel.RoomType">
+              <MappingFragment StoreEntitySet="RoomType">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Person" ColumnName="Person" />
+                <ScalarProperty Name="PhotoURL" ColumnName="PhotoURL" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

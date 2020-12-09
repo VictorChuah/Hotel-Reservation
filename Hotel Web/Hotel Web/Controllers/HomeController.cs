@@ -68,6 +68,7 @@ namespace Hotel_Web.Controllers
             return View(model);
         }
 
+        //POST: Home/Reserve
         [Authorize]
         [HttpPost]
         public ReserveVM PriceCalculation(ReserveVM model)
@@ -154,7 +155,7 @@ namespace Hotel_Web.Controllers
                         ModelState.AddModelError("CheckOut", "CheckOut must be after CheckIn.");
                     }
                 }
-
+               
                 Room room = null;
 
                 // Validation (4): Room available
@@ -189,6 +190,7 @@ namespace Hotel_Web.Controllers
                     }
                 }
 
+                
                 if (ModelState.IsValid)
                 {
                     // Process (1): Insert Reservation record
@@ -306,8 +308,9 @@ namespace Hotel_Web.Controllers
                     From, Super Admin"
                     });
 
-                    TempData["Info"] = "Room reserved.";
+		    TempData["Info"] = "Room reserved.";
                     return RedirectToAction("Detail", new { r.Id });
+                    
                 }
                 var m = db.RoomTypes.Find(model.RoomTypeId);
                 var model1 = new ReserveVM

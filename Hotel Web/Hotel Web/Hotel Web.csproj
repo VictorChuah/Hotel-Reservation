@@ -652,6 +652,8 @@
     <Content Include="Views\Home\Chat.cshtml" />
     <Content Include="Views\Admin\ReservationEdit.cshtml" />
     <Content Include="Views\Admin\ReservationDetail.cshtml" />
+    <Content Include="Views\Admin\_ShowPrice.cshtml" />
+
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
