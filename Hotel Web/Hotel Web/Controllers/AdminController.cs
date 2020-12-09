@@ -854,7 +854,7 @@ namespace Hotel_Web.Controllers
                 id = (n + 1).ToString("'R'000");
             } else if (type == "RoomType") {
 
-                string max = db.RoomTypes.Max(s => s.Id) ?? "RT000";
+                string max = db.RoomTypes.Where(s => s.Id.Contains("RT")).Max(s => s.Id);
                 int n = int.Parse(max.Substring(2));
                 id = (n + 1).ToString("'RT'000");
             }
@@ -872,7 +872,7 @@ namespace Hotel_Web.Controllers
                 return RedirectToAction(null, new { page = 1 }); 
             }
 
-            var display_room = db.Rooms.OrderBy(x => x.Id).ToPagedList(page, 10); 
+            var display_room = db.Rooms.Where(r => r.Status != "D").OrderBy(x => x.Id).ToPagedList(page, 10); 
 
             //Search By Id
             if (type == "Id")
@@ -934,7 +934,7 @@ namespace Hotel_Web.Controllers
 
             //=================
 
-            if (page > display_all_room.PageCount && display_all_room.PageCount != 0)
+            if (page > display_room.PageCount && display_room.PageCount != 0)
 
             {
                 return RedirectToAction(null, new { page = display_room.PageCount });
@@ -1116,7 +1116,8 @@ namespace Hotel_Web.Controllers
                     Name = model.name,
                     Person = model.person,
                     Price = model.Price,
-                    PhotoURL = SavePhoto(model.Photo, "room")
+                    PhotoURL = SavePhoto(model.Photo, "room"),
+                    Status = true
                 };
 
                 db.RoomTypes.Add(RT);

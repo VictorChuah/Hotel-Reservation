@@ -166,21 +166,13 @@
             <td>@r.RoomType.Person</td>
             <td style="position: relative" align="center">
 
-                @*<a href="~/Home/Detail?id=@s.Id">Detail</a>*@
-                @* <a href="javascript:void(0);" class="anchorDetail" data-id="">Detail</a>*@
-                @*<button data-get="/Admin/RoomEdit?RoomId=@r.room.Id&status=b">Block</button>
-                    <button data-post="/Admin/RoomEdit?RoomId=@r.room.Id&status=a">Active</button>
-                    <button data-post="/Admin/RoomEdit?RoomId=@r.room.Id&status=v">Vacant</button>*@
-                <button id="s1" value="@r.room.Id" onclick="updateStatus('@r.room.Id', 'b')">Block</button>
+                <button id="s1" value="@r.Id" onclick="updateStatus('@r.Id', 'b')">Block</button>
                 <input type="hidden" id="s11" name="name" value='b' />
 
                 <button id="s2" value="@r.Id" onclick="updateStatus('@r.Id', 'a')">Active</button>
                 <input type="hidden" id="s21" name="name" value='a' />
 
-                <!-- <button id="s3" value="@r.room.Id" onclick="updateStatus('@r.room.Id', 'v')">Vacant</button>
-                <input type="hidden" id="s31" name="name" value='v' />-->
-
-                <button id="s4" value="@r.room.Id" onclick="Delete('@r.room.Id')">Delete</button>
+                <button id="s4" value="@r.Id" onclick="Delete('@r.Id')">Delete</button>
                 <input type="hidden" id="s31" name="name" value='v' />
 
 
