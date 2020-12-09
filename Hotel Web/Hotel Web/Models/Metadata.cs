@@ -377,5 +377,42 @@ namespace Hotel_Web.Models
         public int Bed { get; set; }
 
         public int Blanket { get; set; }
+
+        [Display(Name = "Total Price")]
+        public decimal price { get; set; }
+
+        [Display(Name = "Person")]
+        public int Person { get; set; }
+
     }
+
+    public class ReserveEditVM
+    {
+        [Display(Name = "Id")]
+        public string id { get; set; }
+
+        [Display(Name = "Name")]
+        public string name { get; set; }
+
+        [Display(Name = "CheckIn Date ")]
+        [Required]
+        public DateTime CheckIn { get; set; }
+
+        [Display(Name = "CheckOut Date ")]
+        [Required]
+        public DateTime CheckOut { get; set; }
+
+        [Display(Name = "Room Type")]
+        [Required]
+        public string TypeId { get; set; }
+
+        [Display(Name = "Add On Services")]
+        public string[] ServiceIds { get; set; } = new string[0];
+
+        public int Bed { get; set; }
+
+        public int Blanket { get; set; }
+    }
+
+
 }

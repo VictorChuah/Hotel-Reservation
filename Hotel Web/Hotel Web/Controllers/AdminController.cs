@@ -297,7 +297,6 @@ namespace Hotel_Web.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult ReservationList(string type, int SelectedYear = 0, string name = "", int page = 1)
         {
-            TempData["Info"] = SelectedYear;
             int min = DateTime.Today.Year;
             int max = DateTime.Today.Year;
 
@@ -305,46 +304,44 @@ namespace Hotel_Web.Controllers
             max = db.Reservations.Max(o => o.CheckOut).Year;
             ViewBag.year = GetYearList(min, max);
 
-
-
-         
-
             name = name.Trim();
+            var r1 = db.Reservations.OrderByDescending(x => x.CheckOut).ToPagedList(page, 10);
 
-
-
-            var reservationList = db.Reservations.Where(c => c.Username.Contains(name));
 
             //search by year
             if (SelectedYear != 0)
             {
-                reservationList = reservationList.Where(y => y.CheckOut.Year == SelectedYear);
+                var tables = db.Reservations.Where(y => y.CheckOut.Year == SelectedYear).OrderByDescending(x => x.CheckOut).ToPagedList(page, 10);
+
+                if (page > tables.PageCount && tables.PageCount != 0)
+                {
+                    return RedirectToAction(null, new { page = tables.PageCount });
+                }
+
+                if (Request.IsAjaxRequest()) return PartialView("_ReservationList", tables);
+
+                return View(tables);
             }
-
-
-            var tables = reservationList.OrderByDescending(x => x.CheckOut).ToPagedList(page, 10);
 
             //search by username
             if (type == "username")
             {
-
-                tables = tables.Where(r => r.Username.Contains(name)).ToPagedList(page, 10);
+                var tables = db.Reservations.Where(r => r.Username.Contains(name)).OrderByDescending(x => x.CheckOut).ToPagedList(page, 10);
 
                 if (page > tables.PageCount && tables.PageCount != 0)
                 {
-
                     return RedirectToAction(null, new { page = tables.PageCount });
-
                 }
+
                 if (Request.IsAjaxRequest()) return PartialView("_ReservationList", tables);
 
                 return View(tables);
-
             }
+
             //search by payment method
             else if (type == "Payment_Method")
             {
-                tables = tables.Where(r => r.PaymentMethod.Contains(name)).ToPagedList(page, 10);
+                var tables = db.Reservations.Where(r => r.PaymentMethod.Contains(name)).OrderByDescending(x => x.CheckOut).ToPagedList(page, 10);
 
                 if (page > tables.PageCount && tables.PageCount != 0)
                 {
@@ -356,42 +353,208 @@ namespace Hotel_Web.Controllers
 
                 return View(tables);
             }
+
             //search by reservation id
-            else if (type == "ReservationId") {
-
-                tables = tables.Where(r => r.Id.Contains(name) ).ToPagedList(page, 10);
+            else if (type == "ReservationId")
+            {
+                var tables = db.Reservations.Where(r => r.Id.Contains(name)).OrderByDescending(x => x.CheckOut).ToPagedList(page, 10);
 
                 if (page > tables.PageCount && tables.PageCount != 0)
                 {
-
                     return RedirectToAction(null, new { page = tables.PageCount });
-
                 }
+
                 if (Request.IsAjaxRequest()) return PartialView("_ReservationList", tables);
 
                 return View(tables);
-
             }
+            if (Request.IsAjaxRequest()) return PartialView("_ReservationList", r1);
 
-            if (page > tables.PageCount && tables.PageCount != 0)
+            return View(r1);
+        }
+
+
+        [Authorize]
+        public ActionResult ReservationEdit(string id)
+        {
+            int q1 = 0, q2 = 0, n = 0;
+            string[] x = new string[10];
+            var m = db.Reservations.Find(id);
+            var s = db.Services;
+            foreach (var s1 in s)
             {
+                if (s1.ReservationId == m.Id && s1.ServiceId != "S009" && s1.ServiceId != "S010")
+                {
+                    x[n] = s1.ServiceId;
+                    n++;
+                }
+                else if (s1.ReservationId == m.Id && s1.ServiceId == "S009")
+                {
+                    q1 = (int)s1.Quantity;
+                    x[n] = s1.ServiceId;
+                    n++;
+                }
+                else if(s1.ReservationId == m.Id && s1.ServiceId == "S010")
+                {
+                    q2 = (int)s1.Quantity;
+                    x[n] = s1.ServiceId;
+                    n++;
+                }
+                
+            }
+            var model = new ReserveEditVM
+            {
+                id = m.Id,
+                name = m.Username,
+                TypeId = m.Room.RoomType.Id,
+                CheckIn = m.CheckIn,
+                CheckOut = m.CheckOut,
+                Bed = q1,
+                Blanket = q2,
+                ServiceIds = x
+             
+            };
+            
+            ViewBag.TypeList = new SelectList(db.RoomTypes.OrderBy(t => t.Person), "Id", "Name");
+            ViewBag.ServiceList = new MultiSelectList(db.ServiceTypes, "Id", "Name", model.ServiceIds);
 
-                return RedirectToAction(null, new { page = tables.PageCount });
+
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult ReservationEdit(ReserveEditVM model)
+        {
+            DateTime min = DateTime.Today;
+            DateTime max = DateTime.Today.AddDays(30);
+
+            // Validation (1): CheckIn within 30 days range
+            if (ModelState.IsValidField("CheckIn"))
+            {
+                if (model.CheckIn < min || model.CheckIn > max)
+                {
+                    ModelState.AddModelError("CheckIn", "Date out of range.");
+                }
+            }
+
+            // Validation (2): CheckOut within 30 days range
+            if (ModelState.IsValidField("CheckOut"))
+            {
+                if (model.CheckOut < min || model.CheckOut > max)
+                {
+                    ModelState.AddModelError("CheckOut", "Date out of range.");
+                }
+            }
+
+            // Validation (3): CheckOut > CheckIn
+            if (ModelState.IsValidField("CheckIn") && ModelState.IsValidField("CheckOut"))
+            {
+                if (model.CheckOut <= model.CheckIn)
+                {
+                    ModelState.AddModelError("CheckOut", "CheckOut must be after CheckIn.");
+                }
+            }
+
+            Room room = null;
+
+            // Validation (4): Room available
+            if (ModelState.IsValidField("CheckIn") && ModelState.IsValidField("CheckOut"))
+            {
+                var occupied = db.Reservations
+                                 .Where(r => model.CheckIn < r.CheckOut && r.CheckIn < model.CheckOut)
+                                 .Select(r => r.Room);
+
+                room = db.Rooms
+                         .Except(occupied)
+                         .FirstOrDefault(r => r.RoomTypeId == model.TypeId);
+
+                if (room == null)
+                {
+                    ModelState.AddModelError("RoomTypeName", "No room availble.");
+                }
 
             }
-            if (Request.IsAjaxRequest()) return PartialView("_ReservationList", tables);
 
-            return View(tables);
+            var servicesType1 = db.ServiceTypes.Where(s => model.ServiceIds.Contains(s.Id));
+            foreach (var s in servicesType1)
+            {
+                if (s.Name == "Bed" && model.Bed == 0)
+                {
+                    ModelState.AddModelError("Bed", "Please select the quantity that you want added.");
+                }
+                else if (s.Name == "Blanket" && model.Bed == 0)
+                {
+                    ModelState.AddModelError("Blanket", "Please select the quantity that you want added.");
+                }
+            }
 
+            if(ModelState.IsValid)
+            {
+                var r = db.Reservations.Find(model.id);
+                r.RoomId = room.Id;
+                r.CheckIn = model.CheckIn;
+                r.CheckOut = model.CheckOut;
+                r.Price = room.RoomType.Price;
+                r.Person = room.RoomType.Person;
+                r.Paid = false;
+                r.Status = "Reserve(Edit)";
+                r.Day = (r.CheckOut - r.CheckIn).Days;
+                r.Total = r.Price * r.Day;
 
+                var list = db.Services.Where(s => s.ReservationId == r.Id);
+                db.Services.RemoveRange(list);
+                db.SaveChanges();
 
+                var services = db.ServiceTypes.Where(s => model.ServiceIds.Contains(s.Id));
+                foreach (var s in services)
+                {
+                    int q = 1;
+                    if (s.Name == "Bed")
+                    {
+                        q = model.Bed;
+                    }
+                    else if (s.Name == "Blanket")
+                    {
+                        q = model.Blanket;
+                    }
+
+                    //NOTE: Insert AddOn through Reservation
+                    var st = new Service
+                    {
+                        ReservationId = r.Id,
+                        ServiceId = s.Id,
+                        Price = s.Price,
+                        Quantity = q
+                    };
+                    db.Services.Add(st);
+                    // Accumulate total
+                    r.Total += s.Price * r.Day * r.Person;
+                }
+
+                db.SaveChanges();
+
+                TempData["Info"] = "Edit Successful.";
+                return RedirectToAction("ReservationDetail", new { model.id });
+            }
+
+            ViewBag.TypeList = new SelectList(db.RoomTypes.OrderBy(t => t.Person), "Id", "Name");
+            ViewBag.ServiceList = new MultiSelectList(db.ServiceTypes, "Id", "Name", model.ServiceIds);
+            return View(model);
 
 
         }
 
-        public ActionResult ReservationEdit(string id)
+        [Authorize]
+        public ActionResult ReservationDetail(string id)
         {
             var model = db.Reservations.Find(id);
+
+            if (model == null)
+            {
+                return RedirectToAction("Admin/_ReservationList");
+            }
+
             return View(model);
         }
 
@@ -698,45 +861,40 @@ namespace Hotel_Web.Controllers
         }
         public ActionResult Room(string type, string room = "",  int page = 1) {
 
-            List<Room> R = db.Rooms.ToList();
-            List<RoomType> RT = db.RoomTypes.ToList();
             room = room.Trim();
+
             if (page < 1)
             {
                 // new {} is object without class
-                return RedirectToAction(null, new { page = 1 }); // it mean if the page is 0 the system will send the user back to the same page
-
+                // it mean if the page is 0 the system will send the user back to the same page
+                return RedirectToAction(null, new { page = 1 }); 
             }
 
+            var display_room = db.Rooms.OrderBy(x => x.Id).ToPagedList(page, 10); 
 
-            var display_room = from r in R
-                                join rt in RT on r.RoomTypeId equals rt.Id
-                                where !r.Status.Contains("D")
-                               select new joinRoom { room = r, roomtype = rt};
-           //=============================
+            //Search By Id
             if (type == "Id")
             {
-
-                var display = display_room.Where(c => c.room.Id.Contains(room)).ToPagedList(page, 10); 
-                if (display == null) {
+                var display = db.Rooms.Where(r => r.Id.Contains(room)).OrderBy(x => x.Id).ToPagedList(page, 10);
+                
+                if (display == null) 
+                {
                     TempData["info"] = "Record Not Found!";
                 }
 
                 if (page > display.PageCount && display.PageCount != 0)
                 {
-
                     return RedirectToAction(null, new { page = display.PageCount });
-
                 }
 
                 if (Request.IsAjaxRequest()) return PartialView("_Room", display);
                 return View(display);
-
             }
-            //===========================
+
+            //Search By Status
             else if (type == "status")
             {
-                var display = display_room.Where(c => c.room.Status.Contains(room)).ToPagedList(page, 10); 
+                var display = db.Rooms.Where(r => r.Status.Contains(room)).OrderBy(x => x.Id).ToPagedList(page, 10); 
 
                 if (display == null)
                 {
@@ -745,42 +903,41 @@ namespace Hotel_Web.Controllers
 
                 if (page > display.PageCount && display.PageCount != 0)
                 {
-
                     return RedirectToAction(null, new { page = display.PageCount });
-
                 }
+
                 if (Request.IsAjaxRequest()) return PartialView("_Room", display);
                 return View(display);
             }
-            //========================
-            else if (type == "name"){
 
-                var display = display_room.Where(c => c.roomtype.Name.Contains(room)).ToPagedList(page, 10); 
-
-                if (display == null)
-                {
-                    TempData["info"] = "Record Not Found!";
-                }
-
-                if (page > display.PageCount && display.PageCount != 0)
-                {
-
-                    return RedirectToAction(null, new { page = display.PageCount });
-
-                }
-                if (Request.IsAjaxRequest()) return PartialView("_Room", display);
-                return View(display);
-            }
-            //=================
-           var display_all_room = display_room.ToPagedList(page, 10);
-            if (page > display_all_room.PageCount && display_all_room.PageCount != 0)
+            //Search By Name
+            else if (type == "name")
             {
+                var display = db.Rooms.Where(c => c.RoomType.Name.Contains(room)).OrderBy(x => x.Id).ToPagedList(page, 10); 
 
-                return RedirectToAction(null, new { page = display_all_room.PageCount });
+                if (display == null)
+                {
+                    TempData["info"] = "Record Not Found!";
+                }
 
+                if (page > display.PageCount && display.PageCount != 0)
+                {
+                    return RedirectToAction(null, new { page = display.PageCount });
+                }
+
+                if (Request.IsAjaxRequest()) return PartialView("_Room", display);
+                return View(display);
             }
-            if (Request.IsAjaxRequest()) return PartialView("_Room", display_all_room);
-            return View(display_all_room);
+
+            if (page > display_room.PageCount && display_room.PageCount != 0)
+            {
+                return RedirectToAction(null, new { page = display_room.PageCount });
+            }
+
+
+            if (Request.IsAjaxRequest()) return PartialView("_Room", display_room);
+
+            return View(display_room);
         }
 
 

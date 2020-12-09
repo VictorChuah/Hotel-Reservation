@@ -1,5 +1,4 @@
 ﻿
-
 @{
     ViewBag.Title = "Room";
     // TODO: AJAX option
@@ -13,7 +12,6 @@
 }
 
 @{
-
     List<SelectListItem> listItems = new List<SelectListItem>();
     listItems.Add(new SelectListItem
     {
@@ -31,41 +29,32 @@
         Text = "Name",
         Value = "name"
     });
-
 }
 
 @using (Ajax.BeginForm(ao))
 {
-    <form>
-        <div>
-
-            <p style="display:inline-block; margin-right:5px">Search By: </p>
-            @Html.DropDownList("type", listItems, "-- Select Status --")
-            @Html.TextBox("room", null, new { autofocus = "" })
-            <!--<input type="text" name="name" autofocus value="">-->
-            <!--it use to enter the name then the name will in the textbox and make a autofocus-->
-        </div>
-    </form>
+    <p style="display:inline-block; margin-right:5px">Search By: </p>
+    //@Html.DropDownList("type", listItems)
+    @Html.DropDownList("type", new SelectList(new List<object>{new { value = "Id", text = "Room Id" },
+                                                              new { value = "status", text = "Room Status" },
+                                                              new { value = "name", text = "Name" },
+                                                              }, "value", "text", 2))
+    @Html.TextBox("room", null, new { autofocus = "" })
+    <!--<input type="text" name="name" autofocus value="">-->
+    <!--it use to enter the name then the name will in the textbox and make a autofocus-->
 }
-
-
-
-
-
-
 
 <div id="target">
     @Html.Partial("_Room")
 </div>
 
-
 @section foot{
     <script>
         let timer = null;
-        // this java script is use to when the user typeing the result will also changing
+        // this java script is use to when the user typing the result will also changing
         // input event is the user type
         // settimeout is use to show the result after half second when finish typing
-        $('#name').on('input', e => {
+        $('#room').on('input', e => {
 
             //$(e.target.form).submit();
             clearTimeout(timer);
@@ -74,7 +63,7 @@
         })
         function highligh() {
             // trim is remove the blank space in the vale
-            let name = $('#name').val().trim();
+            let name = $('#room').val().trim();
 
             if (!name) return;
             let re = new RegExp(escapeRegExp(name), 'gi');
@@ -84,13 +73,9 @@
                 let html = $(el).html.replace(re, '<mark></mark>');
 
                 $(el).html(html);
-
             });
         }
-
-
     </script>
-
 }
 
 
