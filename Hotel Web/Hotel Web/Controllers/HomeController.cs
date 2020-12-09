@@ -283,31 +283,29 @@ namespace Hotel_Web.Controllers
 
                         db.SaveChanges();
 
+                        var user = db.Customers.Find(User.Identity.Name);
+                        var results = SMS.Send(new SMS.SMSRequest
+                        {
+                            from = Nexmo.Api.Configuration.Instance.Settings["appsettings:NEXMO_FROM_NUMBER"],
+                            to = user.PhoneNo,
+
+                            text = "Dear " + user.Name +
+                            @", your reservation is successful! Here is your reservation detail. 
+                            Room : " + r.Room.RoomType.Name + @" Room
+                            Check In  : " + r.CheckIn + @" 
+                            Check Out : " + r.CheckOut + @"
+                            Total     : RM" + r.Total + @"
+                            Paid      : " + r.Paid + @" 
+                            More detail can review in website
+                            From, Super Admin"
+                        });
+
                         SendEmail(r.Username, r.Id, "walk");
                         return RedirectToAction("Detail", new { id = r.Id });
 
                     }
 
-                    SendEmail(r.Username, r.Id, db.Reservations.Find(r.Id).PaymentMethod);
-
-                    var user = db.Customers.Find(User.Identity.Name);
-                    var results = SMS.Send(new SMS.SMSRequest
-                    {
-                        from = Nexmo.Api.Configuration.Instance.Settings["appsettings:NEXMO_FROM_NUMBER"],
-                        to = user.PhoneNo,
-
-                        text = "Dear " + user.Name +
-                        @", your reservation is successful! Here is your reservation detail. 
-                    Room : " + r.Room.RoomType.Name + @" Room
-                    Check In  : " + r.CheckIn + @" 
-                    Check Out : " + r.CheckOut + @"
-                    Total     : RM" + r.Total + @"
-                    Paid      : " + r.Paid + @" 
-                    More detail can review in website
-                    From, Super Admin"
-                    });
-
-		    TempData["Info"] = "Room reserved.";
+		            TempData["Info"] = "Room reserved.";
                     return RedirectToAction("Detail", new { r.Id });
                     
                 }
