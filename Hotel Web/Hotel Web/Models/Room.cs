@@ -24,8 +24,8 @@ namespace Hotel_Web.Models
         public string Status { get; set; }
         public string RoomTypeId { get; set; }
     
-        public virtual RoomType RoomType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Reservation> Reservations { get; set; }
+        public virtual RoomType RoomType { get; set; }
     }
 }
