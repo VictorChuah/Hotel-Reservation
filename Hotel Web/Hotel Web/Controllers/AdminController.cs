@@ -261,7 +261,7 @@ namespace Hotel_Web.Controllers
             return Redirect(url);
 
         }
- //==================================================================================================
+//==================================================================================================
 
 // reservation
 //========================================================================================
@@ -524,6 +524,7 @@ namespace Hotel_Web.Controllers
             ViewBag.TypeList = new SelectList(db.RoomTypes.OrderBy(t => t.Person), "Id", "Name");
             ViewBag.ServiceList = new MultiSelectList(db.ServiceTypes, "Id", "Name", model.ServiceIds);
             ViewBag.ServicePrice = db.ServiceTypes;
+
             return View(model);
         }
 
@@ -817,7 +818,7 @@ namespace Hotel_Web.Controllers
                 id = (n + 1).ToString("'R'000");
             } else if (type == "RoomType") {
 
-                string max = db.RoomTypes.Where(s => s.Id.Contains("RT")).Max(s => s.Id);
+                string max = db.RoomTypes.Where(s => s.Id.Contains("RT")).Max(s => s.Id) ?? "RT000";
                 int n = int.Parse(max.Substring(2));
                 id = (n + 1).ToString("'RT'000");
             }
