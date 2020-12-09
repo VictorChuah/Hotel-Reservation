@@ -36,11 +36,9 @@
 @section foot {
     <script src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
-        // TODO(1): Load chart library
         google.charts.load('current', { packages: ['corechart'] });
         google.charts.setOnLoadCallback(init);
 
-        // TODO(2): Initialize data table and chart
         let dt, opt, cht;
 
         function init() {
@@ -60,19 +58,16 @@
                     top: '50',
                     left: '50'
                 },
-                //is3D: true,
                 pieHole: 0.1,
                 colors: ['red', 'orange', 'yellow', 'green', 'blue', 'darkblue', 'purple', 'pink']
             };
 
             cht = new google.visualization.PieChart($('#chart')[0]);
 
-            //cht.draw(dt, opt);
 
             $('#reload').click();
         }
 
-        // TODO(3): Reload event
         $('#reload').click(e => {
             e.preventDefault();
 
@@ -88,7 +83,6 @@
 
         });
 
-        // TODO(4): Download event
         $('Download').click(e => {
             e.target.href = cht.getImageURI();
         });

@@ -52,7 +52,7 @@
 
         function init() {
             dt = new google.visualization.DataTable();
-            // TODO: Data table columns
+
             dt.addColumn('date', 'Day')
             dt.addColumn('number', 'r1')
             dt.addColumn('number', 'r2')
@@ -65,7 +65,7 @@
                 fontSize: 16,
                 titleTextStyle: { fontSize: 20 },
                 chartArea: { width: '70%', height: '70%', top: 60, left: 80 },
-                hAxis: { title: 'Day', titleTextStyle: style, maxTextLines: 1, format: 'dd MMM' }, // TODO: Format
+                hAxis: { title: 'Day', titleTextStyle: style, maxTextLines: 1, format: 'dd MMM' }, 
                 vAxis: { title: 'Sales (RM)', titleTextStyle: style },
                 animation: { duration: 500, startup: true },
                 crosshair: { trigger: 'focus', color: 'red', opacity: 0.5 }
@@ -84,7 +84,6 @@
             $('#year').change();
         }
 
-        // TODO: #r2 selection box --> select 2nd option
         if ($('#r2 option').length > 1) {
             $('#r2')[0].selectedIndex = 1;
         }

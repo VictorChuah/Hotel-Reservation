@@ -6,34 +6,7 @@
         $('#myModal').hide('#myModal');
         docuemnt.attr('data-id') == null;
     });
-
-
-
-  /*  function submit() {
-
-        $(".anchorDetail").click(function () {
-            
-            $.ajax({
-                type: "POST",
-                url: "/Admin/AddRoom",
-                data: { "roomtype": $('myid').val() },
-                datatype: "json",
-                success: function (data) {
-
-                    console.log(data);
-
-                },
-                error: function () {
-                    alert("Dynamic content load failed.");
-                }
-            });
-        });
-
-    }*/
-
 </script>
-
-
 
 
 <div class="modal-content">
@@ -56,11 +29,9 @@
         <form method="post" class="form" style="padding-left:23%" action="/Admin/AddRoom">
             @Html.LabelFor(rt => rt.RoomTypeId)
             @Html.DropDownListFor(rt => rt.RoomTypeId, (SelectList)ViewBag.RTList, "-Select One-" , new { @id = "myid", @class = "myclass", required = "" })
-            @* @Html.ValidationMessageFor(rt => rt.RoomTypeId) --> this one not working in partial, we use HTML5 required *@
 
-            <section style="margin-left:20px; margin-top:20px">
+            <section style="margin-left:70px; margin-top:20px">
                 <button>Insert</button>
-                <button id="closbtn" style="margin-left: 40px">Cancel</button>
             </section>
         </form>
 

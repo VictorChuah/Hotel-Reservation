@@ -3,28 +3,20 @@
 
 @model IPagedList<Admin>
 
-
-
 @{
-    // TODO: fields, sort and sortdir
     string[] fields = { "Name", "Phone", "Gender", "Email" };
     string sort = Request.Params["sort"];
     string sortdir = Request.Params["sortdir"];
 
-    // TODO: AJAX option
     var ao = new AjaxOptions
     {
-
-        //HttpMethod = "get"
         UpdateTargetId = "target",
         LoadingElementId = "loader"
 
     };
-
 }
 
 <style>
-    /* TODO */
     .table img {
         width: 100px;
         height: 100px;
@@ -53,14 +45,6 @@
 </style>
 
 <script>
-
-   /* function detail(username) {
-
-        location.href = "/Admin/Admindetail?username=" + username;
-
-
-    }*/
-
     function edit(username) {
         location.href = "/Admin/AdminEdit?username=" + username;
     }
@@ -86,12 +70,6 @@
         </th>
     </tr>
     <tr>
-        <!--
-        <th>Name</th>
-        <th>Phone</th>
-        <th>Gender</th>
-        <th>Email</th>
-        <th></th>-->
         @foreach (var f in fields)
         {
             string d = "ASC";
@@ -104,8 +82,6 @@
             }
 
             <th>
-                <!-- TODO: AJAX link -->
-
                 @Ajax.ActionLink(f, null, new { sort = f, sortdir = d }, ao, new { @class = c })
 
             </th>
@@ -122,10 +98,6 @@
             <td>@(a.Gender == "F" ? "👧🏻  Female" : "👦🏻 Male")</td>
             <td>@a.Email</td>
             <td style="position: relative">
-                @*<a href="~/Home/Detail?id=@s.Id">Detail</a>*@
-                @*<button data-get="/Admin/Admindetail?username=@a.Username">Detail</button>
-                  <button onclick="detail('@a.Username')">Detail</button>
-                  <button data-get="/Admin/AdminEdit?username=@a.Username">Edit</button>*@
                 <button onclick="edit('@a.Username')">Edit</button>
                 <img src="~/Image/Profile/@a.PhotoURL" />
             </td>
@@ -141,12 +113,8 @@
     po.LinkToLastPageFormat = "Last";
     po.LinkToPreviousPageFormat = "Previous";
     po.LinkToNextPageFormat = "Next";
-
-    // TODO: AJAX option
-
 }
 
-<!-- TODO: Enable AJAX -->
 @Html.PagedListPager(
     Model,
     p => $"?page={p}",

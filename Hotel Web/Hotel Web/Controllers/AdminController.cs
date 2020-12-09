@@ -51,7 +51,6 @@ namespace Hotel_Web.Controllers
             } else if (type == "room") {
                 path = Server.MapPath($"~/Image/Room/{name}");
             }
-            
 
             var img = new WebImage(f.InputStream);
 
@@ -116,7 +115,6 @@ namespace Hotel_Web.Controllers
                 return RedirectToAction(null, new { page = 1 });
             }
             name = name.Trim();
-            //var model = db.Customers.Where(c => c.Active == true && c => c.Name == name).FirstOrDefault();
 
             if (sortdir == "DESC")
             {
@@ -124,9 +122,7 @@ namespace Hotel_Web.Controllers
 
                 if (page > model.PageCount && model.PageCount != 0)
                 {
-
                     return RedirectToAction(null, new { page = model.PageCount });
-
                 }
                 if (Request.IsAjaxRequest()) return PartialView("_CustomerList", model);
 
@@ -137,9 +133,7 @@ namespace Hotel_Web.Controllers
 
                 if (page > model.PageCount && model.PageCount != 0)
                 {
-
                     return RedirectToAction(null, new { page = model.PageCount });
-
                 }
 
                 if (Request.IsAjaxRequest()) return PartialView("_CustomerList", model);
@@ -168,7 +162,6 @@ namespace Hotel_Web.Controllers
         public ActionResult CustomerEdit(string username)
         {
             var model = db.Customers.Find(username);
-            //TempData["info"] = model.Username;
 
             if (model == null)
             {
@@ -196,7 +189,6 @@ namespace Hotel_Web.Controllers
         {
             var c = db.Customers.Find(model.Username);
 
-
             if (c == null)
             {
                 return RedirectToAction("ListCustomer");
@@ -204,7 +196,6 @@ namespace Hotel_Web.Controllers
 
             if (model.Photo != null)
             {
-
                 string err = ValidatePhoto(model.Photo); // validate the photo
                 if (err != null)
                 {
@@ -247,10 +238,8 @@ namespace Hotel_Web.Controllers
                 return RedirectToAction("ListCustomer");
             }
 
-
             model.PhotoURL = c.PhotoURL;
             return View(model);
-
         }
 
    
@@ -258,15 +247,10 @@ namespace Hotel_Web.Controllers
         [HttpPost]
         public ActionResult CustomerDelete(string username)
         {
-
-
-
-            // TODO
             var m = db.Customers.Find(username);
             Boolean delete = false;
             if (m != null)
             {
-
                 m.Active = delete;
                 db.SaveChanges();
 
@@ -297,7 +281,6 @@ namespace Hotel_Web.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult ReservationList(string type, int SelectedYear = 0, string name = "", int page = 1)
         {
-
             int min = DateTime.Today.Year;
             int max = DateTime.Today.Year;
 
@@ -418,7 +401,7 @@ namespace Hotel_Web.Controllers
             
             ViewBag.TypeList = new SelectList(db.RoomTypes.OrderBy(t => t.Person), "Id", "Name");
             ViewBag.ServiceList = new MultiSelectList(db.ServiceTypes, "Id", "Name", model.ServiceIds);
-
+            ViewBag.ServicePrice = db.ServiceTypes;
 
             return View(model);
         }
@@ -529,7 +512,6 @@ namespace Hotel_Web.Controllers
                         Quantity = q
                     };
                     db.Services.Add(st);
-                    // Accumulate total
                     r.Total += s.Price * r.Day * r.Person;
                 }
 
@@ -541,9 +523,8 @@ namespace Hotel_Web.Controllers
 
             ViewBag.TypeList = new SelectList(db.RoomTypes.OrderBy(t => t.Person), "Id", "Name");
             ViewBag.ServiceList = new MultiSelectList(db.ServiceTypes, "Id", "Name", model.ServiceIds);
+            ViewBag.ServicePrice = db.ServiceTypes;
             return View(model);
-
-
         }
 
         [Authorize]
@@ -566,8 +547,6 @@ namespace Hotel_Web.Controllers
 
             if (reservationPaid != null)
             {
-
-
                 if (status == 1)
                 {
                     reservationPaid.Paid = true;
@@ -617,9 +596,7 @@ namespace Hotel_Web.Controllers
                     ReservationStatus.Status = "Check-In";
                     db.SaveChanges();
                     TempData["Info"] = "Reservation is Check-In.";
-
                 }
-            
             }
 
             string url = Request.UrlReferrer?.AbsolutePath ?? "/";
@@ -629,9 +606,7 @@ namespace Hotel_Web.Controllers
 
 
         //Admin side (display admin, edit admin, add admin)
-        //================================================================================================================
-
-        
+        //================================================================================================================        
         [Authorize(Roles = "Admin")]
         public ActionResult AdminList(string sort, string sortdir, string name = "", int page = 1)
         {
@@ -658,9 +633,7 @@ namespace Hotel_Web.Controllers
 
                 if (page > model.PageCount && model.PageCount != 0)
                 {
-
                     return RedirectToAction(null, new { page = model.PageCount });
-
                 }
                 if (Request.IsAjaxRequest()) return PartialView("_AdminList", model);
 
@@ -672,9 +645,7 @@ namespace Hotel_Web.Controllers
 
                 if (page > model.PageCount && model.PageCount != 0)
                 {
-
                     return RedirectToAction(null, new { page = model.PageCount });
-
                 }
 
                 if (Request.IsAjaxRequest()) return PartialView("_AdminList", model);
@@ -686,7 +657,6 @@ namespace Hotel_Web.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult AdminEdit(string username)
         {
-
             var model = db.Admins.Find(username);
 
             if (model == null)
@@ -703,7 +673,6 @@ namespace Hotel_Web.Controllers
                 Gender = model.Gender,
                 Email = model.Email,
                 PhotoURL = model.PhotoURL
-
             };
 
             return View(m);
@@ -735,7 +704,6 @@ namespace Hotel_Web.Controllers
 
             if (model.Photo != null)
             {
-
                 string err = ValidatePhoto(model.Photo); // validate the photo
                 if (err != null)
                 {
@@ -747,7 +715,6 @@ namespace Hotel_Web.Controllers
 
             if (ModelState.IsValid)
             {
-
                 admin.Name = model.Name;
                 admin.Gender = model.Gender;
                 admin.PhoneNo = model.PhoneNo;
@@ -767,7 +734,6 @@ namespace Hotel_Web.Controllers
                 TempData["Info"] = "Admin record edited";
                 return RedirectToAction("AdminList");
             }
-
 
             model.PhotoURL = admin.PhotoURL;
             return View(model);
@@ -798,9 +764,7 @@ namespace Hotel_Web.Controllers
 
             if (db.Admins.Find(newAdmin.Username) != null)
             {
-
                 ModelState.AddModelError("Username", "Duplicated Username.");
-
             }
 
             if (ModelState.IsValidField("Email") && (db.Admins.Any(a => a.Email == newAdmin.Email) || db.Customers.Any(c => c.Email == newAdmin.Email)))
@@ -812,7 +776,6 @@ namespace Hotel_Web.Controllers
 
             if (err != null)
             {
-
                 ModelState.AddModelError("Phote", err);
             }
 
@@ -896,7 +859,6 @@ namespace Hotel_Web.Controllers
             //Search By Status
             else if (type == "status")
             {
-
                 var display = db.Rooms.Where(r => r.Status.Contains(room)).OrderBy(x => x.Id).ToPagedList(page, 10); 
 
                 if (display == null)
@@ -957,18 +919,12 @@ namespace Hotel_Web.Controllers
 
             };
 
-
             return PartialView("_AddRoom");
         }
 
         [HttpPost]
-        public ActionResult AddRoom( Room model) {
-
-            /*TempData["Info"] = "Room Added.";
-            if(roomtype == null){
-                return RedirectToAction("AdminList");
-            }
-            */
+        public ActionResult AddRoom( Room model) 
+        {
             if (ModelState.IsValid) {
                 model.Id = NextRoomId("Room");
                 model.Status = "A";
@@ -980,8 +936,6 @@ namespace Hotel_Web.Controllers
 
             string url = Request.UrlReferrer?.AbsolutePath ?? "/";
             return Redirect(url);
-            
-            //return RedirectToAction("Room");
         }
 
         [HttpPost]
@@ -1005,15 +959,13 @@ namespace Hotel_Web.Controllers
                 {
                     room.Status = "B";
                 }
-                else if (status == 'v') {
-
+                else if (status == 'v') 
+                {
                     room.Status = "V";
                 }
 
                 db.SaveChanges();
                 TempData["Info"] = "Room Status Updated..";
-
-
             }
 
             string url = Request.UrlReferrer?.AbsolutePath ?? "/";
@@ -1021,15 +973,15 @@ namespace Hotel_Web.Controllers
         }
 
         
-        public ActionResult RoomType() {
-
+        public ActionResult RoomType() 
+        {
             var roomtype = db.RoomTypes.Where( rt => rt.Status == true);
 
             return View(roomtype);
         }
 
-        public ActionResult EditRoomType(string id) {
-
+        public ActionResult EditRoomType(string id) 
+        {
             var RoomType = db.RoomTypes.Find(id);
 
             var Rt = new editRoomType
@@ -1039,7 +991,6 @@ namespace Hotel_Web.Controllers
                 Price = RoomType.Price,
                 PhotoURL = RoomType.PhotoURL,
                 person = RoomType.Person
-
             };
             TempData["Info"] = "Database"+RoomType.Id + " Metadata" +Rt.Id;
 
@@ -1049,7 +1000,6 @@ namespace Hotel_Web.Controllers
         [HttpPost]
         public ActionResult EditRoomType(editRoomType models)
         {
-
             var RmTe = db.RoomTypes.Find(models.Id);
 
             if (RmTe == null) {
@@ -1068,14 +1018,12 @@ namespace Hotel_Web.Controllers
 
             if (ModelState.IsValid)
             {
-
                 RmTe.Name = models.Name;
                 RmTe.Price = models.Price;
                 RmTe.Person = models.person;
 
                 if (models.Photo != null)
                 {
-
                     DeletePhoto(RmTe.PhotoURL, "profile");
                     RmTe.PhotoURL = SavePhoto(models.Photo, "profile");
                 }
@@ -1085,31 +1033,27 @@ namespace Hotel_Web.Controllers
                 return RedirectToAction("RoomType");
             }
 
-
             models.PhotoURL = RmTe.PhotoURL;
             return View(models);
         }
+
         public ActionResult AddRoomType()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult AddRoomType(addRoomType model) {
-
- 
-
+        public ActionResult AddRoomType(addRoomType model) 
+        {
             string err = ValidatePhoto(model.Photo);
 
             if (err != null)
             {
-
                 ModelState.AddModelError("Phote", err);
             }
 
             if (ModelState.IsValid)
             {
-
                 var RT = new RoomType
                 {
                     Id = NextRoomId("RoomType"),
@@ -1131,8 +1075,8 @@ namespace Hotel_Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeleteRoomType(string RoomTypeId) {
-
+        public ActionResult DeleteRoomType(string RoomTypeId) 
+        {
             var rt = db.RoomTypes.Find(RoomTypeId);
             if (rt != null) {
                 rt.Status = false;
@@ -1143,13 +1087,11 @@ namespace Hotel_Web.Controllers
 
             }
             
-
             return View();
         }
 
-        public ActionResult DeleteRoom( string roomId) {
-
-            // TODO
+        public ActionResult DeleteRoom( string roomId) 
+        {
             var m = db.Rooms.Find(roomId);
 
             if (m != null)
@@ -1166,30 +1108,28 @@ namespace Hotel_Web.Controllers
 
         }
 
-        public ActionResult RoomRecovery() {
-
+        public ActionResult RoomRecovery() 
+        {
             var deleted = db.Rooms.Where(d => d.Status == "D");
 
             if (deleted != null)
             {
                 foreach (var recovery in deleted)
                 {
-
                     recovery.Status = "A";
-
                 }
 
                 db.SaveChanges();
                 TempData["Info"] = "Deleted Room Recovery Successful";
             }
-            else {
+            else 
+            {
                 TempData["Info"] = "Deleted Room Recovery Fail";
             }
 
             string url = Request.UrlReferrer?.AbsolutePath ?? "/";
             return Redirect(url);
         }
-        //====================================================================================================
 
     }
 }

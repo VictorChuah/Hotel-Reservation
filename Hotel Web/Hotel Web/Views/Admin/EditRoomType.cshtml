@@ -2,9 +2,6 @@
 @{
     ViewBag.Title = "EditRoomType";
 }
-
-
-
     <form method="post" class="form" enctype="multipart/form-data">
         @Html.ValidationSummary(true)
 
@@ -43,8 +40,6 @@
 
 @section foot {
     <script>
-
-
         function validatePhoto(f) {
             let reType = /^image\/(jpeg|png)$/i;
             let reName = /^.+\.(jpg|jpeg|png)$/i;

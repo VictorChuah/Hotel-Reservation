@@ -4,7 +4,6 @@
 
 @section head {
     <style>
-        /* TODO: Format html tooltip */
         .product {
             padding: 5px;
             font-size: 14px;
@@ -38,7 +37,6 @@
 </nav>
 
 <p>
-    <!-- TODO: Date input -->
     @Html.TextBox("date", null, new { type = "date", min = ViewBag.Min, max = ViewBag.Max })
 
     <span id="loader">
@@ -61,7 +59,6 @@
             dt = new google.visualization.DataTable();
             dt.addColumn('string', 'Services');
             dt.addColumn('number', 'Sales');
-            // TODO: Add tooltip column --> allow HTML
             dt.addColumn({ role: 'tooltip', p: { html: true } });
 
             let style = { bold: true, italic: false, fontSize: 20, color: 'blueviolet' };
@@ -77,7 +74,6 @@
                 vAxis: { title: 'Sales', titleTextStyle: style },
                 animation: { duration: 500, startup: true },
                 colors: ['blueviolet'],
-                // TODO: Tooltip --> allow HTML
                 tooltip: {
                     isHtml: true
                 }
@@ -88,13 +84,11 @@
             $('#date').change();
         }
 
-        // TODO: Array of products
         let arr = @Html.Raw(Json.Encode(ViewBag.Services));
 
         $('#date').change(e => {
             e.preventDefault();
 
-            // TODO: Simple input validation
             let el = e.target;
             if (el.value < el.min || el.value > el.max) {
                 el.value = el.max;
@@ -108,7 +102,6 @@
             $('#loader').show();
 
             $.getJSON(url, param, json => {
-                //TODO: Add tooltip column
                 for (let data of json) {
                     let s = arr.find(s => s.Id == data[0]);
                     data[2] = `

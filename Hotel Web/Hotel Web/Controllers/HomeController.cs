@@ -98,7 +98,6 @@ namespace Hotel_Web.Controllers
                 }
                 model.price += s.Price * m.Person * q;
             }
-            //var m = db.RoomTypes.Find(model.RoomTypeId);
             var model1 = new ReserveVM
             {
                 RoomTypeId = m.Id,

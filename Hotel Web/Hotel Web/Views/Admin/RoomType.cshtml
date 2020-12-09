@@ -6,7 +6,6 @@
 
 @section head {
     <style>
-        /* TODO */
         .table img {
             width: 100px;
             height: 100px;
@@ -57,13 +56,10 @@
                 <td>RM @r.Price</td>
                 <td>@r.Person</td>
                 <td style="position: relative" align="center">
-                    @*<a href="~/Home/Detail?id=@s.Id">Detail</a>*@
-                    @* <a href="javascript:void(0);" class="anchorDetail" data-id="">Detail</a>*@
                     <button data-get="/Admin/EditRoomType/@r.Id">Edit</button>
                     <button data-post="/Admin/DeleteRoomType?RoomTypeId=@r.Id">Delete</button>
                     <img src="~/Image/Room/@r.PhotoURL" />
                 </td>
-
             </tr>
         }
     </table>

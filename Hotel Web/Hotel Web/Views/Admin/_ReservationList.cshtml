@@ -3,7 +3,6 @@
 @model  IPagedList<Reservation>
 
 <style>
-    /* TODO */
     .table img {
         width: 200px;
         height: 200px;
@@ -31,11 +30,6 @@
 
 <script>
     function updateUnpaid(id, status) {
-        //var id = $("#Bunpaid").val();
-        // var status = $("#unpaid").val();
-
-        //location.href = "/Admin/ReservationUpdatePaid?id=" + id + "&status=" + status;
-
         $.ajax({
             type: "POST",
             url: "/Admin/ReservationUpdatePaid",
@@ -52,11 +46,6 @@
     }
 
     function updateStatus(id, status) {
-        //var id = $("#Bstatus").val();
-        // var status = $("#IStatus").val()
-
-        //location.href = "/Admin/ReservationUpdatePaid?id=" + $("#Bstatus").val() + "&status=" + $("#IStatus").val();
-
         $.ajax({
             type: "POST",
             url: "/Admin/ReservationStatus",
@@ -73,27 +62,19 @@
     }
 
     function searchyear() {
-
         var SelectedYear = $("#year").val();
 
         location.href = "/Admin/ReservationList?SelectedYear=" + SelectedYear;
-
-
     }
 
     function Detail(id) {
         location.href = "/Admin/ReservationDetail/" + id;
-
     }
 </script>
 
 
 <div>
 
-    @*<p style="display:inline-block; margin-right:5px">Search: </p>@Html.TextBox("name", null, new { autofocus = "" })*@
-    <!--<input type="text" name="name" autofocus value="">-->
-    <!--it use to enter the name then the name will in the textbox and make a autofocus-->
-   
 </div>
 <p>
     @Model.Count of @Model.TotalItemCount record(s) |
@@ -114,11 +95,8 @@
         <th width="100"> Payment Method</th>
         <th width="200"></th>
         <th></th>
-
-
-
     </tr>
-    <!--hahah hello world-->
+
     @foreach (var r in Model)
     {
         <tr>
@@ -135,26 +113,22 @@
 
                 @if (@r.Paid == true)
                 {
-                    // <button data-post="/Admin/ReservationUpdatePaid?id=@r.Re.Id">Unpaid</button>
                     <button id="Bunpaid" value="@r.Id" onclick="updateUnpaid('@r.Id', 0)">Unpaid</button>
                     <input type="hidden" id="unpaid" name="name" value=0 />
                 }
                 else
                 {
-                    //<button data-post="/Admin/ReservationUpdatePaid?id=@r.Re.Id">Paid</button>
                     <button id="Bunpaid" value="@r.Id" onclick="updateUnpaid('@r.Id', 1)">paid</button>
                     <input type="hidden" id="unpaid" name="name" value=1 />
                 }
 
                 @if (r.Status == "Reserved")
                 {
-                    //<button data-get="/Admin/ReservationStatus?id=@r.Re.Id">Check-In</button>
                     <button id="Bstatus" value="@r.Id" onclick="updateStatus('@r.Id', 1)">Check-In</button>
                     <input type="hidden" id="IStatus" name="name" value="1" />
                 }
                 else if (r.Status == "Check-In")
                 {
-                    //<button data-get="/Admin/ReservationStatus?id=@r.Re.Id">Check-Out</button>
                     <button id="Bstatus" value="@r.Id" onclick="updateStatus('@r.Id', 0)">Check-Out</button>
                     <input type="hidden" id="IStatus" name="name" value="0" />
                 }
@@ -162,18 +136,12 @@
 
             <img src="~/Image/Room/@r.Room.RoomType.PhotoURL" />
             </td>
-            <td>
-                
+            <td>                
                 <button onclick="Detail('@r.Id') ">Detail</button>
-
             </td>
-
         </tr>
     }
 </table>
-
-
-
 
 @{
     var po = PagedListRenderOptions.ClassicPlusFirstAndLast;
@@ -182,17 +150,13 @@
     po.LinkToPreviousPageFormat = "Previous";
     po.LinkToNextPageFormat = "Next";
 
-    // TODO: AJAX option
     var ao = new AjaxOptions
     {
-        //Url = "/Home/Demo4",
-        //HttpMethod = "get",
         UpdateTargetId = "target",
         LoadingElementId = "loader",
     };
 }
 
-<!-- TODO: Enable AJAX -->
 @Html.PagedListPager(
     Model,
     p => $"?page={p}",

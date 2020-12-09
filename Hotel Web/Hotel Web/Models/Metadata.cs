@@ -32,9 +32,11 @@ namespace Hotel_Web.Models
         [Phone]
         [RegularExpression(@"^(601)([0-9]{8})$", ErrorMessage = "Invalid Phone Number")]
         public int PhoneNo { get; set; }
+
         [Required]
         [RegularExpression(@"[FM]", ErrorMessage = "Invalid {0}.")]
         public string Gender { get; set; }
+
         [Required]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
@@ -50,6 +52,7 @@ namespace Hotel_Web.Models
         [Required]
         [StringLength(20)]
         public string Username { get; set; }
+
         [Required]
         [StringLength(20, MinimumLength = 8)]
         public string Password { get; set; }
@@ -199,16 +202,17 @@ namespace Hotel_Web.Models
         [Required]
         [RegularExpression(@"^(601)([0-9]{8})$", ErrorMessage = "Invalid Phone Number")]
         public string PhoneNo { get; set; }
+
         [Required]
         [RegularExpression(@"[FM]", ErrorMessage = "Invalid {0}.")]
         public string Gender { get; set; }
+
         [Required]
         [StringLength(100)]
         [EmailAddress]
         [System.Web.Mvc.Remote("CheckEmail", "Account", ErrorMessage = "Duplicated {0}.")]
         [RegularExpression(@"^.+@.+mail.com$", ErrorMessage = "Invalid Email format")]
         public string Email { get; set; }
-
 
         public HttpPostedFileBase Photo { get; set; }
         public string PhotoURL { get; set; }
@@ -227,9 +231,11 @@ namespace Hotel_Web.Models
         [Required]
         [RegularExpression(@"^(601)([0-9]{8})$", ErrorMessage = "Invalid Phone Number")]
         public string PhoneNo { get; set; }
+
         [Required]
         [RegularExpression(@"[FM]", ErrorMessage = "Invalid {0}.")]
         public string Gender { get; set; }
+
         [Required]
         [StringLength(100)]
         [EmailAddress]
@@ -237,32 +243,29 @@ namespace Hotel_Web.Models
         [RegularExpression(@"^.+@.+mail.com$", ErrorMessage = "Invalid Email format")]
         public string Email { get; set; }
 
-
         public HttpPostedFileBase Photo { get; set; }
         public string PhotoURL { get; set; }
     }
 
     public class MultipleClass
     {
-
         public Customer Cus { get; set; }
         public Reservation Re { get; set; }
         public Room room { get; set; }
         public RoomType roomtype { get; set; }
         public Service se { get; set; }
         public ServiceType Setype { get; set; }
-
     }
 
-    public class joinRoom {
-    
+    public class joinRoom 
+    {
         public Room room { get; set; }
         public RoomType roomtype { get; set; }
     
     }
 
-    public class InsertAdmin {
-
+    public class InsertAdmin 
+    {
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
@@ -275,9 +278,11 @@ namespace Hotel_Web.Models
         [Required]
         [RegularExpression(@"^(601)([0-9]{8})$", ErrorMessage = "Invalid Phone Number")]
         public string PhoneNo { get; set; }
+
         [Required]
         [RegularExpression(@"[FM]", ErrorMessage = "Invalid {0}.")]
         public string Gender { get; set; }
+
         [Required]
         [StringLength(100)]
         [EmailAddress]
@@ -305,13 +310,11 @@ namespace Hotel_Web.Models
 
     }
 
-    public class addroom {
-
+    public class addroom 
+    {
         public string id { get; set; }
         public string roomtype { get; set; }
-
         public string status { get; set; }
-    
     }
 
     public class editRoomType {
@@ -322,6 +325,7 @@ namespace Hotel_Web.Models
 
         [Required]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+        [RegularExpression("^[0-9]*$", ErrorMessage = "Price must be numeric")]
         public decimal Price { get; set; }
 
         public HttpPostedFileBase Photo { get; set; }
@@ -333,14 +337,15 @@ namespace Hotel_Web.Models
         public int person { get; set; }
     }
 
-    public class addRoomType {
-
+    public class addRoomType 
+    {
         [Required]
         [StringLength(50)]
         public string name { get; set; }
 
         [Required]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+        [RegularExpression("^[0-9]*$", ErrorMessage = "Price must be numeric")]
         public decimal Price { get; set; }
 
         [Required]

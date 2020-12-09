@@ -4,8 +4,6 @@
 @model IPagedList<Customer>
 
 @{
-
-
     string[] fields = { "Name", "Username", "Phone", "Gender", "Email" };
     string sort = Request.Params["sort"];
     string sortdir = Request.Params["sortdir"];
@@ -19,7 +17,6 @@
 
 
 <style>
-    /* TODO */
     .table img {
         width: 100px;
         height: 100px;
@@ -44,9 +41,6 @@
         width: 200px;
     }
 
-
-
-
     #myModal {
         display: none; /* Hidden by default */
         position: fixed; /* Stay in place */
@@ -60,9 +54,6 @@
         background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
     }
 
-
-
-
     /* The Close Button */
     #closebtn {
         color: white;
@@ -72,13 +63,12 @@
         left: auto;
     }
 
-        #closebtn:hover,
-        #closebtn:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
+    #closebtn:hover,
+    #closebtn:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
 
     /* Modal Body */
     .modal-body {
@@ -102,12 +92,6 @@
         box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     }
 </style>
-
-@*<script src="~/Scripts/jquery-3.5.1.min.js"></script>
-<script src="~/Scripts/jquery-3.5.1.min.js"></script>
-<script src="~/Scripts/bootstrap.js"></script>
-<script src="~/Scripts/bootstrap.min.js"></script>*@
-
 
 <script>
     var TeamDetailPostBackURL = '/Admin/Customrdetail';
@@ -139,28 +123,10 @@
     });
 
     function edit(username) {
-       // var username = $("#edit").val();
-       // console.log("username =", username);
-       // var Name = name;
        location.href = "/Admin/CustomerEdit?username=" + username;
-
-       /* $.ajax({
-            type: "GET",
-            url: "/Admin/CustomerEdit",
-            data: { "username": username },
-            datatype: "json",
-            success: function (data) {
-                console.log(data);
-            
-            },
-        });*/
     }
 
     function deleteMember(username) {
-        //var username = $("#delete").val();
-
-        //location.href = "/Admin/CustomerDelete?username=" + username;
-
         $.ajax({
             type: "POST",
             url: "/Admin/CustomerDelete",
@@ -172,21 +138,13 @@
             },
         });
     }
-
-
-
 </script>
 
 <div id='myModal' class='modal fade'>
     <div class="modal-dialog">
-
         <div id='myModalContent'>
-
-
-
         </div>
     </div>
-
 </div>
 
 
@@ -201,13 +159,6 @@
 </p> <!--help to count the record in the database-->
 <table class="table" id="detailCus">
     <tr>
-        @*  <th width="100px">Name</th>
-            <th width="100px"> Username</th>
-            <th width="150px">Phone</th>
-            <th width="100px">Gender</th>
-            <th width="100px">Email</th>
-            <th width="200px"></th>*@
-
         @foreach (var f in fields)
         {
             string d = "ASC";
@@ -238,10 +189,7 @@
             <td>@(c.Gender == "F" ? "👧🏻  Female" : "👦🏻 Male")</td>
             <td>@c.Email</td>
             <td style="position: relative" align="center">
-                @*<a href="~/Home/Detail?id=@s.Id">Detail</a>*@
                 <button data-get="javascript:void(0);" data-id="@c.Username" class="anchorDetail"> Detail </button>
-                <!--<a href="javascript:void(0);" class="anchorDetail" data-id="@c.Username">Detail</a>-->
-                <!-- <button data-get="/Admin/CustomerEdit?username=@c.Username">Edit</button>-->
                 <button id="edit" onclick="edit('@c.Username')">Edit</button>
                 <button id="delete" value="@c.Username" onclick="deleteMember('@c.Username')">Delete</button>
                 <img src="~/Image/Profile/@c.PhotoURL" />
@@ -257,12 +205,8 @@
     po.LinkToLastPageFormat = "Last";
     po.LinkToPreviousPageFormat = "Previous";
     po.LinkToNextPageFormat = "Next";
-
-    // TODO: AJAX option
-
 }
 
-<!-- TODO: Enable AJAX -->
 @Html.PagedListPager(
     Model,
     p => $"?page={p}",
