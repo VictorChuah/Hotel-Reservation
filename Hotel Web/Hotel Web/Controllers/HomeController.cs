@@ -65,6 +65,10 @@ namespace Hotel_Web.Controllers
             return View(model);
         }
 
+      
+
+
+
         //POST: Home/Reserve
         [Authorize]
         [HttpPost]
@@ -133,8 +137,11 @@ namespace Hotel_Web.Controllers
                 }
             }
 
+           
 
-                if (ModelState.IsValid)
+
+
+            if (ModelState.IsValid)
                 {
                 
                 // Process (1): Insert Reservation record
@@ -183,11 +190,13 @@ namespace Hotel_Web.Controllers
                     r.Total += s.Price * r.Day * r.Person * q;
 
                 }
-                
+
+               // if (Request.IsAjaxRequest()) return PartialView("_ShowPrice", ViewBag.total = r.Total);
+
                 db.Reservations.Add(r);
                 db.SaveChanges();
 
-                SendEmail(r.Username,r.Id);
+              //  SendEmail(r.Username,r.Id);
                 List<Reservation> rt = db.Reservations.ToList();
 
                 //Update the room status that already check out

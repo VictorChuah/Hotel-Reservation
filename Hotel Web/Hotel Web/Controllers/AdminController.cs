@@ -120,7 +120,7 @@ namespace Hotel_Web.Controllers
 
             if (sortdir == "DESC")
             {
-                var model = db.Customers.Where(c => c.Active == true && c.Name.Contains(name)).OrderBy(c => c.Username).OrderByDescending(fn).ToPagedList(page, 2);
+                var model = db.Customers.Where(c => c.Active == true && c.Name.Contains(name)).OrderBy(c => c.Username).OrderByDescending(fn).ToPagedList(page, 5);
 
                 if (page > model.PageCount && model.PageCount != 0)
                 {
@@ -133,7 +133,7 @@ namespace Hotel_Web.Controllers
                 return View(model);
             }
             else {
-                var model = db.Customers.Where(c => c.Active == true && c.Name.Contains(name)).OrderBy(fn).ToPagedList(page, 2);
+                var model = db.Customers.Where(c => c.Active == true && c.Name.Contains(name)).OrderBy(fn).ToPagedList(page, 5);
 
                 if (page > model.PageCount && model.PageCount != 0)
                 {
@@ -297,7 +297,7 @@ namespace Hotel_Web.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult ReservationList(string type, int SelectedYear = 0, string name = "", int page = 1)
         {
-            TempData["Info"] = SelectedYear;
+
             int min = DateTime.Today.Year;
             int max = DateTime.Today.Year;
 
@@ -322,13 +322,13 @@ namespace Hotel_Web.Controllers
             }
 
 
-            var tables = reservationList.OrderByDescending(x => x.CheckOut).ToPagedList(page, 10);
+            var tables = reservationList.OrderByDescending(x => x.CheckOut).ToPagedList(page, 5);
 
             //search by username
             if (type == "username")
             {
 
-                tables = tables.Where(r => r.Username.Contains(name)).ToPagedList(page, 10);
+                tables = tables.Where(r => r.Username.Contains(name)).ToPagedList(page, 5);
 
                 if (page > tables.PageCount && tables.PageCount != 0)
                 {
@@ -344,7 +344,7 @@ namespace Hotel_Web.Controllers
             //search by payment method
             else if (type == "Payment_Method")
             {
-                tables = tables.Where(r => r.PaymentMethod.Contains(name)).ToPagedList(page, 10);
+                tables = tables.Where(r => r.PaymentMethod.Contains(name)).ToPagedList(page, 5);
 
                 if (page > tables.PageCount && tables.PageCount != 0)
                 {
@@ -359,7 +359,7 @@ namespace Hotel_Web.Controllers
             //search by reservation id
             else if (type == "ReservationId") {
 
-                tables = tables.Where(r => r.Id.Contains(name) ).ToPagedList(page, 10);
+                tables = tables.Where(r => r.Id.Contains(name) ).ToPagedList(page, 5);
 
                 if (page > tables.PageCount && tables.PageCount != 0)
                 {
@@ -434,6 +434,7 @@ namespace Hotel_Web.Controllers
                     if (ReservationStatus.Paid == true)
                     {
                         ReservationStatus.Status = "Check-Out";
+                        ReservationStatus.Room.Status = "A";
                         db.SaveChanges();
                         TempData["Info"] = "Reservation is Check-Out.";
                     }
@@ -483,7 +484,7 @@ namespace Hotel_Web.Controllers
 
             if (sortdir == "DESC")
             {
-                var model = db.Admins.Where(c => c.Name.Contains(name)).OrderBy(c => c.Username).OrderByDescending(fn).ToPagedList(page, 2);
+                var model = db.Admins.Where(c => c.Name.Contains(name)).OrderBy(c => c.Username).OrderByDescending(fn).ToPagedList(page, 5);
 
                 if (page > model.PageCount && model.PageCount != 0)
                 {
@@ -497,7 +498,7 @@ namespace Hotel_Web.Controllers
             }
             else
             {
-                var model = db.Admins.Where(c => c.Name.Contains(name)).OrderBy(fn).ToPagedList(page, 2);
+                var model = db.Admins.Where(c => c.Name.Contains(name)).OrderBy(fn).ToPagedList(page, 5);
 
                 if (page > model.PageCount && model.PageCount != 0)
                 {
@@ -711,7 +712,7 @@ namespace Hotel_Web.Controllers
             if (type == "Id")
             {
 
-                var display = display_room.Where(c => c.room.Id.Contains(room)).ToPagedList(page, 10); 
+                var display = display_room.Where(c => c.room.Id.Contains(room)).ToPagedList(page, 5); 
                 if (display == null) {
                     TempData["info"] = "Record Not Found!";
                 }
@@ -730,7 +731,7 @@ namespace Hotel_Web.Controllers
             //===========================
             else if (type == "status")
             {
-                var display = display_room.Where(c => c.room.Status.Contains(room)).ToPagedList(page, 10); 
+                var display = display_room.Where(c => c.room.Status.Contains(room)).ToPagedList(page, 5); 
 
                 if (display == null)
                 {
@@ -749,7 +750,7 @@ namespace Hotel_Web.Controllers
             //========================
             else if (type == "name"){
 
-                var display = display_room.Where(c => c.roomtype.Name.Contains(room)).ToPagedList(page, 10); 
+                var display = display_room.Where(c => c.roomtype.Name.Contains(room)).ToPagedList(page, 5); 
 
                 if (display == null)
                 {
@@ -766,7 +767,7 @@ namespace Hotel_Web.Controllers
                 return View(display);
             }
             //=================
-           var display_all_room = display_room.ToPagedList(page, 10);
+           var display_all_room = display_room.ToPagedList(page, 5);
             if (page > display_all_room.PageCount && display_all_room.PageCount != 0)
             {
 
@@ -854,7 +855,7 @@ namespace Hotel_Web.Controllers
         
         public ActionResult RoomType() {
 
-            var roomtype = db.RoomTypes;
+            var roomtype = db.RoomTypes.Where( rt => rt.Status == true);
 
             return View(roomtype);
         }
@@ -928,6 +929,7 @@ namespace Hotel_Web.Controllers
         [HttpPost]
         public ActionResult AddRoomType(addRoomType model) {
 
+ 
 
             string err = ValidatePhoto(model.Photo);
 
@@ -959,6 +961,23 @@ namespace Hotel_Web.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public ActionResult DeleteRoomType(string RoomTypeId) {
+
+            var rt = db.RoomTypes.Find(RoomTypeId);
+            if (rt != null) {
+                rt.Status = false;
+                db.SaveChanges();
+                TempData["Info"] = "Room Type Deleted";
+
+                return RedirectToAction("RoomType");
+
+            }
+            
+
+            return View();
+        }
+
         public ActionResult DeleteRoom( string roomId) {
 
             // TODO
@@ -976,6 +995,30 @@ namespace Hotel_Web.Controllers
             string url = Request.UrlReferrer?.AbsolutePath ?? "/";
             return Redirect(url);
 
+        }
+
+        public ActionResult RoomRecovery() {
+
+            var deleted = db.Rooms.Where(d => d.Status == "D");
+
+            if (deleted != null)
+            {
+                foreach (var recovery in deleted)
+                {
+
+                    recovery.Status = "A";
+
+                }
+
+                db.SaveChanges();
+                TempData["Info"] = "Deleted Room Recovery Successful";
+            }
+            else {
+                TempData["Info"] = "Deleted Room Recovery Fail";
+            }
+
+            string url = Request.UrlReferrer?.AbsolutePath ?? "/";
+            return Redirect(url);
         }
         //====================================================================================================
 

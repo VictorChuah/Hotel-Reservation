@@ -127,8 +127,8 @@
 
 
     function updateStatus(id, status) {
-       // var id = $("#s1").val();
-       // var status = $("#s11").val();
+        // var id = $("#s1").val();
+        // var status = $("#s11").val();
 
         $.ajax({
             type: "POST",
@@ -184,10 +184,21 @@
     Page @Model.PageNumber of @Model.PageCount
 </p> <!--help to count the record in the database-->
 <!--Add button-->
-<div style="padding-left: 550px">
-    <button data-get="javascript:void(0);" class="anchorDetail"> Add Room</button> <button data-get="/Admin/RoomType">Room type</button>
+<table border="0">
+    <tr>
+        <th width="180px"></th>
+        <th width="180px"></th>
+        <th width="180px"></th>
+        <th width="185px"></th>
+        <th width="185px"></th>
+        <th width="300px">
+            <button data-get="javascript:void(0);" class="anchorDetail"> Add Room</button>
+            <button data-get="/Admin/RoomType">Room type</button>
+            <button data-post="/Admin/RoomRecovery"> Recovery </button>
+        </th>
+    </tr>
+</table>
 
-</div>
 <table class="table" id="detailCus">
     <tr>
         <th width="100px">Room Id</th>
@@ -210,8 +221,8 @@
                 @*<a href="~/Home/Detail?id=@s.Id">Detail</a>*@
                 @* <a href="javascript:void(0);" class="anchorDetail" data-id="">Detail</a>*@
                 @*<button data-get="/Admin/RoomEdit?RoomId=@r.room.Id&status=b">Block</button>
-        <button data-post="/Admin/RoomEdit?RoomId=@r.room.Id&status=a">Active</button>
-        <button data-post="/Admin/RoomEdit?RoomId=@r.room.Id&status=v">Vacant</button>*@
+                    <button data-post="/Admin/RoomEdit?RoomId=@r.room.Id&status=a">Active</button>
+                    <button data-post="/Admin/RoomEdit?RoomId=@r.room.Id&status=v">Vacant</button>*@
                 <button id="s1" value="@r.room.Id" onclick="updateStatus('@r.room.Id', 'b')">Block</button>
                 <input type="hidden" id="s11" name="name" value='b' />
 
@@ -219,7 +230,7 @@
                 <input type="hidden" id="s21" name="name" value='a' />
 
                 <!-- <button id="s3" value="@r.room.Id" onclick="updateStatus('@r.room.Id', 'v')">Vacant</button>
-     <input type="hidden" id="s31" name="name" value='v' />-->
+                <input type="hidden" id="s31" name="name" value='v' />-->
 
                 <button id="s4" value="@r.room.Id" onclick="Delete('@r.room.Id')">Delete</button>
                 <input type="hidden" id="s31" name="name" value='v' />

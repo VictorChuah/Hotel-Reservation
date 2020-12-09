@@ -652,7 +652,7 @@
     <Content Include="Views\Home\ValidateCommand.cshtml" />
     <Content Include="Views\Home\PaidCancel.cshtml" />
     <Content Include="Views\Home\Chat.cshtml" />
-
+    <Content Include="Views\Admin\_ShowPrice.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

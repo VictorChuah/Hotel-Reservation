@@ -7,9 +7,7 @@
       <Diagram DiagramId="7f498ece3f4f46959734d43b2bfbad84" Name="Diagram1" ZoomLevel="98">
         <EntityTypeShape EntityType="dbModel.Admin" Width="1.5" PointX="0.5" PointY="3.75" />
         <EntityTypeShape EntityType="dbModel.Room" Width="1.5" PointX="3.375" PointY="0.625" />
-        <EntityTypeShape EntityType="dbModel.RoomType" Width="1.5" PointX="0.5" PointY="0.625" />
         <EntityTypeShape EntityType="dbModel.ServiceType" Width="1.5" PointX="10" PointY="2.125" />
-        <AssociationConnector Association="dbModel.FK_Room_RoomType" />
         <EntityTypeShape EntityType="dbModel.Customer" Width="1.5" PointX="3.25" PointY="3" />
         <EntityTypeShape EntityType="dbModel.Reservation" Width="1.5" PointX="5.875" PointY="0.5" />
         <AssociationConnector Association="dbModel.FK_Reservation_Customer" />
@@ -17,6 +15,8 @@
         <EntityTypeShape EntityType="dbModel.Service" Width="1.5" PointX="7.875" PointY="1.5" />
         <AssociationConnector Association="dbModel.FK_Service_ToReservation" />
         <AssociationConnector Association="dbModel.FK_Service_ToServiceType" />
+        <EntityTypeShape EntityType="dbModel.RoomType" Width="1.5" PointX="0.625" PointY="0.625" />
+        <AssociationConnector Association="dbModel.FK_Room_RoomType" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

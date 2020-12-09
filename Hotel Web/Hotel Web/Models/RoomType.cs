@@ -25,6 +25,7 @@ namespace Hotel_Web.Models
         public decimal Price { get; set; }
         public string PhotoURL { get; set; }
         public int Person { get; set; }
+        public Nullable<bool> Status { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Room> Rooms { get; set; }
